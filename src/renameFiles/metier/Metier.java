@@ -94,6 +94,17 @@ public class Metier
 
             String newName = patern + extension;
 
+            int cptPatern = 0;
+
+            for (int i = 0; i < patern.length()-1; i++)
+                if( "%%".equals( ("" + patern.charAt(i)) + patern.charAt(i+1) ) ) cptPatern++;
+
+            if( cptPatern != listNombre.size() )
+            {
+                this.ctrl.printConsole( fileName + ": <font color=\"red\">Il n'y as pas le même nombre de chiffres dans le nom que de \"%%\" dans le patern</font>");
+                continue;
+            }
+
             for ( int i : listNombre )
                 newName = newName.replaceFirst("%%", String.format("%02d", i));
 
@@ -104,7 +115,7 @@ public class Metier
         }
     }
 
-    private void readRepertory( File rep, int level )
+    private void readRepertory( final File rep, int level )
     {
         if( rep.isFile() || rep.getName().equals("renamed") ) return;
 

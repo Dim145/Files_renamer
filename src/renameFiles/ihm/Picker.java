@@ -4,12 +4,9 @@ import javax.swing.*;
 
 public class Picker extends JFileChooser
 {
-    private final IHMGUI ihm;
 
-    public Picker(IHMGUI ihm )
+    public Picker()
     {
-        this.ihm = ihm;
-
         this.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.setMultiSelectionEnabled(true);
     }

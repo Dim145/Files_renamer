@@ -13,7 +13,7 @@ public class Controleur
     public Controleur()
     {
         this.metier = new Metier(this);
-        this.ihm     = new IHMGUI(this);
+        this.ihm    = new IHMGUI(this);
     }
 
     public void renameFile( String path, String patern )
@@ -33,14 +33,6 @@ public class Controleur
             System.out.println("Error file inconnue: " + path);
     }
 
-    public static void main(String[] args)
-    {
-        Controleur ctrl = new Controleur();
-
-        if( args != null && args.length > 0)
-            ctrl.setCurrentPath(args[0]);
-    }
-
     public void setExtensions(String text)
     {
         this.metier.setAcceptedExtensions(text);
@@ -49,5 +41,13 @@ public class Controleur
     public void printConsole(String s)
     {
         this.ihm.printInConsole(s);
+    }
+
+    public static void main(String[] args)
+    {
+        Controleur ctrl = new Controleur();
+
+        if( args != null && args.length > 0)
+            ctrl.setCurrentPath(args[0]);
     }
 }

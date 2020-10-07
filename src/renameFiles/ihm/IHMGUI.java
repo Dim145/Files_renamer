@@ -15,7 +15,6 @@ public class IHMGUI extends JFrame
     private final JTextField paternField;
     private final JTextField extensions;
 
-    private final JButton launchRenamedScript;
     private final JLabel  console;
 
     private final Picker picker;
@@ -31,13 +30,13 @@ public class IHMGUI extends JFrame
         this.pathField           = new JFormattedTextField();
         this.paternField         = new JFormattedTextField();
         this.extensions          = new JFormattedTextField();
-        this.launchRenamedScript = new JButton("GO");
+        JButton launchRenamedScript = new JButton("GO");
         this.console             = new JLabel();
-        this.picker              = new Picker(this);
+        this.picker              = new Picker();
 
         this.setAutoRequestFocus(false);
 
-        this.launchRenamedScript.addActionListener(e ->
+        launchRenamedScript.addActionListener(e ->
         {
             if( !this.pathField.getText().isEmpty() && !this.pathField.getText().isBlank() )
             {
@@ -66,6 +65,7 @@ public class IHMGUI extends JFrame
                 IHMGUI.this.setCurrentPath(s);
             IHMGUI.this.paternField.grabFocus();
         });
+
         this.pathField.addMouseListener(new MouseListener()
         {
             @Override
@@ -103,37 +103,36 @@ public class IHMGUI extends JFrame
             }
         });
 
-        this.add(this.console, BorderLayout.CENTER);
-
         JPanel tmp  = new JPanel();
         JPanel tmp2 = new JPanel();
         JPanel tmp3 = new JPanel();
         JPanel tmp4 = new JPanel();
+
         tmp .setLayout(new GridLayout(3, 1));
         tmp2.setLayout(new GridLayout(3, 1));
         tmp3.setLayout(new BorderLayout());
         tmp4.setLayout(new BorderLayout());
 
+        tmp.add(this.pathField);
+        tmp.add(this.extensions);
+        tmp.add(this.paternField);
+
         tmp2.add(new JLabel("path: "));
-        tmp .add(this.pathField);
-
         tmp2.add(new JLabel("extensions: "));
-        tmp .add(this.extensions);
-
         tmp2.add(new JLabel("name patern: "));
-        tmp .add(this.paternField);
 
-        tmp3.add(tmp2, BorderLayout.WEST);
         tmp3.add(tmp, BorderLayout.CENTER);
+        tmp3.add(tmp2, BorderLayout.WEST);
 
-        tmp4.add(this.launchRenamedScript, BorderLayout.SOUTH);
+        tmp4.add(launchRenamedScript, BorderLayout.SOUTH);
 
-        this.add(tmp3, BorderLayout.NORTH);
-        this.add(tmp4, BorderLayout.EAST);
+        this.add( this.console, BorderLayout.CENTER );
+        this.add( tmp3        , BorderLayout.NORTH  );
+        this.add( tmp4        , BorderLayout.EAST   );
 
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
         this.setSize(this.getWidth() + 200, this.getHeight());
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 
