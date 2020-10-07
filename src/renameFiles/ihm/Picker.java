@@ -4,11 +4,11 @@ import javax.swing.*;
 
 public class Picker extends JFileChooser
 {
-
     public Picker()
     {
         this.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        this.setMultiSelectionEnabled(true);
+        this.setMultiSelectionEnabled(false);
+        this.setFileHidingEnabled(false);
     }
 
     public String pickADirectory()

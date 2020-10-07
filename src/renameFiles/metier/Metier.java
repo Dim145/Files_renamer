@@ -11,12 +11,15 @@ public class Metier
     private final ArrayList<File> files;
     private final Controleur  ctrl;
     private final List<String> acceptedExtension;
+    private boolean blockIfNotMathPatern;
 
     public Metier( Controleur ctrl )
     {
         this.files             = new ArrayList<>();
         this.acceptedExtension = new ArrayList<>();
         this.ctrl              = ctrl;
+
+        this.blockIfNotMathPatern = true;
     }
 
     public void setAcceptedExtensions( String extensions )
@@ -99,7 +102,7 @@ public class Metier
             for (int i = 0; i < patern.length()-1; i++)
                 if( "%%".equals( ("" + patern.charAt(i)) + patern.charAt(i+1) ) ) cptPatern++;
 
-            if( cptPatern != listNombre.size() )
+            if( this.blockIfNotMathPatern && cptPatern != listNombre.size() )
             {
                 this.ctrl.printConsole( fileName + ": <font color=\"red\">Il n'y as pas le même nombre de chiffres dans le nom que de \"%%\" dans le patern</font>");
                 continue;
@@ -109,7 +112,7 @@ public class Metier
                 newName = newName.replaceFirst("%%", String.format("%02d", i));
 
             if( file.renameTo(new File(file.getParent() + "/" + newName)) )
-                this.ctrl.printConsole("file: " + fileName + extension + " -> <font color=\"blue\">" + newName + "</font>");
+                this.ctrl.printConsole("file: " + fileName + extension + " -> <font color=\"rgb(0, 255, 255)\">" + newName + "</font>");
             else
                 this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " not renamed</font>");
         }
@@ -144,5 +147,10 @@ public class Metier
                     return true;
 
         return false;
+    }
+
+    public void setBlockIfNotMathPatern(boolean b)
+    {
+        this.blockIfNotMathPatern = b;
     }
 }

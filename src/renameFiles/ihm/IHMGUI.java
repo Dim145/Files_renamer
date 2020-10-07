@@ -4,33 +4,43 @@ import renameFiles.Controleur;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.ArrayList;
 
 public class IHMGUI extends JFrame
 {
+    public static final int ECART_COLOR = 25;
+
     private final Controleur ctrl;
 
     private final JTextField pathField;
     private final JTextField paternField;
     private final JTextField extensions;
 
+    private final JButton launchRenamedScript;
+
     private final JLabel  console;
 
     private final Picker picker;
+
+    private ArrayList<JPanel> allJPanel;
 
     public IHMGUI(Controleur ctrl)
     {
         super();
 
-        this.ctrl = ctrl;
+        this.ctrl      = ctrl;
+        this.allJPanel = new ArrayList<>();
 
         this.setTitle("Renamer");
+        this.setIconImage(new ImageIcon( APropos.class.getResource("/Images/Files_renamer.png")).getImage());
 
         this.pathField           = new JFormattedTextField();
         this.paternField         = new JFormattedTextField();
         this.extensions          = new JFormattedTextField();
-        JButton launchRenamedScript = new JButton("GO");
+        this.launchRenamedScript = new JButton("GO");
         this.console             = new JLabel();
         this.picker              = new Picker();
 
@@ -52,8 +62,11 @@ public class IHMGUI extends JFrame
         this.extensions.addActionListener(e -> this.paternField.grabFocus());
 
         this.extensions.setText("mp4,mkv");
+        this.launchRenamedScript.setOpaque(true);
         this.console.setPreferredSize(new Dimension(this.getWidth(), 150));
         this.console.setText("<html>");
+        this.console.setOpaque(true);
+        this.console.setBackground(Color.WHITE);
         this.console.setVerticalAlignment(JLabel.BOTTOM);
         this.console.setVerticalTextPosition(JLabel.BOTTOM);
 
@@ -108,6 +121,11 @@ public class IHMGUI extends JFrame
         JPanel tmp3 = new JPanel();
         JPanel tmp4 = new JPanel();
 
+        this.allJPanel.add(tmp );
+        this.allJPanel.add(tmp2);
+        this.allJPanel.add(tmp3);
+        this.allJPanel.add(tmp4);
+
         tmp .setLayout(new GridLayout(3, 1));
         tmp2.setLayout(new GridLayout(3, 1));
         tmp3.setLayout(new BorderLayout());
@@ -129,6 +147,7 @@ public class IHMGUI extends JFrame
         this.add( this.console, BorderLayout.CENTER );
         this.add( tmp3        , BorderLayout.NORTH  );
         this.add( tmp4        , BorderLayout.EAST   );
+        this.setJMenuBar(new MenuBar(this));
 
         this.pack();
         this.setSize(this.getWidth() + 200, this.getHeight());
@@ -158,5 +177,75 @@ public class IHMGUI extends JFrame
         }
 
         this.console.setText(this.console.getText() + s.replaceAll("\n", "<br/>") + "<br/>");
+        this.changeConsoleColorByUIColor();
+    }
+
+    public void setBlockIfNotMathPatern(boolean b)
+    {
+        this.ctrl.setBlockIfNotMathPatern(b);
+    }
+
+    public void setColorForIHMAndChildren(Color baseColor)
+    {
+        this.setBackground(baseColor);
+
+        for (JPanel panel : this.allJPanel )
+        {
+            panel.setBackground(baseColor);
+
+            for (int i = 0; i < panel.getComponentCount(); i++)
+                panel.getComponent(i).setForeground(baseColor == Color.WHITE ? Color.BLACK : Color.WHITE);
+        }
+
+        this.extensions.setBackground(IHMGUI.couleurPlusClair(baseColor, baseColor == Color.WHITE));
+        this.pathField.setBackground(IHMGUI.couleurPlusClair(baseColor, baseColor == Color.WHITE));
+        this.paternField.setBackground(IHMGUI.couleurPlusClair(baseColor, baseColor == Color.WHITE));
+        this.console.setBackground(baseColor);
+        this.launchRenamedScript.setBackground(baseColor);
+        this.picker.setBackground(baseColor);
+
+        this.changeConsoleColorByUIColor();
+
+        if( baseColor == Color.WHITE )
+        {
+            this.console.setForeground(Color.BLACK);
+            this.extensions.setForeground(Color.BLACK);
+            this.paternField.setForeground(Color.BLACK);
+            this.pathField.setForeground(Color.BLACK);
+        }
+        else
+        {
+            this.console.setForeground(Color.WHITE);
+            this.extensions.setForeground(Color.WHITE);
+            this.paternField.setForeground(Color.WHITE);
+            this.pathField.setForeground(Color.WHITE);
+        }
+    }
+
+    private void changeConsoleColorByUIColor()
+    {
+        if( this.console.getBackground().equals(Color.WHITE) )
+        {
+            this.console.setText(this.console.getText().replaceAll("rgb\\(0, 255, 255\\)", "blue"));
+            this.console.setText(this.console.getText().replaceAll("rgb\\(255, 60, 60\\)", "red"));
+        }
+        else
+        {
+            this.console.setText(this.console.getText().replaceAll("blue", "rgb(0, 255, 255)"));
+            this.console.setText(this.console.getText().replaceAll("red" , "rgb(255, 60, 60)"));
+        }
+    }
+
+    private static Color couleurPlusClair(Color baseColor, boolean plusFoncer)
+    {
+        if( plusFoncer )
+            return new Color(baseColor.getRed() - ECART_COLOR, baseColor.getGreen() - ECART_COLOR, baseColor.getBlue() - ECART_COLOR);
+        else
+            return new Color(baseColor.getRed() + ECART_COLOR, baseColor.getGreen() + ECART_COLOR, baseColor.getBlue() + ECART_COLOR);
+    }
+
+    public Color getCurrentColorTheme()
+    {
+        return ((MenuBar) this.getJMenuBar()).getCurrentColor();
     }
 }

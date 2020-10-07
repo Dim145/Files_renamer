@@ -3,6 +3,7 @@ package renameFiles;
 import renameFiles.ihm.IHMGUI;
 import renameFiles.metier.Metier;
 
+import javax.swing.*;
 import java.io.File;
 
 public class Controleur
@@ -43,8 +44,17 @@ public class Controleur
         this.ihm.printInConsole(s);
     }
 
+    public void setBlockIfNotMathPatern(boolean b)
+    {
+        this.metier.setBlockIfNotMathPatern(b);
+    }
+
     public static void main(String[] args)
     {
+        if ( !UIManager.getSystemLookAndFeelClassName().equals( "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" ) )
+            try   { UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() ); }
+            catch ( Exception ignored) {} // Theme de l'app, ici, celle du system sur lequel est lancer l'app
+
         Controleur ctrl = new Controleur();
 
         if( args != null && args.length > 0)
