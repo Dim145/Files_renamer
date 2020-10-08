@@ -25,7 +25,7 @@ public class IHMGUI extends JFrame
 
     private final Picker picker;
 
-    private ArrayList<JPanel> allJPanel;
+    private final ArrayList<JPanel> allJPanel;
 
     public IHMGUI(Controleur ctrl)
     {
@@ -153,7 +153,6 @@ public class IHMGUI extends JFrame
         this.setSize(this.getWidth() + 200, this.getHeight());
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.setVisible(true);
 
         this.extensions.grabFocus();
     }
@@ -244,8 +243,18 @@ public class IHMGUI extends JFrame
             return new Color(baseColor.getRed() + ECART_COLOR, baseColor.getGreen() + ECART_COLOR, baseColor.getBlue() + ECART_COLOR);
     }
 
-    public Color getCurrentColorTheme()
+    public void changeTheme()
     {
-        return ((MenuBar) this.getJMenuBar()).getCurrentColor();
+        ((MenuBar) this.getJMenuBar()).changeTheme();
+    }
+
+    public void changeBlockParam()
+    {
+        ((MenuBar) this.getJMenuBar()).changeBlockParam();
+    }
+
+    public void saveBooleanPreferences( String name, boolean value, boolean clearFile )
+    {
+        this.ctrl.saveBooleanPreferences(name, value, clearFile);
     }
 }

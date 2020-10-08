@@ -8,14 +8,15 @@ public class MenuBar extends JMenuBar
     private final IHMGUI ihm;
     private final JMenuItem itemBlockIfNotMatchNumber;
     private final JMenuItem aide;
+    private final JMenuItem darkTheme;
 
-    private boolean darkTheme;
+    private boolean bDarkTheme;
     private Color currentColor;
 
     public MenuBar( IHMGUI ihm )
     {
         this.ihm       = ihm;
-        this.darkTheme = false;
+        this.bDarkTheme = false;
 
         JMenu optionMenu = new JMenu("option");
         JMenu aideMenu   = new JMenu("aide");
@@ -25,7 +26,7 @@ public class MenuBar extends JMenuBar
 
         this.aide      = new JMenuItem("aide");
         JMenuItem aPropos   = new JMenuItem("a propos");
-        JMenuItem darkTheme = new JMenuItem("X dark thème");
+        this.darkTheme = new JMenuItem("X dark thème");
 
         optionMenu.add(itemBlockIfNotMatchNumber);
         optionMenu.add(darkTheme);
@@ -36,14 +37,7 @@ public class MenuBar extends JMenuBar
         this.itemBlockIfNotMatchNumber.addActionListener(e -> changeBlockParam());
 
         aPropos.addActionListener(e -> new APropos(this.currentColor));
-        darkTheme.addActionListener(e ->
-        {
-            this.changeTheme();
-
-            char first = darkTheme.getText().charAt(0);
-
-            darkTheme.setText( (first == '✓' ? 'X' : '✓') + darkTheme.getText().substring(1) );
-        });
+        darkTheme.addActionListener(e -> this.changeTheme());
 
         this.add(optionMenu);
         this.add(aideMenu);
@@ -53,11 +47,13 @@ public class MenuBar extends JMenuBar
         this.currentColor = Color.WHITE;
     }
 
-    private void changeTheme()
+    public void changeTheme()
     {
-        this.darkTheme = !this.darkTheme;
+        this.bDarkTheme = !this.bDarkTheme;
 
-        Color baseColor = this.darkTheme ? new Color(50, 50, 50) : Color.WHITE;
+        this.darkTheme.setText( (this.bDarkTheme ? '✓' : 'X' ) + darkTheme.getText().substring(1) );
+
+        Color baseColor = this.bDarkTheme ? new Color(50, 50, 50) : Color.WHITE;
 
         this.currentColor = baseColor;
 
@@ -66,12 +62,14 @@ public class MenuBar extends JMenuBar
 
         for (int i = 0; i < this.getComponentCount(); i++)
             this.setRecursiveColor(baseColor, this.getComponent(i));
+
+        this.reWritePrefParam();
     }
 
     private void setRecursiveColor( Color color, Component component)
     {
         component.setBackground(color);
-        component.setForeground(this.darkTheme ? Color.WHITE : Color.BLACK);
+        component.setForeground(this.bDarkTheme ? Color.WHITE : Color.BLACK);
 
         if( component instanceof Container)
         {
@@ -80,9 +78,11 @@ public class MenuBar extends JMenuBar
         }
     }
 
-    private void changeBlockParam()
+    public void changeBlockParam()
     {
         char first = this.itemBlockIfNotMatchNumber.getText().charAt(0);
+
+        System.out.println("Param block changed");
 
         if( '✓' == first )
         {
@@ -96,6 +96,14 @@ public class MenuBar extends JMenuBar
             this.itemBlockIfNotMatchNumber.setText('✓' + this.itemBlockIfNotMatchNumber.getText().substring(1));
             this.ihm.setBlockIfNotMathPatern(true);
         }
+
+        this.reWritePrefParam();
+    }
+
+    private void reWritePrefParam()
+    {
+        this.ihm.saveBooleanPreferences("ignoreRenameProtection", this.itemBlockIfNotMatchNumber.getText().charAt(0) == 'X', true);
+        this.ihm.saveBooleanPreferences("darkMode", this.bDarkTheme, false);
     }
 
     @Override
@@ -107,8 +115,4 @@ public class MenuBar extends JMenuBar
         g2d.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
     }
 
-    public Color getCurrentColor()
-    {
-        return this.currentColor;
-    }
 }
