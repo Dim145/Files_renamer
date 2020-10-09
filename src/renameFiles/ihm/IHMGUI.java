@@ -48,7 +48,7 @@ public class IHMGUI extends JFrame
 
         launchRenamedScript.addActionListener(e ->
         {
-            if( !this.pathField.getText().isEmpty() && !this.pathField.getText().isBlank() )
+            if( !this.pathField.getText().isEmpty() && !" ".equals(this.pathField.getText()) )
             {
                 this.ctrl.setExtensions(this.extensions.getText());
                 this.ctrl.renameFile(this.pathField.getText(), this.paternField.getText());

@@ -30,7 +30,7 @@ public class Metier
 
         for( String s : extensions.split(",") )
         {
-            if( s.isEmpty() || s.isBlank() ) continue;
+            if( s.isEmpty() || " ".equals(s) ) continue;
 
             if( s.startsWith(".") ) s = s.substring(1);
 

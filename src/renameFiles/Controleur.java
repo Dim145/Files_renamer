@@ -43,26 +43,21 @@ public class Controleur
 
                     switch (cpt)
                     {
-                        case 0 ->
+                        case 0 : try
                         {
-                            try
-                            {
-                                if(Boolean.parseBoolean(tab[1]))
-                                    this.ihm.changeBlockParam();
-                            }
-                            catch (Exception ignored) { }
+                            if(Boolean.parseBoolean(tab[1]))
+                                this.ihm.changeBlockParam();
                         }
+                        catch (Exception ignored) { }
+                        break;
 
-                        case 1 ->
+                        case 1 : try
                         {
-                            try
-                            {
-                                boolean darkTheme = Boolean.parseBoolean(tab[1]);
+                            boolean darkTheme = Boolean.parseBoolean(tab[1]);
 
-                                if( darkTheme ) this.ihm.changeTheme();
-                            }
-                            catch ( Exception ignored) { }
+                            if( darkTheme ) this.ihm.changeTheme();
                         }
+                        catch ( Exception ignored) { }
                     }
 
                     cpt++;
