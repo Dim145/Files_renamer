@@ -62,7 +62,7 @@ public class Metier
         {
             String fileName = file.getName().substring(0, file.getName().lastIndexOf("."));
             String extension = file.getName().substring(file.getName().lastIndexOf("."));
-            ArrayList<Integer> listNombre = new ArrayList<>();
+            ArrayList<Double> listNombre = new ArrayList<>();
 
             for (int cpt = 0; cpt < fileName.length(); cpt++)
             {
@@ -74,7 +74,7 @@ public class Metier
 
                     lettre = ++cpt < fileName.length() ? fileName.charAt(cpt) : 'a';
 
-                    while( Character.isDigit(lettre) )
+                    while( Character.isDigit(lettre) || lettre == '.' || lettre == ',' )
                     {
                         tmp.append(lettre);
 
@@ -84,9 +84,12 @@ public class Metier
                             break;
                     }
 
+                    if( tmp.toString().endsWith(".") || tmp.toString().endsWith(",") )
+                        tmp.delete(tmp.length()-1, tmp.length());
+
                     try
                     {
-                        listNombre.add(Integer.parseInt(tmp.toString()));
+                        listNombre.add(Double.parseDouble(tmp.toString().replaceAll(",", ".")));
                     }
                     catch (Exception e)
                     {
@@ -108,8 +111,13 @@ public class Metier
                 continue;
             }
 
-            for ( int i : listNombre )
-                newName = newName.replaceFirst("%%", String.format("%02d", i));
+            for ( double d : listNombre )
+            {
+                int tmp = (int) d;
+                String finalS = d % 1 == 0 ? String.format("%02d", tmp) : String.format("%02.2f", d);
+
+                newName = newName.replaceFirst("%%", finalS);
+            }
 
             if( file.renameTo(new File(file.getParent() + "/" + newName)) )
                 this.ctrl.printConsole("file: " + fileName + extension + " -> <font color=\"rgb(0, 255, 255)\">" + newName + "</font>");
