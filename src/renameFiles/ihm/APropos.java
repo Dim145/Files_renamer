@@ -3,7 +3,7 @@ package renameFiles.ihm;
 import javax.swing.*;
 
 import javax.swing.UIManager;
-import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.UIResource;
 import java.awt.*;
 
 public class APropos extends JOptionPane
@@ -15,8 +15,8 @@ public class APropos extends JOptionPane
                 "<HTML><BODY><FONT COLOR=\""+ ( background.equals(Color.WHITE) ? "black" : "white") + "\">Développé en Octobre 2020</FONT> </BODY></HTML></FONT> </BODY></HTML> \n" +
                 "<HTML><BODY><FONT COLOR=\""+ ( background.equals(Color.WHITE) ? "black" : "white") + "\">Version 1.1</FONT> </BODY></HTML>";
 
-        ColorUIResource basePane  = (ColorUIResource) UIManager.getColor( "OptionPane.background" );
-        ColorUIResource basePanel = (ColorUIResource) UIManager.getColor( "Panel.background" );
+        UIResource basePane  = (UIResource) UIManager.getColor( "OptionPane.background" );
+        UIResource basePanel = (UIResource) UIManager.getColor( "Panel.background" );
 
         UIManager.put("OptionPane.background", background);
         UIManager.put("Panel.background"     , background);
