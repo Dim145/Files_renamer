@@ -15,7 +15,7 @@ public class MenuBar extends JMenuBar
 
     public MenuBar( IHMGUI ihm )
     {
-        this.ihm       = ihm;
+        this.ihm        = ihm;
         this.bDarkTheme = false;
 
         JMenu optionMenu = new JMenu("option");
@@ -24,9 +24,9 @@ public class MenuBar extends JMenuBar
 
         this.itemBlockIfNotMatchNumber = new JMenuItem("✓ Block if not match");
 
-        this.aide      = new JMenuItem("aide");
-        JMenuItem aPropos   = new JMenuItem("a propos");
-        this.darkTheme = new JMenuItem("X dark thème");
+        this.aide         = new JMenuItem("aide");
+        JMenuItem aPropos = new JMenuItem("a propos");
+        this.darkTheme    = new JMenuItem("X dark thème");
 
         optionMenu.add(itemBlockIfNotMatchNumber);
         optionMenu.add(darkTheme);
@@ -36,8 +36,9 @@ public class MenuBar extends JMenuBar
 
         this.itemBlockIfNotMatchNumber.addActionListener(e -> changeBlockParam());
 
-        aPropos.addActionListener(e -> new APropos(this.currentColor));
+        aPropos  .addActionListener(e -> new APropos(this.currentColor));
         darkTheme.addActionListener(e -> this.changeTheme());
+        this.aide.addActionListener(e -> new Aide(this.currentColor, this.getFont()));
 
         this.add(optionMenu);
         this.add(aideMenu);
