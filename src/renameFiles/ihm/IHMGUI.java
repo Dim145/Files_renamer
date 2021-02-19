@@ -28,8 +28,6 @@ public class IHMGUI extends JFrame
 
     private final ArrayList<JPanel> allJPanel;
 
-    private final Font currentFont;
-
     public IHMGUI(Controleur ctrl)
     {
         super();
@@ -133,9 +131,9 @@ public class IHMGUI extends JFrame
         this.pack();
 
         // permet de mettre une taille dynamique. Le pas est de
-        this.currentFont = this.getFont().deriveFont(this.getFont().getSize()+(1f*height/IHMGUI.PAS_FONT_SIZE));
+        Font currentFont = this.getFont().deriveFont(this.getFont().getSize() + (1f * height / IHMGUI.PAS_FONT_SIZE));
 
-        IHMGUI.majAllFonts(this, this.currentFont);
+        IHMGUI.majAllFonts(this, currentFont);
 
         this.setSize(this.getWidth() + 100*height/IHMGUI.PAS_FONT_SIZE, this.getHeight());
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
