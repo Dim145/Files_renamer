@@ -1,0 +1,29 @@
+
+—
+java:S1186e"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(«Æ†
+_
+java:S5361é"HReplace this call to "replaceAll()" by a call to the "replace()" method.(ì„à«
+d
+java:S5361ê"HReplace this call to "replaceAll()" by a call to the "replace()" method.(°šíÖüÿÿÿÿ
+\
+java:S3252G"AUse static access with "javax.swing.SwingConstants" for "BOTTOM".(ÚŒ‚Âşÿÿÿÿ
+<
+java:S1948"&Make "ctrl" transient or serializable.(ƒ¼Û
+_
+java:S5361²"HReplace this call to "replaceAll()" by a call to the "replace()" method.(¶”¬æ
+–
+java:S1186_"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ä·
+d
+java:S5361å"HReplace this call to "replaceAll()" by a call to the "replace()" method.(–ÊÔÕùÿÿÿÿ
+—
+java:S1186q"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(³¹³˜
+b
+java:S1192¨"FDefine a constant instead of duplicating this literal "<br/>" 4 times.(ı“¶ƒüÿÿÿÿ
+\
+java:S3252F"AUse static access with "javax.swing.SwingConstants" for "BOTTOM".(ÑÂÿ“ûÿÿÿÿ
+œ
+java:S1186k"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ºùüüÿÿÿÿ
+_
+java:S5361ä"HReplace this call to "replaceAll()" by a call to the "replace()" method.(ö¶Ë
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(íöõùÿÿÿÿ
+V	java:S110"<This class has 6 parents which is greater than 5 authorized.(³¨ûìûÿÿÿÿ

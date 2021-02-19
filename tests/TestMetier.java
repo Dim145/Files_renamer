@@ -11,6 +11,7 @@ public class TestMetier extends TestCase
         super.setUp();
 
         this.metier = new Metier(null);
+        
     }
 
     @Override

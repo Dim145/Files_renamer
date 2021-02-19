@@ -4,14 +4,15 @@ import renameFiles.Controleur;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 
 public class IHMGUI extends JFrame
 {
-    public static final int ECART_COLOR = 25;
+    public static final int ECART_COLOR   = 25;
+    public static final int PAS_FONT_SIZE = 200;
 
     private final Controleur ctrl;
 
@@ -26,6 +27,8 @@ public class IHMGUI extends JFrame
     private final Picker picker;
 
     private final ArrayList<JPanel> allJPanel;
+
+    private final Font currentFont;
 
     public IHMGUI(Controleur ctrl)
     {
@@ -79,8 +82,7 @@ public class IHMGUI extends JFrame
             IHMGUI.this.paternField.grabFocus();
         });
 
-        this.pathField.addMouseListener(new MouseListener()
-        {
+        this.pathField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e)
             {
@@ -89,30 +91,6 @@ public class IHMGUI extends JFrame
                 if( s != null )
                     IHMGUI.this.setCurrentPath( s );
                 IHMGUI.this.paternField.grabFocus();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e)
-            {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e)
-            {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e)
-            {
-
             }
         });
 
@@ -149,12 +127,30 @@ public class IHMGUI extends JFrame
         this.add( tmp4        , BorderLayout.EAST   );
         this.setJMenuBar(new MenuBar(this));
 
+        Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        int height = (int)dimension.getHeight();
+
         this.pack();
-        this.setSize(this.getWidth() + 200, this.getHeight());
+
+        // permet de mettre une taille dynamique. Le pas est de
+        this.currentFont = this.getFont().deriveFont(this.getFont().getSize()+(1f*height/IHMGUI.PAS_FONT_SIZE));
+
+        IHMGUI.majAllFonts(this, this.currentFont);
+
+        this.setSize(this.getWidth() + 100*height/IHMGUI.PAS_FONT_SIZE, this.getHeight());
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
 
         this.extensions.grabFocus();
+    }
+
+    private static void majAllFonts(Container comp, Font font)
+    {
+        comp.setFont(font);
+
+        for (int i = 0; i < comp.getComponentCount(); i++)
+            if( comp.getComponent(i) instanceof Container )
+                majAllFonts((Container) comp.getComponent(i), font);
     }
 
     public void setCurrentPath(String path)

@@ -1,0 +1,17 @@
+
+a
+java:S1301,"KReplace this "switch" statement by "if" statements to increase readability.(›íË
+J
+java:S1141."5Extract this nested try block into a separate method.(œ±@
+P
+java:S11416"5Extract this nested try block into a separate method.(Åû×Ùùÿÿÿÿ
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¿ÅßÇüÿÿÿÿ
+h
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 39 to the 15 allowed.(¯‹„
+L
+java:S5261"1Add explicit curly braces to avoid dangling else.(à££‡ıÿÿÿÿ
+7	java:S131,""Add a default case to this switch.(›íË
+>	java:S1083")Either remove or fill this block of code.(‡ù“í
+>	java:S108<")Either remove or fill this block of code.(‡ù“í
+T	java:S106‘"9Replace this use of System.out or System.err by a logger.(ÈÆßÒúÿÿÿÿ
+?	java:S108§")Either remove or fill this block of code.(š†Œ¸

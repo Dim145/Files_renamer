@@ -1,0 +1,14 @@
+
+U
+java:S1155">Use isEmpty() to check whether the collection is empty or not.(®¯Ğ
+A
+java:S1075r"&Remove this hard-coded path-delimiter.(¡ÍÍşÿÿÿÿ
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ÔÒ¨†
+T
+java:S11557">Use isEmpty() to check whether the collection is empty or not.(Ø†ú¡
+m	java:S127R"XRefactor the code in order to not assign to this loop counter from within the loop body.(Ñã®
+h
+java:S3776)"RRefactor this method to reduce its Cognitive Complexity from 40 to the 15 allowed.(†æÆŒ
+m	java:S127K"XRefactor the code in order to not assign to this loop counter from within the loop body.(…Ñ·§
+j
+java:S5361Y"HReplace this call to "replaceAll()" by a call to the "replace()" method.(öŒ¥”ùÿÿÿÿ8¤”şÓÖ.
