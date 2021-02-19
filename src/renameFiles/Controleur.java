@@ -14,7 +14,7 @@ public class Controleur
     private final Metier metier;
     private final IHMGUI ihm;
 
-    private File prefFile;
+    private final File prefFile;
 
     public Controleur()
     {

@@ -22,9 +22,9 @@ public class Metier
         this.blockIfNotMathPatern = true;
     }
 
-    public void setAcceptedExtensions( String extensions )
+    public boolean setAcceptedExtensions( String extensions )
     {
-        if( extensions == null || extensions.length() < 1) return;
+        if( extensions == null || extensions.length() < 1) return false;
 
         this.acceptedExtension.clear();
 
@@ -36,6 +36,8 @@ public class Metier
 
             this.acceptedExtension.add(s.trim());
         }
+
+        return this.acceptedExtension.size() > 0;
     }
 
     public void renameWithPaterneInPath( String path, String patern )
