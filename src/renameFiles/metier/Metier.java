@@ -1,9 +1,12 @@
 package renameFiles.metier;
 
 import renameFiles.Controleur;
+import renameFiles.metier.types.BaseFile;
+import renameFiles.metier.types.VideoFile;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Metier
@@ -42,7 +45,7 @@ public class Metier
 
     public void renameWithPaterneInPath( String path, String patern )
     {
-        if( patern == null || patern.length() < 1 || !patern.contains("%%") )
+        if( patern == null || patern.length() < 1 )
         {
             this.ctrl.printConsole("<font color=\"red\">Saisissez un paterne avec au moins 1 fois \"%%\"</font>");
 
@@ -60,72 +63,59 @@ public class Metier
             return;
         }
 
+        int nbRound  = String.valueOf((int) this.detectMaxEp()).length();
+
         for (File file : this.files)
         {
-            String fileName = file.getName().substring(0, file.getName().lastIndexOf("."));
+            BaseFile baseFile = null;
             String extension = file.getName().substring(file.getName().lastIndexOf("."));
-            ArrayList<Double> listNombre = new ArrayList<>();
+            String fileName  = file.getName().substring(0, file.getName().lastIndexOf("."));
 
-            for (int cpt = 0; cpt < fileName.length(); cpt++)
+            if (Arrays.asList(VideoFile.extensions).contains(extension.startsWith(".") ? extension.substring(1) : extension))
+                baseFile = VideoFile.getVideoFileFromFile(file);
+
+            if(baseFile != null)
             {
-                char lettre = fileName.charAt(cpt);
+                VideoFile video = (VideoFile) baseFile;
+                video.setFullFormatedName(patern);
+                video.setName();
+            }
+            else
+            {
+                baseFile = new BaseFile(fileName, extension);
 
-                if( Character.isDigit(lettre) )
-                {
-                    StringBuilder tmp = new StringBuilder("" + lettre);
-
-                    lettre = ++cpt < fileName.length() ? fileName.charAt(cpt) : 'a';
-
-                    while( Character.isDigit(lettre) || lettre == '.' || lettre == ',' )
-                    {
-                        tmp.append(lettre);
-
-                        if( cpt < fileName.length()-1)
-                            lettre = fileName.charAt(++cpt);
-                        else
-                            break;
-                    }
-
-                    if( tmp.toString().endsWith(".") || tmp.toString().endsWith(",") )
-                        tmp.delete(tmp.length()-1, tmp.length());
-
-                    try
-                    {
-                        listNombre.add(Double.parseDouble(tmp.toString().replaceAll(",", ".")));
-                    }
-                    catch (Exception e)
-                    {
-                        this.ctrl.printConsole("<font color=\"red\">Error in conversion of string: " + tmp + "</font>");
-                    }
-                }
+                baseFile.remplirListeNombre();
+                baseFile.setFullFormatedName(patern);
+                baseFile.replaceFullFormatedName();
             }
 
-            String newName = patern + extension;
-
-            int cptPatern = 0;
-
-            for (int i = 0; i < patern.length()-1; i++)
-                if( "%%".equals( ("" + patern.charAt(i)) + patern.charAt(i+1) ) ) cptPatern++;
-
-            if( this.blockIfNotMathPatern && cptPatern != listNombre.size() )
-            {
-                this.ctrl.printConsole( fileName + ": <font color=\"red\">Il n'y as pas le même nombre de chiffres dans le nom que de \"%%\" dans le patern</font>");
-                continue;
-            }
-
-            for ( double d : listNombre )
-            {
-                int tmp = (int) d;
-                String finalS = d % 1 == 0 ? String.format("%02d", tmp) : String.format("%02.2f", d);
-
-                newName = newName.replaceFirst("%%", finalS);
-            }
-
-            if( file.renameTo(new File(file.getParent() + "/" + newName)) )
-                this.ctrl.printConsole("file: " + fileName + extension + " -> <font color=\"rgb(0, 255, 255)\">" + newName + "</font>");
+            if( file.renameTo(new File(file.getParent() + "/" + baseFile.toString())) )
+                this.ctrl.printConsole("file: " + fileName + extension + " -> <font color=\"rgb(0, 255, 255)\">" + baseFile.toString() + "</font>");
             else
                 this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " not renamed</font>");
         }
+    }
+
+    private double detectMaxEp()
+    {
+        double max = 0;
+
+        for (File file : this.files)
+        {
+            String fileName = file.getName().substring(0, file.getName().lastIndexOf("."));
+            ArrayList<Double> listNombre = new ArrayList<>();
+
+            int emplacementEp = -1;
+
+
+
+            for (int i = 0; i < listNombre.size(); i++)
+                if( emplacementEp == i )
+                    if( listNombre.get(i) > max )
+                        max = listNombre.get(i);
+        }
+
+        return max;
     }
 
     private void readRepertory( final File rep, int level )
