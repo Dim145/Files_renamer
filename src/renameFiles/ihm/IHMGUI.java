@@ -205,6 +205,7 @@ public class IHMGUI extends JFrame
             panel.setBackground(baseColor);
 
             for (int i = 0; i < panel.getComponentCount(); i++)
+                if( !(panel.getComponent(i) instanceof JButton) && !(panel.getComponent(i) instanceof JComboBox) )
                 panel.getComponent(i).setForeground(baseColor == Color.WHITE ? Color.BLACK : Color.WHITE);
         }
 
@@ -212,7 +213,7 @@ public class IHMGUI extends JFrame
         this.pathField.setBackground(IHMGUI.couleurPlusClair(baseColor, baseColor == Color.WHITE));
         this.paternField.setBackground(IHMGUI.couleurPlusClair(baseColor, baseColor == Color.WHITE));
         this.console.setBackground(baseColor);
-        this.launchRenamedScript.setBackground(baseColor);
+        //this.launchRenamedScript.setBackground(baseColor);
         this.picker.setBackground(baseColor);
 
         this.changeConsoleColorByUIColor();
