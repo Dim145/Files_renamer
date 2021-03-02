@@ -1,6 +1,7 @@
 package renameFiles;
 
 import renameFiles.ihm.IHMGUI;
+import renameFiles.metier.FileType;
 import renameFiles.metier.Metier;
 
 import javax.swing.*;
@@ -128,9 +129,9 @@ public class Controleur
         }
     }
 
-    public void renameFile( String path, String patern )
+    public void renameFile( String path, String patern, boolean replaceAllPointInName )
     {
-        this.metier.renameWithPaterneInPath(path, patern);
+        this.metier.renameWithPaterneInPath(path, patern, replaceAllPointInName);
     }
 
     public void setCurrentPath(String path)
@@ -170,5 +171,10 @@ public class Controleur
 
         if( args != null && args.length > 0)
             ctrl.setCurrentPath(args[0]);
+    }
+
+    public void setTypeCourant(FileType type )
+    {
+        this.metier.setTypeCourant(type);
     }
 }

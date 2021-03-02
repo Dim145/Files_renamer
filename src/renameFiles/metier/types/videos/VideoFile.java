@@ -1,6 +1,7 @@
-package renameFiles.metier.types;
+package renameFiles.metier.types.videos;
 
 import org.jetbrains.annotations.NotNull;
+import renameFiles.metier.types.BaseFile;
 
 import java.io.File;
 import java.util.Arrays;
@@ -15,9 +16,16 @@ public class VideoFile extends BaseFile
     private int qualiter;
     private int compression;
 
+    private int nbMaxEpisode;
+
     public VideoFile(String name, String extension)
     {
-        this(name, extension, -1, -1);
+        this(name, extension, -1, -1, null);
+    }
+
+    public VideoFile(String name, String extension, File file)
+    {
+        this(name, extension, -1, -1, file);
     }
 
     public VideoFile(String name)
@@ -25,18 +33,20 @@ public class VideoFile extends BaseFile
         this(name, null);
     }
 
-    public VideoFile(String name, String extension, int numeroEp, int numeroSaison)
+    public VideoFile(String name, String extension, int numeroEp, int numeroSaison, File file)
     {
-        this(name, extension, numeroEp, numeroSaison, -1);
+        this(name, extension, numeroEp, numeroSaison, -1, file);
     }
 
-    public VideoFile(String name, String extension, int numeroEp, int numeroSaison, int qualiter)
+    public VideoFile(String name, String extension, int numeroEp, int numeroSaison, int qualiter, File file)
     {
-        super(name, extension);
+        super(name, extension, file);
 
         this.numeroEpisode = numeroEp;
         this.numeroSaison  = numeroSaison;
         this.qualiter      = qualiter;
+
+        this.nbMaxEpisode  = -1;
         this.compression   = -1;
     }
 
@@ -167,9 +177,11 @@ public class VideoFile extends BaseFile
         {
             String name = this.name + " ";
 
+            int nbRound = this.nbMaxEpisode < 1 ? 2 : this.nbMaxEpisode;
+
             if( this.numeroSaison  > -1 ) name += "S"  + this.numeroSaison  + " ";
-            if( this.numeroEpisode > -1 ) name += "Ep" + (this.numeroEpisode % 1 == 0 ? String.format("%02d", (int)this.numeroEpisode) : String.format(
-                    "%02.2f", this.numeroEpisode)) + " ";
+            if( this.numeroEpisode > -1 ) name += "Ep" + (this.numeroEpisode % 1 == 0 ? String.format("%0"+String.valueOf(this.nbMaxEpisode).length()+"d", (int)this.numeroEpisode) : String.format(
+                    "%0"+String.valueOf(this.nbMaxEpisode).length()+".2f", this.numeroEpisode)) + " ";
             if( this.qualiter      > -1 ) name += this.qualiter + "p ";
             if( this.compression   > -1 ) name += "x"  + this.compression   + " ";
 
@@ -260,5 +272,15 @@ public class VideoFile extends BaseFile
         }
 
         this.name = nameToUse.substring(0, indexEndName+1);
+    }
+
+    public int getNbMaxEpisode()
+    {
+        return nbMaxEpisode;
+    }
+
+    public void setNbMaxEpisode(int nbMaxEpisode)
+    {
+        this.nbMaxEpisode = nbMaxEpisode;
     }
 }

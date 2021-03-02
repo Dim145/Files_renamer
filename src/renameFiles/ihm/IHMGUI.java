@@ -52,7 +52,7 @@ public class IHMGUI extends JFrame
             if( !this.pathField.getText().isEmpty() && !" ".equals(this.pathField.getText()) )
             {
                 this.ctrl.setExtensions(this.extensions.getText());
-                this.ctrl.renameFile(this.pathField.getText(), this.paternField.getText());
+                this.ctrl.renameFile(this.pathField.getText(), this.paternField.getText(), false);
             }
             else
             {

@@ -1,0 +1,88 @@
+package renameFiles.metier.types.videos;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class Saison
+{
+    private final ArrayList<VideoFile> listeEpisode;
+    private final String               nomSerie;
+
+    private int numeroSaison;
+    private int nbEpisodes;
+
+    public Saison(@NotNull String nomSerie)
+    {
+        this(nomSerie, 1);
+    }
+
+    public Saison(@NotNull String nomSerie, int numeroSaison)
+    {
+        this.listeEpisode = new ArrayList<>();
+        this.nbEpisodes   = 0;
+
+        this.numeroSaison = numeroSaison;
+        this.nomSerie     = nomSerie;
+    }
+
+    public int getNumeroSaison()
+    {
+        return numeroSaison;
+    }
+
+    public void setNumeroSaison(int numeroSaison)
+    {
+        this.numeroSaison = numeroSaison;
+    }
+
+    public int getNbEpisodes()
+    {
+        return nbEpisodes;
+    }
+
+    public void setNbEpisodes(int nbEpisodes)
+    {
+        this.nbEpisodes = nbEpisodes;
+    }
+
+    public boolean ajouterEpisode(@NotNull VideoFile video)
+    {
+        if (video.getName() == null) video.setName();
+
+        if (!this.nomSerie.isEmpty() && this.nomSerie.contains(video.getName()))
+        {
+            boolean isAdd = this.listeEpisode.add(video);
+
+            if (!isAdd) return false;
+
+            if (this.nbEpisodes < video.getNumeroEpisode())
+                this.nbEpisodes = (int) Math.round(video.getNumeroEpisode());
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean ajouterEpisodes(@NotNull Collection<VideoFile> collections)
+    {
+        for (VideoFile video : collections)
+            if (!this.ajouterEpisode(video)) return false;
+
+        return true;
+    }
+
+    public VideoFile[] getAllEpisodes()
+    {
+        return this.listeEpisode.toArray(new VideoFile[0]);
+    }
+    
+    public void setRoundAllApisode()
+    {
+        if( this.nbEpisodes > 0 )
+            for (VideoFile video : this.listeEpisode)
+                video.setNbMaxEpisode(this.nbEpisodes);
+    }
+}

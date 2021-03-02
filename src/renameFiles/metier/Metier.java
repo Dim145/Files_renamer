@@ -2,11 +2,11 @@ package renameFiles.metier;
 
 import renameFiles.Controleur;
 import renameFiles.metier.types.BaseFile;
-import renameFiles.metier.types.VideoFile;
+import renameFiles.metier.types.videos.Saison;
+import renameFiles.metier.types.videos.VideoFile;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Metier
@@ -16,12 +16,15 @@ public class Metier
     private final List<String> acceptedExtension;
     private boolean blockIfNotMathPatern;
 
-    public Metier( Controleur ctrl )
+    private FileType typeCourant;
+
+    public Metier(Controleur ctrl )
     {
         this.files             = new ArrayList<>();
         this.acceptedExtension = new ArrayList<>();
         this.ctrl              = ctrl;
 
+        this.typeCourant          = FileType.AUTRES;
         this.blockIfNotMathPatern = true;
     }
 
@@ -43,7 +46,7 @@ public class Metier
         return this.acceptedExtension.size() > 0;
     }
 
-    public void renameWithPaterneInPath( String path, String patern )
+    public void renameWithPaterneInPath( String path, String patern, boolean replaceAllPointInName )
     {
         if( patern == null || patern.length() < 1 )
         {
@@ -63,59 +66,67 @@ public class Metier
             return;
         }
 
-        int nbRound  = String.valueOf((int) this.detectMaxEp()).length();
+        ArrayList<Saison> listSaison = new ArrayList<>();
 
         for (File file : this.files)
         {
-            BaseFile baseFile = null;
-            String extension = file.getName().substring(file.getName().lastIndexOf("."));
             String fileName  = file.getName().substring(0, file.getName().lastIndexOf("."));
 
-            if (Arrays.asList(VideoFile.extensions).contains(extension.startsWith(".") ? extension.substring(1) : extension))
-                baseFile = VideoFile.getVideoFileFromFile(file);
+            if( replaceAllPointInName )
+                fileName = fileName.replaceAll("\\.", " ");
 
-            if(baseFile != null)
+            if( this.typeCourant == FileType.VIDEO )
             {
-                VideoFile video = (VideoFile) baseFile;
+                VideoFile video = VideoFile.getVideoFileFromFile(file);
+
+                if( video == null )
+                {
+                    this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " is not a video</font>");
+                    return;
+                }
+
                 video.setFullFormatedName(patern);
                 video.setName();
+
+                if( listSaison.size() == 0 || listSaison.size() != video.getNumeroSaison()-1)
+                    listSaison.add(new Saison(video.getName(), video.getNumeroSaison()));
+
+                listSaison.get(video.getNumeroSaison()-1).ajouterEpisode(video);
             }
             else
             {
-                baseFile = new BaseFile(fileName, extension);
+
+                String extension  = file.getName().substring(file.getName().lastIndexOf("."));
+                BaseFile baseFile = new BaseFile(fileName, extension, file);
 
                 baseFile.remplirListeNombre();
                 baseFile.setFullFormatedName(patern);
                 baseFile.replaceFullFormatedName();
+
+                if( file.renameTo(new File(file.getParent() + "/" + baseFile.toString())) )
+                    this.ctrl.printConsole("file: " + fileName + extension + " -> <font color=\"rgb(0, 255, 255)\">" + baseFile.toString() + "</font>");
+                else
+                    this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " not renamed</font>");
             }
-
-            if( file.renameTo(new File(file.getParent() + "/" + baseFile.toString())) )
-                this.ctrl.printConsole("file: " + fileName + extension + " -> <font color=\"rgb(0, 255, 255)\">" + baseFile.toString() + "</font>");
-            else
-                this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " not renamed</font>");
         }
-    }
 
-    private double detectMaxEp()
-    {
-        double max = 0;
-
-        for (File file : this.files)
+        if ( this.typeCourant == FileType.VIDEO )
         {
-            String fileName = file.getName().substring(0, file.getName().lastIndexOf("."));
-            ArrayList<Double> listNombre = new ArrayList<>();
+            for (Saison s : listSaison)
+            {
+                s.setRoundAllApisode();
 
-            int emplacementEp = -1;
+                for (VideoFile video : s.getAllEpisodes())
+                {
+                    File file = video.getFile();
 
-
-
-            for (int i = 0; i < listNombre.size(); i++)
-                if( emplacementEp == i )
-                    if( listNombre.get(i) > max )
-                        max = listNombre.get(i);
+                    if( file.renameTo(new File(file.getParent() + "/" + video.toString())) )
+                        this.ctrl.printConsole("file: " + video.getName() + video.getExtension() + " -> <font color=\"rgb(0, 255, 255)\">" + video.toString() + "</font>");
+                    else
+                        this.ctrl.printConsole("<font color=\"red\">file: " + video.getName() + " not renamed</font>");
+                }
+            }
         }
-
-        return max;
     }
 
     private void readRepertory( final File rep, int level )
@@ -152,5 +163,15 @@ public class Metier
     public void setBlockIfNotMathPatern(boolean b)
     {
         this.blockIfNotMathPatern = b;
+    }
+
+    public FileType getTypeCourant()
+    {
+        return typeCourant;
+    }
+
+    public void setTypeCourant(FileType typeCourant)
+    {
+        this.typeCourant = typeCourant;
     }
 }

@@ -1,10 +1,13 @@
 package renameFiles.metier.types;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class BaseFile
 {
     protected ArrayList<Double> listeNombres;
+
+    private final File file;
 
     protected String fullname;
 
@@ -15,10 +18,17 @@ public class BaseFile
 
     public BaseFile(String fullname, String extension )
     {
+        this(fullname, extension, null);
+    }
+
+    public BaseFile(String fullname, String extension, File file )
+    {
         this.listeNombres = new ArrayList<>();
 
         this.fullname = fullname;
         this.extension = extension;
+
+        this.file = file;
     }
 
     public String getFullname()
@@ -29,6 +39,11 @@ public class BaseFile
     public String getExtension()
     {
         return extension;
+    }
+
+    public String getName()
+    {
+        return this.name;
     }
 
     public void addNombre( double nombre )
@@ -121,5 +136,10 @@ public class BaseFile
         if( name.contains("%%") ) name = this.fullname;
 
         return name + this.extension;
+    }
+
+    public File getFile()
+    {
+        return file;
     }
 }
