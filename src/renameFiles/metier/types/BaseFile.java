@@ -78,9 +78,20 @@ public class BaseFile
         this.fullFormatedName = fullFormatedName;
     }
 
-    public void replaceFullFormatedName()
+    public boolean replaceFullFormatedName(boolean blockIfNotMathPatern)
     {
-        if( this.fullFormatedName == null ) return;
+        if( this.fullFormatedName == null ) return false;
+
+        if( blockIfNotMathPatern )
+        {
+            int nbPourcentage = 0;
+
+            for (int i = 0; i < this.fullFormatedName.length()-1; i++)
+                if( "%%".equals( ("" + this.fullFormatedName.charAt(i)) + this.fullFormatedName.charAt(i+1) ) )
+                    nbPourcentage++;
+
+            if( nbPourcentage != this.listeNombres.size()) return false;
+        }
 
         for (double aDouble : this.listeNombres)
         {
@@ -91,6 +102,8 @@ public class BaseFile
 
             this.fullFormatedName = this.fullFormatedName.replaceFirst("%%", finalS);
         }
+
+        return true;
     }
 
     public void remplirListeNombre()

@@ -48,7 +48,7 @@ public class Metier
 
     public void renameWithPaterneInPath( String path, String patern, boolean replaceAllPointInName )
     {
-        if( this.typeCourant != FileType.VIDEOS && (patern == null || patern.length() < 1) )
+        if( this.typeCourant != FileType.VIDEOS && (patern == null || patern.length() < 1 || !patern.contains("%%")) )
         {
             this.ctrl.printConsole("<font color=\"red\">Saisissez un paterne avec au moins 1 fois \"%%\"</font>");
 
@@ -108,7 +108,12 @@ public class Metier
 
                 baseFile.remplirListeNombre();
                 baseFile.setFullFormatedName(patern);
-                baseFile.replaceFullFormatedName();
+
+                if( !baseFile.replaceFullFormatedName(blockIfNotMathPatern) )
+                {
+                    this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " ne contient pas le meme nombres de %% que le patern.</font>");
+                    continue;
+                }
 
                 if( file.renameTo(new File(file.getParent() + "/" + baseFile.toString())) )
                     this.ctrl.printConsole("file: " + fileName + extension + " -> <font color=\"rgb(0, 255, 255)\">" + baseFile.toString() + "</font>");

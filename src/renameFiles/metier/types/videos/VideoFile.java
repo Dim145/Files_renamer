@@ -204,7 +204,7 @@ public class VideoFile extends BaseFile
         if( this.fullFormatedName != null && !this.fullFormatedName.isEmpty() )
         {
             this.remplirListeNombre();
-            this.replaceFullFormatedName();
+            this.replaceFullFormatedName(false);
 
             nameToUse = this.fullFormatedName;
         }
