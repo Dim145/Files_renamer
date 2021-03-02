@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import renameFiles.metier.types.BaseFile;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class VideoFile extends BaseFile
@@ -100,7 +101,7 @@ public class VideoFile extends BaseFile
         if (!Arrays.asList(VideoFile.extensions).contains(extension.startsWith(".") ? extension.substring(1) : extension))
             return null;
 
-        VideoFile video = new VideoFile(fileName, extension);
+        VideoFile video = new VideoFile(fileName, extension, file);
 
         for (int cpt = 0; cpt < fileName.length(); cpt++)
         {
@@ -129,6 +130,12 @@ public class VideoFile extends BaseFile
                 {
                     video.addNombre(Double.parseDouble(tmp.toString().replaceAll(",", ".")));
 
+                    if( cpt < fileName.length() && fileName.toLowerCase().charAt(cpt) == 'p' || cpt+1 < fileName.length() && fileName.toLowerCase().charAt(cpt+1) == 'p' )
+                    {
+                        video.setQualiter((int) video.getNombre(video.getNbNombres()-1));
+                        continue;
+                    }
+
                     int cpt2 = cpt - (tmp.length());
                     tmp.delete(0, tmp.length());
 
@@ -139,7 +146,9 @@ public class VideoFile extends BaseFile
 
                         if( lettre == ' ' )
                         {
-                            oneWhiteSpace = false;
+                            if( tmp.length() > 0 )
+                                oneWhiteSpace = false;
+
                             continue;
                         }
 
@@ -158,9 +167,6 @@ public class VideoFile extends BaseFile
 
                     if( texteAvNb.equals("x") )
                         video.setCompression((int) video.getNombre(video.getNbNombres()-1));
-
-                    if( fileName.toLowerCase().charAt(cpt) == 'p' || fileName.toLowerCase().charAt(cpt+1) == 'p' )
-                        video.setQualiter((int) video.getNombre(video.getNbNombres()-1));
                 }
                 catch (Exception ignored)
                 { }
@@ -180,8 +186,8 @@ public class VideoFile extends BaseFile
             int nbRound = this.nbMaxEpisode < 1 ? 2 : this.nbMaxEpisode;
 
             if( this.numeroSaison  > -1 ) name += "S"  + this.numeroSaison  + " ";
-            if( this.numeroEpisode > -1 ) name += "Ep" + (this.numeroEpisode % 1 == 0 ? String.format("%0"+String.valueOf(this.nbMaxEpisode).length()+"d", (int)this.numeroEpisode) : String.format(
-                    "%0"+String.valueOf(this.nbMaxEpisode).length()+".2f", this.numeroEpisode)) + " ";
+            if( this.numeroEpisode > -1 ) name += "Ep" + (this.numeroEpisode % 1 == 0 ? String.format("%0"+String.valueOf(nbRound).length()+"d", (int)this.numeroEpisode) : String.format(
+                    "%0"+String.valueOf(nbRound).length()+".2f", this.numeroEpisode)) + " ";
             if( this.qualiter      > -1 ) name += this.qualiter + "p ";
             if( this.compression   > -1 ) name += "x"  + this.compression   + " ";
 
@@ -195,7 +201,7 @@ public class VideoFile extends BaseFile
     {
         String nameToUse = this.fullname;
 
-        if( this.fullFormatedName != null )
+        if( this.fullFormatedName != null && !this.fullFormatedName.isEmpty() )
         {
             this.remplirListeNombre();
             this.replaceFullFormatedName();
@@ -209,7 +215,7 @@ public class VideoFile extends BaseFile
             return;
         }
 
-        int indexEndName = 0;
+        ArrayList<Integer> listAllIndex = new ArrayList<>();
 
         for (int cpt = 0; cpt < nameToUse.length(); cpt++)
         {
@@ -239,6 +245,12 @@ public class VideoFile extends BaseFile
                     int cpt2 = cpt - (tmp.length());
                     tmp.delete(0, tmp.length());
 
+                    if( cpt < nameToUse.length() && nameToUse.toLowerCase().charAt(cpt) == 'p' || cpt+1 < nameToUse.length() && nameToUse.toLowerCase().charAt(cpt+1) == 'p' )
+                    {
+                        listAllIndex.add(cpt2-1);
+                        continue;
+                    }
+
                     boolean oneWhiteSpace = true;
                     do
                     {
@@ -246,32 +258,34 @@ public class VideoFile extends BaseFile
 
                         if( lettre == ' ' )
                         {
-                            oneWhiteSpace = false;
+                            if( tmp.length() > 0 )
+                                oneWhiteSpace = false;
+
                             continue;
                         }
 
-                        if( !Character.isDigit(lettre))
+                        if( !Character.isDigit(lettre) )
                             tmp.append(lettre);
                     }
                     while( Character.isDigit(lettre) || oneWhiteSpace );
 
-                    String texteAvNb = tmp.toString().trim().toLowerCase();
+                    String texteAvNb = tmp.reverse().toString().trim().toLowerCase();
 
                     if( texteAvNb.equals("e") || texteAvNb.equals("ep") || texteAvNb.equals("episode") || texteAvNb.equals("épisode") )
-                        indexEndName = cpt2;
+                        listAllIndex.add(cpt2);
 
                     if( texteAvNb.equals("s") || texteAvNb.equals("saison") )
-                    {
-                        indexEndName = cpt2;
-                        break;
-                    }
+                        listAllIndex.add(cpt2);
+
+                    if( texteAvNb.equals("x") )
+                        listAllIndex.add(cpt2);
                 }
                 catch (Exception ignored)
                 { }
             }
         }
 
-        this.name = nameToUse.substring(0, indexEndName+1);
+        this.name = nameToUse.substring(0, listAllIndex.stream().mapToInt(i -> i).min().getAsInt()+1).trim();
     }
 
     public int getNbMaxEpisode()

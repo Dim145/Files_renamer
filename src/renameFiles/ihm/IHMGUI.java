@@ -1,11 +1,12 @@
 package renameFiles.ihm;
 
 import renameFiles.Controleur;
+import renameFiles.metier.FileType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -16,9 +17,10 @@ public class IHMGUI extends JFrame
 
     private final Controleur ctrl;
 
-    private final JTextField pathField;
-    private final JTextField paternField;
-    private final JTextField extensions;
+    private final JTextField          pathField;
+    private final JComboBox<FileType> allTypes;
+    private final JTextField          paternField;
+    private final JTextField          extensions;
 
     private final JButton launchRenamedScript;
 
@@ -39,19 +41,21 @@ public class IHMGUI extends JFrame
         this.setIconImage(new ImageIcon( APropos.class.getResource("/Images/Files_renamer.png")).getImage());
 
         this.pathField           = new JFormattedTextField();
+        this.allTypes            = new JComboBox<>(FileType.values());
         this.paternField         = new JFormattedTextField();
         this.extensions          = new JFormattedTextField();
         this.launchRenamedScript = new JButton("GO");
         this.console             = new JLabel();
         this.picker              = new Picker();
 
-        this.setAutoRequestFocus(false);
+        this.setAutoRequestFocus(true);
 
         launchRenamedScript.addActionListener(e ->
         {
             if( !this.pathField.getText().isEmpty() && !" ".equals(this.pathField.getText()) )
             {
                 this.ctrl.setExtensions(this.extensions.getText());
+
                 this.ctrl.renameFile(this.pathField.getText(), this.paternField.getText(), false);
             }
             else
@@ -71,24 +75,36 @@ public class IHMGUI extends JFrame
         this.console.setVerticalAlignment(JLabel.BOTTOM);
         this.console.setVerticalTextPosition(JLabel.BOTTOM);
 
-        this.pathField.addActionListener(e ->
-        {
-            String s = IHMGUI.this.picker.pickADirectory();
-
-            if( s != null )
-                IHMGUI.this.setCurrentPath(s);
-            IHMGUI.this.paternField.grabFocus();
-        });
-
-        this.pathField.addMouseListener(new MouseAdapter() {
+        this.pathField.addFocusListener(new FocusAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e)
+            public void focusGained(FocusEvent e)
             {
+                super.focusGained(e);
+                IHMGUI.this.paternField.grabFocus();
+
                 String s = IHMGUI.this.picker.pickADirectory();
 
                 if( s != null )
                     IHMGUI.this.setCurrentPath( s );
-                IHMGUI.this.paternField.grabFocus();
+            }
+        });
+
+        this.allTypes.addItemListener(event ->
+        {
+            IHMGUI.this.ctrl.setTypeCourant((FileType) event.getItem());
+
+            if( event.getItem() != FileType.AUTRES )
+            {
+                this.extensions.setEditable(false);
+                this.extensions.setText(((FileType) event.getItem()).getListExtensionInString());
+
+                this.paternField.setToolTipText("Pas obligatoire");
+            }
+            else
+            {
+                this.extensions .setEditable(true);
+                this.extensions.setText("");
+                this.paternField.setToolTipText("");
             }
         });
 
@@ -102,16 +118,18 @@ public class IHMGUI extends JFrame
         this.allJPanel.add(tmp3);
         this.allJPanel.add(tmp4);
 
-        tmp .setLayout(new GridLayout(3, 1));
-        tmp2.setLayout(new GridLayout(3, 1));
+        tmp .setLayout(new GridLayout(4, 1));
+        tmp2.setLayout(new GridLayout(4, 1));
         tmp3.setLayout(new BorderLayout());
         tmp4.setLayout(new BorderLayout());
 
         tmp.add(this.pathField);
+        tmp.add(this.allTypes);
         tmp.add(this.extensions);
         tmp.add(this.paternField);
 
         tmp2.add(new JLabel("path: "));
+        tmp2.add(new JLabel("type: "));
         tmp2.add(new JLabel("extensions: "));
         tmp2.add(new JLabel("name patern: "));
 

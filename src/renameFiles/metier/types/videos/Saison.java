@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 public class Saison
 {
@@ -84,5 +85,21 @@ public class Saison
         if( this.nbEpisodes > 0 )
             for (VideoFile video : this.listeEpisode)
                 video.setNbMaxEpisode(this.nbEpisodes);
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Saison saison = (Saison) o;
+
+        return numeroSaison == saison.numeroSaison && nomSerie.equals(saison.nomSerie);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(nomSerie, numeroSaison);
     }
 }

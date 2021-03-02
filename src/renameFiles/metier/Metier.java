@@ -48,7 +48,7 @@ public class Metier
 
     public void renameWithPaterneInPath( String path, String patern, boolean replaceAllPointInName )
     {
-        if( patern == null || patern.length() < 1 )
+        if( this.typeCourant != FileType.VIDEOS && (patern == null || patern.length() < 1) )
         {
             this.ctrl.printConsole("<font color=\"red\">Saisissez un paterne avec au moins 1 fois \"%%\"</font>");
 
@@ -75,7 +75,7 @@ public class Metier
             if( replaceAllPointInName )
                 fileName = fileName.replaceAll("\\.", " ");
 
-            if( this.typeCourant == FileType.VIDEO )
+            if( this.typeCourant == FileType.VIDEOS)
             {
                 VideoFile video = VideoFile.getVideoFileFromFile(file);
 
@@ -88,10 +88,17 @@ public class Metier
                 video.setFullFormatedName(patern);
                 video.setName();
 
-                if( listSaison.size() == 0 || listSaison.size() != video.getNumeroSaison()-1)
-                    listSaison.add(new Saison(video.getName(), video.getNumeroSaison()));
+                Saison s = new Saison(video.getName(), video.getNumeroSaison());
 
-                listSaison.get(video.getNumeroSaison()-1).ajouterEpisode(video);
+                int index = listSaison.indexOf(s);
+
+                if ( index == -1 )
+                {
+                    listSaison.add(s);
+                    index = listSaison.size()-1;
+                }
+
+                listSaison.get(index).ajouterEpisode(video);
             }
             else
             {
@@ -110,7 +117,7 @@ public class Metier
             }
         }
 
-        if ( this.typeCourant == FileType.VIDEO )
+        if ( this.typeCourant == FileType.VIDEOS)
         {
             for (Saison s : listSaison)
             {
@@ -121,7 +128,7 @@ public class Metier
                     File file = video.getFile();
 
                     if( file.renameTo(new File(file.getParent() + "/" + video.toString())) )
-                        this.ctrl.printConsole("file: " + video.getName() + video.getExtension() + " -> <font color=\"rgb(0, 255, 255)\">" + video.toString() + "</font>");
+                        this.ctrl.printConsole("file: " + file.getName() + " -> <font color=\"rgb(0, 255, 255)\">" + video.toString() + "</font>");
                     else
                         this.ctrl.printConsole("<font color=\"red\">file: " + video.getName() + " not renamed</font>");
                 }
