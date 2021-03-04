@@ -162,8 +162,9 @@ public class VideoFile extends BaseFile
                     if( texteAvNb.equals("e") || texteAvNb.equals("ep") || texteAvNb.equals("episode") || texteAvNb.equals("épisode") )
                         video.setNumeroEpisode(video.getNombre(video.getNbNombres()-1));
 
-                    if( texteAvNb.equals("s") || texteAvNb.equals("saison") )
-                        video.setNumeroSaison((int) video.getNombre(video.getNbNombres()-1));
+                    if( texteAvNb.equals("s") || texteAvNb.equals("saison") ) // Todo améliorer la reconnaissance
+                        if ( video.getNumeroSaison() != -1 ) video.setNumeroEpisode((int) video.getNombre(video.getNbNombres()-1));
+                        else                                 video.setNumeroSaison ((int) video.getNombre(video.getNbNombres()-1));
 
                     if( texteAvNb.equals("x") )
                         video.setCompression((int) video.getNombre(video.getNbNombres()-1));
@@ -183,7 +184,7 @@ public class VideoFile extends BaseFile
         {
             String name = this.name + " ";
 
-            int nbRound = this.nbMaxEpisode < 1 ? 2 : this.nbMaxEpisode;
+            int nbRound = Math.max(this.nbMaxEpisode, 2);
 
             if( this.numeroSaison  > -1 ) name += "S"  + this.numeroSaison  + " ";
             if( this.numeroEpisode > -1 ) name += "Ep" + (this.numeroEpisode % 1 == 0 ? String.format("%0"+String.valueOf(nbRound).length()+"d", (int)this.numeroEpisode) : String.format(
