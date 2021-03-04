@@ -9,6 +9,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class IHMGUI extends JFrame
 {
@@ -170,7 +171,16 @@ public class IHMGUI extends JFrame
 
         JScrollPane panelScroll = new JScrollPane(this.console);
         JScrollBar bar = panelScroll.getVerticalScrollBar();
-        bar.addAdjustmentListener(e -> bar.setValue(bar.getMaximum()));
+
+        AtomicInteger maximumValue = new AtomicInteger(bar.getMaximum());
+        bar.addAdjustmentListener(e ->
+        {
+            if ( maximumValue.get() - bar.getMaximum() == 0 )
+                return;
+
+            bar.setValue(bar.getMaximum());
+            maximumValue.set(bar.getMaximum());
+        });
 
         this.add( panelScroll, BorderLayout.CENTER );
         this.add( tmp3       , BorderLayout.NORTH  );
