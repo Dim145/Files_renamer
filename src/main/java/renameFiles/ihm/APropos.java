@@ -21,7 +21,8 @@ public class APropos extends JOptionPane
         UIManager.put("OptionPane.background", background);
         UIManager.put("Panel.background"     , background);
 
-        showMessageDialog( null, sAff, "A propos...", JOptionPane.INFORMATION_MESSAGE, new ImageIcon( APropos.class.getResource("/Images/Files_renamer.png") ) );
+        showMessageDialog( null, sAff, "A propos...", JOptionPane.INFORMATION_MESSAGE, new ImageIcon( APropos.class.getResource(
+                "/images/Files_renamer.png") ) );
 
         UIManager.put("OptionPane.background", basePane );
         UIManager.put("Panel.background"     , basePanel);

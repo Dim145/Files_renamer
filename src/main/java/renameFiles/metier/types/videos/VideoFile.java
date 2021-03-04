@@ -4,9 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import renameFiles.metier.types.BaseFile;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttributeView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -369,17 +366,5 @@ public class VideoFile extends BaseFile
         if( this.getFile() == null ) return;
 
         File file = this.getFile();
-
-        try
-        {
-            //Files.setAttribute(Paths.get(file.getPath()), "", "");
-
-            FileAttributeView view = Files.getFileAttributeView(Paths.get(file.getParent() + "/" + file.getName()), FileAttributeView.class);
-            System.out.println(view);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 }
