@@ -72,7 +72,6 @@ public class IHMGUI extends JFrame
 
         this.extensions.setText("mp4,mkv");
         this.launchRenamedScript.setOpaque(true);
-        this.console.setPreferredSize(new Dimension(this.getWidth(), 150));
         this.console.setText("<html>");
         this.console.setOpaque(true);
         this.console.setBackground(Color.WHITE);
@@ -156,7 +155,7 @@ public class IHMGUI extends JFrame
         tmp.add(this.pathField);
         tmp.add(this.allTypes);
         tmp.add(this.extensions);
-        tmp.add(this.paternField);
+        tmp.add(tmp4);
 
         tmp2.add(new JLabel("path: "));
         tmp2.add(new JLabel("type: "));
@@ -166,13 +165,15 @@ public class IHMGUI extends JFrame
         tmp3.add(tmp, BorderLayout.CENTER);
         tmp3.add(tmp2, BorderLayout.WEST);
 
-        tmp4.add(launchRenamedScript, BorderLayout.SOUTH);
+        tmp4.add(this.paternField        , BorderLayout.CENTER);
+        tmp4.add(this.launchRenamedScript, BorderLayout.EAST  );
 
         JScrollPane panelScroll = new JScrollPane(this.console);
+        JScrollBar bar = panelScroll.getVerticalScrollBar();
+        bar.addAdjustmentListener(e -> bar.setValue(bar.getMaximum()));
 
         this.add( panelScroll, BorderLayout.CENTER );
-        this.add( tmp3        , BorderLayout.NORTH  );
-        this.add( tmp4        , BorderLayout.EAST   );
+        this.add( tmp3       , BorderLayout.NORTH  );
         this.setJMenuBar(new MenuBar(this));
 
         Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -185,7 +186,7 @@ public class IHMGUI extends JFrame
 
         IHMGUI.majAllFonts(this, currentFont);
 
-        this.setSize(this.getWidth() + 100*height/IHMGUI.PAS_FONT_SIZE, this.getHeight());
+        this.setSize(this.getWidth() + 100*height/IHMGUI.PAS_FONT_SIZE, this.getHeight()+200);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
 
