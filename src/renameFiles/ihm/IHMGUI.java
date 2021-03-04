@@ -56,7 +56,7 @@ public class IHMGUI extends JFrame
             {
                 this.ctrl.setExtensions(this.extensions.getText());
 
-                this.ctrl.renameFile(this.pathField.getText(), this.paternField.getText(), false);
+                this.ctrl.renameFile(this.pathField.getText(), this.paternField.getForeground().equals(Color.GRAY) ? "" : this.paternField.getText(), false);
             }
             else
             {
@@ -89,6 +89,21 @@ public class IHMGUI extends JFrame
             }
         });
 
+        this.paternField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e)
+            {
+                super.focusGained(e);
+
+                if( IHMGUI.this.paternField.getForeground().equals(Color.GRAY) )
+                {
+                    IHMGUI.this.paternField.setText("");
+                    Color baseColor = IHMGUI.this.paternField.getBackground().equals(Color.WHITE) ? new Color(50, 50, 50) : Color.WHITE;
+                    IHMGUI.this.paternField.setForeground(IHMGUI.couleurPlusClair(baseColor, baseColor.equals(Color.WHITE)));
+                }
+            }
+        });
+
         this.allTypes.addItemListener(event ->
         {
             IHMGUI.this.ctrl.setTypeCourant((FileType) event.getItem());
@@ -98,13 +113,24 @@ public class IHMGUI extends JFrame
                 this.extensions.setEditable(false);
                 this.extensions.setText(((FileType) event.getItem()).getListExtensionInString());
 
-                this.paternField.setToolTipText("Pas obligatoire");
+                if( IHMGUI.this.paternField.getText().isEmpty() )
+                {
+                    this.paternField.setForeground(Color.GRAY);
+                    this.paternField.setText("Non obligatoire");
+                }
             }
             else
             {
                 this.extensions .setEditable(true);
                 this.extensions.setText("");
-                this.paternField.setToolTipText("");
+
+                if( this.paternField.getForeground().equals(Color.GRAY))
+                {
+                    this.paternField.setText("");
+
+                    Color baseColor = IHMGUI.this.paternField.getBackground().equals(Color.WHITE) ? new Color(50, 50, 50) : Color.WHITE;
+                    IHMGUI.this.paternField.setForeground(IHMGUI.couleurPlusClair(baseColor, baseColor.equals(Color.WHITE)));
+                }
             }
         });
 

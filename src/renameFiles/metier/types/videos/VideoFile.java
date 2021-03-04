@@ -184,11 +184,11 @@ public class VideoFile extends BaseFile
         {
             String name = this.name + " ";
 
-            int nbRound = Math.max(this.nbMaxEpisode, 2);
+            int nbRound = Math.max(String.valueOf(this.nbMaxEpisode).length(), 2);
 
             if( this.numeroSaison  > -1 ) name += "S"  + this.numeroSaison  + " ";
-            if( this.numeroEpisode > -1 ) name += "Ep" + (this.numeroEpisode % 1 == 0 ? String.format("%0"+String.valueOf(nbRound).length()+"d", (int)this.numeroEpisode) : String.format(
-                    "%0"+String.valueOf(nbRound).length()+".2f", this.numeroEpisode)) + " ";
+            if( this.numeroEpisode > -1 ) name += "Ep" + (this.numeroEpisode % 1 == 0 ? String.format("%0"+nbRound+"d", (int)this.numeroEpisode) : String.format(
+                    "%0"+nbRound+".2f", this.numeroEpisode)) + " ";
             if( this.qualiter      > -1 ) name += this.qualiter + "p ";
             if( this.compression   > -1 ) name += "x"  + this.compression   + " ";
 
