@@ -14,18 +14,32 @@ public class Aide extends JDialog
 
         this.label = new JLabel();
 
-        this.add(this.label);
+        JScrollPane pane = new JScrollPane(this.label);
+
+        this.add(pane);
 
         this.currentColor = theme ;
         this.setHTMLText();
 
-        this.label.setForeground(theme == Color.WHITE ? Color.BLACK : Color.WHITE);
+        this.setRecursiveColor(theme, this);
 
         if( font != null ) this.label.setFont(font);
 
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+    }
+
+    private void setRecursiveColor( Color color, Component component)
+    {
+        component.setBackground(color);
+        component.setForeground(Color.WHITE == color ? Color.BLACK : Color.WHITE);
+
+        if( component instanceof Container)
+        {
+            for (int i = 0; i < ((Container) component).getComponentCount(); i++)
+                setRecursiveColor(color, ((Container) component).getComponent(i));
+        }
     }
 
     private void setHTMLText()
@@ -44,10 +58,16 @@ public class Aide extends JDialog
                                 "color:orange; " +
                                 "text-align:center;" +
                             "}" +
+                            "h3{" +
+                                "color:orange; " +
+                            "}" +
                             "p{" +
                                 "text-align:justify;" +
                                 "margin-left:10px; " +
                                 "margin-right:10px;" +
+                            "}" +
+                            ".marginLeft{" +
+                                "margin-left: 25px;" +
                             "}" +
                         "</style>" +
                     "</head>" +
@@ -55,39 +75,40 @@ public class Aide extends JDialog
                         "<h1>File renamer</h1>" +
                         "<p>Cette application permet de renomer tous un ensemble de fichiers de la même façon.</p>" +
                         "<p>Pour cela il faut juste choisir le repertoire ou sont les fichiers à renomer. </p>" +
-                        "<h2>Les extensions</h2>" +
+                        "<h2>Les fichiers non répertoriés:</h2>" +
+                        "<div class=\"marginLeft\">" +
+                        "<h3>Les extensions</h3>" +
                         "<p>Les fichiers pris en compte peuvent etre filtré selon leurs extensions. Plusieurs " +
                         "peuvent être choisi, il suffit de les séparé par une \",\"</p>" +
-                        "<h2>Le nom</h2>" +
+                        "<h3>Le nom</h3>" +
                         "<p>Le nom seras appliqué a tous les fichiers du dossiers, plus ceux des sous-dossiers. " +
                         "Les eventuels chiffres ou nombres devrons etre remplacer par les deux caractères \"%%\".</p>" +
                         "<p>Par exemple: fichier n°%%.txt</p>" +
                         "<p> Si nous avons 3 fichiers avec un chiffre allant de 1 à 3 dans le dossier courrant, les noms seront donc:</p>" +
                         "<ul><li>fichier n°1.txt</li><li>fichier n°2.txt</li><li>fichier n°3.txt</li></ul>" +
                         "<p>P.S: Le programme prend en compte les nombres a virgule. (\",\" ou \".\")</p>" +
+                        "</div>" +
+                        "<h2>Les vidéos</h2>" +
+                        "<div class=\"marginLeft\">" +
+                        "<p>Les vidéos ont un fonctionnement totalement automatique. Le renommage se feras en suivant le précepte suivant:" +
+                        "<p> NomDeLaSerie Saison Episode Qualité Compression.extension </p>" +
+                        "<p> ce qui donne par exemple: Test S1 Ep01 720p x265.mkv</p><br/>" +
+                        "<p>P.S: Si cette norme ne vous plait pas, il est possible de renommer les vidéos en selectionnant la catégorie \"Autres\" et en mettant les extensions correct.</p>" +
+                        "<h3>Le nom</h3>" +
+                        "<p>Le nom n'est pas obligatoire. Il seras automatique récupé et adapter selon le nom de fichier.</p>" +
+                        "<p>par exemple: [Une Team] Test (TV) S1 episode 5 1080p donneras -> Test S1 Ep 5 1080p</p>" +
+                        "<p>Si vous choisissez de mettre un nom dans le champs \"paterne\", se seras celui-ci que seras mis au détriment de l'ancien.</p>" +
+                        "</div>" +
                         "<h2>Options</h2>" +
-                        "<p>Il y as 2 options supplémentaires:</p>" +
+                        "<p>Il y as 3 options supplémentaires:</p>" +
                         "<ul>" +
                             "<li>Un thème sombre pour ceux qui ont des yeux sensibles.</li>" +
                             "<li>Une option de sécurité qui permet de ne pas renomer un fichier si la quantité de nombre ne correspond pas a celle de \"%%\"</li>" +
+                            "<li>Une option pour remplacer tous les points par des espaces (extension non incluse)." +
                         "</ul>" +
                     "</body>" +
                 "</html>";
 
         this.label.setText(html);
-    }
-
-    private String construireHTML()
-    {
-        return "<html>" + "<head>" + "<style>" + "body{ " + "background-color:white; margin-bottom:20px;" + "}" + "h2{"
-                + "color:orange;" + "}" + "h1{" + "color:orange; text-align:center;" + "}" + "p{" + "text-align:justify;" + "margin-left:10px; " + "margin-right:10px;"
-                + "}" + "</style>" + "</head>" +
-
-                "<body>" + "<h1>Les Bouboules</h1>"
-                + "<h2>Bienvenue !</h2>"
-                + "<p>Ce jeu a ete realiser par Dimitri Dubois, Ladislas Morcamp, Thomas Leray et Tracy Joo.</p>"
-                + "<h2>Principe du jeu</h2>"
-                + "<p>Il s'agit d'un jeu multijoueurs (au moins 2) en reseau dont l'objectif est la collecte de <i>n</i> objets au cours de la partie. Le joueur qui gagne est celui qui a collecte le plus d'items.</p>"
-                + "</body>" + "</html>";
     }
 }

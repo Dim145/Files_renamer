@@ -19,6 +19,9 @@ public class VideoFile extends BaseFile
 
     private int nbMaxEpisode;
 
+    private boolean isEpisodeSpecial;
+    private boolean isOAV;
+
     public VideoFile(String name, String extension)
     {
         this(name, extension, -1, -1, null);
@@ -165,6 +168,21 @@ public class VideoFile extends BaseFile
                     if( texteAvNb.equals("e") || texteAvNb.equals("ep") || texteAvNb.equals("episode") || texteAvNb.equals("épisode") )
                         video.setNumeroEpisode(video.getNombre(video.getNbNombres()-1));
 
+                    if( texteAvNb.equals("sp") || texteAvNb.equals("spécial") || texteAvNb.equals("special") )
+                    {
+                        video.setNumeroEpisode(video.getNombre(video.getNbNombres()-1)); // c'est juste un changement de texte.
+                        video.setEpisodeSpecial(true);
+                    }
+
+                    if( texteAvNb.equals("oav") )
+                    {
+                        video.setNumeroEpisode(video.getNombre(video.getNbNombres()-1)); // juste un changement de texte
+                        video.setOAV(true);
+                    }
+
+                    if( texteAvNb.equals("") || texteAvNb.equals("-") ) // par default, on considere que c'est un episode
+                        video.setNumeroEpisode(video.getNombre(video.getNbNombres()-1));
+
                     if( texteAvNb.equals("s") || texteAvNb.equals("saison") ) // Todo améliorer la reconnaissance
                         if ( video.getNumeroSaison() != -1 ) video.setNumeroEpisode((int) video.getNombre(video.getNbNombres()-1));
                         else                                 video.setNumeroSaison ((int) video.getNombre(video.getNbNombres()-1));
@@ -190,7 +208,7 @@ public class VideoFile extends BaseFile
             int nbRound = Math.max(String.valueOf(this.nbMaxEpisode).length(), 2);
 
             if( this.numeroSaison  > -1 ) name += "S"  + this.numeroSaison  + " ";
-            if( this.numeroEpisode > -1 ) name += "Ep" + (this.numeroEpisode % 1 == 0 ? String.format("%0"+nbRound+"d", (int)this.numeroEpisode) : String.format(
+            if( this.numeroEpisode > -1 ) name += (this.isEpisodeSpecial ? "Sp" : this.isOAV ? "OAV" : "Ep") + (this.numeroEpisode % 1 == 0 ? String.format("%0"+nbRound+"d", (int)this.numeroEpisode) : String.format(
                     "%0"+nbRound+".2f", this.numeroEpisode)) + " ";
             if( this.qualiter      > -1 ) name += this.qualiter + "p ";
             if( this.compression   > -1 ) name += "x"  + this.compression   + " ";
@@ -295,7 +313,16 @@ public class VideoFile extends BaseFile
             }
         }
 
-        this.name = nameToUse.substring(0, listAllIndex.stream().mapToInt(i -> i).min().getAsInt()+1).trim();
+        int min = listAllIndex.stream().mapToInt(i -> i).min().getAsInt()+1;
+        int indexSeparateurMoins = nameToUse.indexOf("-");
+
+        if( indexSeparateurMoins > 0 && indexSeparateurMoins < min )
+            min = indexSeparateurMoins;
+
+        this.name = nameToUse.substring(0, min).trim();
+
+        if( this.name.endsWith("(TV)") )
+            this.name = this.name.substring(0, this.name.indexOf("(TV)")).trim();
     }
 
     public int getNbMaxEpisode()
@@ -306,5 +333,31 @@ public class VideoFile extends BaseFile
     public void setNbMaxEpisode(int nbMaxEpisode)
     {
         this.nbMaxEpisode = nbMaxEpisode;
+    }
+
+    public boolean isEpisodeSpecial()
+    {
+        return isEpisodeSpecial;
+    }
+
+    public void setEpisodeSpecial(boolean episodeSpecial)
+    {
+        isEpisodeSpecial = episodeSpecial;
+
+        if( isOAV )
+            this.setOAV(false);
+    }
+
+    public boolean isOAV()
+    {
+        return isOAV;
+    }
+
+    public void setOAV(boolean OAV)
+    {
+        isOAV = OAV;
+
+        if( this.isEpisodeSpecial() )
+            this.setEpisodeSpecial(false);
     }
 }

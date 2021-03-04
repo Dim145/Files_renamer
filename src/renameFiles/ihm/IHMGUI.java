@@ -168,7 +168,9 @@ public class IHMGUI extends JFrame
 
         tmp4.add(launchRenamedScript, BorderLayout.SOUTH);
 
-        this.add( this.console, BorderLayout.CENTER );
+        JScrollPane panelScroll = new JScrollPane(this.console);
+
+        this.add( panelScroll, BorderLayout.CENTER );
         this.add( tmp3        , BorderLayout.NORTH  );
         this.add( tmp4        , BorderLayout.EAST   );
         this.setJMenuBar(new MenuBar(this));
