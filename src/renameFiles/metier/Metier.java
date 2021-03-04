@@ -1,6 +1,7 @@
 package renameFiles.metier;
 
 import renameFiles.Controleur;
+import renameFiles.ihm.DialogAvancement;
 import renameFiles.metier.types.BaseFile;
 import renameFiles.metier.types.videos.Saison;
 import renameFiles.metier.types.videos.VideoFile;
@@ -66,79 +67,105 @@ public class Metier
             return;
         }
 
-        ArrayList<Saison> listSaison = new ArrayList<>();
+        DialogAvancement dialog = new DialogAvancement(this.typeCourant == FileType.VIDEOS ? "Lecture et recupération des donées..." : "Lecture et renommage des fichiers...", 0, this.files.size());
 
-        for (File file : this.files)
+        new Thread(() ->
         {
-            String fileName  = file.getName().substring(0, file.getName().lastIndexOf("."));
+            ArrayList<Saison> listSaison = new ArrayList<>();
 
-            if( replaceAllPointInName )
-                fileName = fileName.replaceAll("\\.", " ");
-
-            if( this.typeCourant == FileType.VIDEOS)
+            for (File file : this.files)
             {
-                VideoFile video = VideoFile.getVideoFileFromFile(file);
+                String fileName  = file.getName().substring(0, file.getName().lastIndexOf("."));
 
-                if( video == null )
+                if( replaceAllPointInName )
+                    fileName = fileName.replaceAll("\\.", " ");
+
+                if( this.typeCourant == FileType.VIDEOS)
                 {
-                    this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " is not a video</font>");
-                    return;
+                    VideoFile video = VideoFile.getVideoFileFromFile(file);
+
+                    if( video == null )
+                    {
+                        this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " is not a video</font>");
+                        return;
+                    }
+
+                    video.setFullFormatedName(patern);
+                    video.setName();
+
+                    Saison s = new Saison(video.getName(), video.getNumeroSaison());
+
+                    int index = listSaison.indexOf(s);
+
+                    if ( index == -1 )
+                    {
+                        listSaison.add(s);
+                        index = listSaison.size()-1;
+                    }
+
+                    listSaison.get(index).ajouterEpisode(video);
                 }
-
-                video.setFullFormatedName(patern);
-                video.setName();
-
-                Saison s = new Saison(video.getName(), video.getNumeroSaison());
-
-                int index = listSaison.indexOf(s);
-
-                if ( index == -1 )
-                {
-                    listSaison.add(s);
-                    index = listSaison.size()-1;
-                }
-
-                listSaison.get(index).ajouterEpisode(video);
-            }
-            else
-            {
-
-                String extension  = file.getName().substring(file.getName().lastIndexOf("."));
-                BaseFile baseFile = new BaseFile(fileName, extension, file);
-
-                baseFile.remplirListeNombre();
-                baseFile.setFullFormatedName(patern);
-
-                if( !baseFile.replaceFullFormatedName(blockIfNotMathPatern) )
-                {
-                    this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " ne contient pas le meme nombres de %% que le patern.</font>");
-                    continue;
-                }
-
-                if( file.renameTo(new File(file.getParent() + "/" + baseFile.toString())) )
-                    this.ctrl.printConsole("file: " + fileName + extension + " -> <font color=\"rgb(0, 255, 255)\">" + baseFile.toString() + "</font>");
                 else
-                    this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " not renamed</font>");
-            }
-        }
-
-        if ( this.typeCourant == FileType.VIDEOS)
-        {
-            for (Saison s : listSaison)
-            {
-                s.setRoundAllApisode();
-
-                for (VideoFile video : s.getAllEpisodes())
                 {
-                    File file = video.getFile();
+                    String extension  = file.getName().substring(file.getName().lastIndexOf("."));
+                    BaseFile baseFile = new BaseFile(fileName, extension, file);
 
-                    if( file.renameTo(new File(file.getParent() + "/" + video.toString())) )
-                        this.ctrl.printConsole("file: " + file.getName() + " -> <font color=\"rgb(0, 255, 255)\">" + video.toString() + "</font>");
+                    baseFile.remplirListeNombre();
+                    baseFile.setFullFormatedName(patern);
+
+                    if( !baseFile.replaceFullFormatedName(blockIfNotMathPatern) )
+                    {
+                        this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " ne contient pas le meme nombres de %% que le patern.</font>");
+                        continue;
+                    }
+
+                    if( file.renameTo(new File(file.getParent() + "/" + baseFile.toString())) )
+                        this.ctrl.printConsole("file: " + fileName + extension + " -> <font color=\"rgb(0, 255, 255)\">" + baseFile.toString() + "</font>");
                     else
-                        this.ctrl.printConsole("<font color=\"red\">file: " + video.getName() + " not renamed</font>");
+                        this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " not renamed</font>");
                 }
+
+                dialog.avancerUneFois();
+                dialog.setFichierCourant(fileName);
+
+                /*try
+                {
+                    Thread.sleep(500); // pour debug
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }*/
             }
-        }
+
+            dialog.setVisible(false);
+
+            if ( this.typeCourant == FileType.VIDEOS)
+            {
+                dialog.reset();
+                dialog.setTitle("Renommage des vidéos...");
+                dialog.setVisible(true);
+
+                for (Saison s : listSaison)
+                {
+                    s.setRoundAllApisode();
+
+                    for (VideoFile video : s.getAllEpisodes())
+                    {
+                        File file = video.getFile();
+
+                        if( file.renameTo(new File(file.getParent() + "/" + video.toString())) )
+                            this.ctrl.printConsole("file: " + file.getName() + " -> <font color=\"rgb(0, 255, 255)\">" + video.toString() + "</font>");
+                        else
+                            this.ctrl.printConsole("<font color=\"red\">file: " + video.getName() + " not renamed</font>");
+
+                        dialog.avancerUneFois();
+                    }
+                }
+
+                dialog.setVisible(false);
+            }
+        }).start();
     }
 
     private void readRepertory( final File rep, int level )
