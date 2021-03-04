@@ -89,6 +89,7 @@ public class Metier
 
                     video.setFullFormatedName(patern);
                     video.setName(replaceAllPointInName);
+                    video.setInformationDetaillerInFile();
 
                     Saison s = new Saison(video.getName(), video.getNumeroSaison());
 
