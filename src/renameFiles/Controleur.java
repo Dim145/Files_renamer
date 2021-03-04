@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Controleur
@@ -34,7 +35,9 @@ public class Controleur
         {
             try(Scanner scanner = new Scanner(this.prefFile))
             {
-                int cpt = 0;
+                // Todo améliorer avec la reflexiviter
+                ArrayList<Boolean> listBool = new ArrayList<>();
+
                 while( scanner.hasNext() )
                 {
                     String line = scanner.nextLine();
@@ -42,26 +45,34 @@ public class Controleur
 
                     if( tab.length < 2 ) continue;
 
-                    switch (cpt)
+                    listBool.add(Boolean.parseBoolean(tab[1]));
+                }
+
+                for (int i = 0; i < listBool.size(); i++)
+                {
+                    switch (i)
                     {
                         case 0 : try
                         {
-                            if(Boolean.parseBoolean(tab[1]))
-                                this.ihm.changeBlockParam();
+                            this.ihm.changeBlockParam(!listBool.get(i));
                         }
                         catch (Exception ignored) { }
-                        break;
+                            break;
 
                         case 1 : try
                         {
-                            boolean darkTheme = Boolean.parseBoolean(tab[1]);
-
-                            if( darkTheme ) this.ihm.changeTheme();
+                            this.ihm.changeTheme(listBool.get(i));
                         }
                         catch ( Exception ignored) { }
-                    }
+                            break;
 
-                    cpt++;
+                        case 2: try
+                        {
+                            this.ihm.changeReplacePbySParam(listBool.get(i));
+                        }
+                        catch (Exception ignored)
+                        {}
+                    }
                 }
             }
             catch (Exception e)
@@ -86,6 +97,7 @@ public class Controleur
                 {
                     this.saveBooleanPreferences("ignoreRenameProtection", false, true);
                     this.saveBooleanPreferences("darkMode", false, false);
+                    this.saveBooleanPreferences("replace \".\" by \" \"", false, false);
                 }
             }
             catch (IOException e)

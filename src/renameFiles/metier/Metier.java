@@ -77,12 +77,9 @@ public class Metier
             {
                 String fileName  = file.getName().substring(0, file.getName().lastIndexOf("."));
 
-                if( replaceAllPointInName )
-                    fileName = fileName.replaceAll("\\.", " ");
-
                 if( this.typeCourant == FileType.VIDEOS)
                 {
-                    VideoFile video = VideoFile.getVideoFileFromFile(file);
+                    VideoFile video = VideoFile.getVideoFileFromFile(file, replaceAllPointInName);
 
                     if( video == null )
                     {
@@ -91,7 +88,7 @@ public class Metier
                     }
 
                     video.setFullFormatedName(patern);
-                    video.setName();
+                    video.setName(replaceAllPointInName);
 
                     Saison s = new Saison(video.getName(), video.getNumeroSaison());
 

@@ -91,7 +91,7 @@ public class VideoFile extends BaseFile
         this.compression = compression;
     }
 
-    public static VideoFile getVideoFileFromFile(@NotNull File file )
+    public static VideoFile getVideoFileFromFile(@NotNull File file, boolean replaceAllPbyS )
     {
         int indexOfPoint = file.getName().lastIndexOf(".");
 
@@ -100,6 +100,9 @@ public class VideoFile extends BaseFile
 
         if (!Arrays.asList(VideoFile.extensions).contains(extension.startsWith(".") ? extension.substring(1) : extension))
             return null;
+
+        if( replaceAllPbyS )
+            fileName = fileName.replaceAll("\\.", " ");
 
         VideoFile video = new VideoFile(fileName, extension, file);
 
@@ -198,7 +201,7 @@ public class VideoFile extends BaseFile
         return this.fullname + this.extension;
     }
 
-    public void setName()
+    public void setName(boolean replaceAllPointInName)
     {
         String nameToUse = this.fullname;
 
@@ -215,6 +218,12 @@ public class VideoFile extends BaseFile
             this.name = nameToUse.trim();
             return;
         }
+
+        if( nameToUse.startsWith("[") )
+            nameToUse = nameToUse.substring(nameToUse.indexOf("]")+1).trim();
+
+        if( replaceAllPointInName )
+            nameToUse = nameToUse.replaceAll("\\.", " ");
 
         ArrayList<Integer> listAllIndex = new ArrayList<>();
 

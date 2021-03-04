@@ -6,38 +6,41 @@ import java.awt.*;
 public class MenuBar extends JMenuBar
 {
     private final IHMGUI ihm;
-    private final JMenuItem itemBlockIfNotMatchNumber;
     private final JMenuItem aide;
-    private final JMenuItem darkTheme;
 
-    private boolean bDarkTheme;
+    private final JCheckBoxMenuItem itemBlockIfNotMatchNumber;
+    private final JCheckBoxMenuItem darkTheme;
+    private final JCheckBoxMenuItem replacePByS;
+
     private Color currentColor;
 
     public MenuBar( IHMGUI ihm )
     {
         this.ihm        = ihm;
-        this.bDarkTheme = false;
 
         JMenu optionMenu = new JMenu("option");
         JMenu aideMenu   = new JMenu("aide");
-        //Todo faire la page d'aide
+        //Todo modifier la page d'aide
 
-        this.itemBlockIfNotMatchNumber = new JMenuItem("✓ Block if not match");
+        this.itemBlockIfNotMatchNumber = new JCheckBoxMenuItem("Block if not match");
+        this.darkTheme                 = new JCheckBoxMenuItem("Dark thème");
+        this.replacePByS               = new JCheckBoxMenuItem("Replace \".\" by \" \"");
 
         this.aide         = new JMenuItem("aide");
         JMenuItem aPropos = new JMenuItem("a propos");
-        this.darkTheme    = new JMenuItem("X dark thème");
 
         optionMenu.add(itemBlockIfNotMatchNumber);
         optionMenu.add(darkTheme);
+        optionMenu.add(replacePByS);
 
         aideMenu.add(aide);
         aideMenu.add(aPropos);
 
-        this.itemBlockIfNotMatchNumber.addActionListener(e -> changeBlockParam());
+        this.itemBlockIfNotMatchNumber.addActionListener(e -> changeBlockParam(this.itemBlockIfNotMatchNumber.isSelected()));
+        this.replacePByS              .addActionListener(e -> this.changeReplacePbyS(this.replacePByS.isSelected()));
 
         aPropos  .addActionListener(e -> new APropos(this.currentColor));
-        darkTheme.addActionListener(e -> this.changeTheme());
+        darkTheme.addActionListener(e -> this.changeTheme(darkTheme.isSelected()));
         this.aide.addActionListener(e -> new Aide(this.currentColor, this.getFont()));
 
         this.add(optionMenu);
@@ -48,13 +51,9 @@ public class MenuBar extends JMenuBar
         this.currentColor = Color.WHITE;
     }
 
-    public void changeTheme()
+    public void changeTheme( boolean bDarkTheme )
     {
-        this.bDarkTheme = !this.bDarkTheme;
-
-        this.darkTheme.setText( (this.bDarkTheme ? '✓' : 'X' ) + darkTheme.getText().substring(1) );
-
-        Color baseColor = this.bDarkTheme ? new Color(50, 50, 50) : Color.WHITE;
+        Color baseColor = bDarkTheme ? new Color(50, 50, 50) : Color.WHITE;
 
         this.currentColor = baseColor;
 
@@ -64,13 +63,16 @@ public class MenuBar extends JMenuBar
         for (int i = 0; i < this.getComponentCount(); i++)
             this.setRecursiveColor(baseColor, this.getComponent(i));
 
+        if( bDarkTheme != this.darkTheme.isSelected() )
+            this.darkTheme.setSelected(bDarkTheme);
+
         this.reWritePrefParam();
     }
 
     private void setRecursiveColor( Color color, Component component)
     {
         component.setBackground(color);
-        component.setForeground(this.bDarkTheme ? Color.WHITE : Color.BLACK);
+        component.setForeground(Color.WHITE == color ? Color.BLACK : Color.WHITE);
 
         if( component instanceof Container)
         {
@@ -79,32 +81,42 @@ public class MenuBar extends JMenuBar
         }
     }
 
-    public void changeBlockParam()
+    public void changeBlockParam( boolean blockIfNotMatch )
     {
-        char first = this.itemBlockIfNotMatchNumber.getText().charAt(0);
-
         System.out.println("Param block changed");
 
-        if( '✓' == first )
+        if( this.itemBlockIfNotMatchNumber.isSelected() )
         {
             this.itemBlockIfNotMatchNumber.setBackground(Color.RED);
-            this.itemBlockIfNotMatchNumber.setText('X' + this.itemBlockIfNotMatchNumber.getText().substring(1));
             this.ihm.setBlockIfNotMathPatern(false);
         }
-        else if( 'X' == first )
+        else
         {
             this.itemBlockIfNotMatchNumber.setBackground(Color.GREEN);
-            this.itemBlockIfNotMatchNumber.setText('✓' + this.itemBlockIfNotMatchNumber.getText().substring(1));
             this.ihm.setBlockIfNotMathPatern(true);
         }
+
+        if( this.itemBlockIfNotMatchNumber.isSelected() != blockIfNotMatch )
+            this.itemBlockIfNotMatchNumber.setSelected(blockIfNotMatch);
+
+        this.reWritePrefParam();
+    }
+
+    public void changeReplacePbyS( boolean replacePbyS )
+    {
+        this.ihm.changeReplacePbyS(replacePbyS);
+
+        if( this.replacePByS.isSelected() != replacePbyS )
+            this.replacePByS.setSelected(replacePbyS);
 
         this.reWritePrefParam();
     }
 
     private void reWritePrefParam()
     {
-        this.ihm.saveBooleanPreferences("ignoreRenameProtection", this.itemBlockIfNotMatchNumber.getText().charAt(0) == 'X', true);
-        this.ihm.saveBooleanPreferences("darkMode", this.bDarkTheme, false);
+        this.ihm.saveBooleanPreferences("ignoreRenameProtection", !this.itemBlockIfNotMatchNumber.isSelected(), true);
+        this.ihm.saveBooleanPreferences("darkMode", this.darkTheme.isSelected(), false);
+        this.ihm.saveBooleanPreferences("replace \".\" by \" \"", this.replacePByS.isSelected(), false);
     }
 
     @Override

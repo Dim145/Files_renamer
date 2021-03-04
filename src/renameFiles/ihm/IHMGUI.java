@@ -30,6 +30,8 @@ public class IHMGUI extends JFrame
 
     private final ArrayList<JPanel> allJPanel;
 
+    private boolean isReplacePbyS;
+
     public IHMGUI(Controleur ctrl)
     {
         super();
@@ -48,6 +50,8 @@ public class IHMGUI extends JFrame
         this.console             = new JLabel();
         this.picker              = new Picker();
 
+        this.isReplacePbyS = false;
+
         this.setAutoRequestFocus(true);
 
         launchRenamedScript.addActionListener(e ->
@@ -56,7 +60,7 @@ public class IHMGUI extends JFrame
             {
                 this.ctrl.setExtensions(this.extensions.getText());
 
-                this.ctrl.renameFile(this.pathField.getText(), this.paternField.getForeground().equals(Color.GRAY) ? "" : this.paternField.getText(), false);
+                this.ctrl.renameFile(this.pathField.getText(), this.paternField.getForeground().equals(Color.GRAY) ? "" : this.paternField.getText(), this.isReplacePbyS);
             }
             else
             {
@@ -186,6 +190,11 @@ public class IHMGUI extends JFrame
         this.extensions.grabFocus();
     }
 
+    public void changeReplacePbyS( boolean isReplacePbyS )
+    {
+        this.isReplacePbyS = isReplacePbyS;
+    }
+
     private static void majAllFonts(Container comp, Font font)
     {
         comp.setFont(font);
@@ -282,14 +291,19 @@ public class IHMGUI extends JFrame
             return new Color(baseColor.getRed() + ECART_COLOR, baseColor.getGreen() + ECART_COLOR, baseColor.getBlue() + ECART_COLOR);
     }
 
-    public void changeTheme()
+    public void changeTheme( boolean darkTheme)
     {
-        ((MenuBar) this.getJMenuBar()).changeTheme();
+        ((MenuBar) this.getJMenuBar()).changeTheme(darkTheme);
     }
 
-    public void changeBlockParam()
+    public void changeBlockParam( boolean blockIfNotMatch)
     {
-        ((MenuBar) this.getJMenuBar()).changeBlockParam();
+        ((MenuBar) this.getJMenuBar()).changeBlockParam(blockIfNotMatch);
+    }
+
+    public void changeReplacePbySParam( boolean isReplacePbyS)
+    {
+        ((MenuBar) this.getJMenuBar()).changeReplacePbyS(isReplacePbyS);
     }
 
     public void saveBooleanPreferences( String name, boolean value, boolean clearFile )

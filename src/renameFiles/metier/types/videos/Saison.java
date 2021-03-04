@@ -50,7 +50,7 @@ public class Saison
 
     public boolean ajouterEpisode(@NotNull VideoFile video)
     {
-        if (video.getName() == null) video.setName();
+        if (video.getName() == null) video.setName(false);
 
         if (!this.nomSerie.isEmpty() && this.nomSerie.contains(video.getName()))
         {
