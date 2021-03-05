@@ -1,4 +1,4 @@
-package renameFiles.metier.types.videos;
+package renameFiles.metier.types.series;
 
 import org.jetbrains.annotations.NotNull;
 import renameFiles.metier.types.BaseFile;
@@ -344,7 +344,7 @@ public class VideoFile extends BaseFile
     {
         isEpisodeSpecial = episodeSpecial;
 
-        if( isOAV )
+        if( isOAV() && episodeSpecial )
             this.setOAV(false);
     }
 
@@ -357,14 +357,7 @@ public class VideoFile extends BaseFile
     {
         isOAV = OAV;
 
-        if( this.isEpisodeSpecial() )
+        if( this.isEpisodeSpecial() && OAV )
             this.setEpisodeSpecial(false);
-    }
-
-    public void setInformationDetaillerInFile()
-    {
-        if( this.getFile() == null ) return;
-
-        File file = this.getFile();
     }
 }

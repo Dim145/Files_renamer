@@ -9,7 +9,7 @@ public class BaseFile
 
     private final File file;
 
-    protected String fullname;
+    protected final String fullname;
 
     protected String fullFormatedName;
     protected String name;

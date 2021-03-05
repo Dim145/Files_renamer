@@ -10,7 +10,6 @@ public class MenuBar extends JMenuBar
 
     private final JCheckBoxMenuItem itemBlockIfNotMatchNumber;
     private final JCheckBoxMenuItem darkTheme;
-    private final JCheckBoxMenuItem replacePByS;
 
     private Color currentColor;
 
@@ -24,20 +23,17 @@ public class MenuBar extends JMenuBar
 
         this.itemBlockIfNotMatchNumber = new JCheckBoxMenuItem("Block if not match");
         this.darkTheme                 = new JCheckBoxMenuItem("Dark thème");
-        this.replacePByS               = new JCheckBoxMenuItem("Replace \".\" by \" \"");
 
         this.aide         = new JMenuItem("aide");
         JMenuItem aPropos = new JMenuItem("a propos");
 
         optionMenu.add(itemBlockIfNotMatchNumber);
         optionMenu.add(darkTheme);
-        optionMenu.add(replacePByS);
 
         aideMenu.add(aide);
         aideMenu.add(aPropos);
 
         this.itemBlockIfNotMatchNumber.addActionListener(e -> changeBlockParam(this.itemBlockIfNotMatchNumber.isSelected()));
-        this.replacePByS              .addActionListener(e -> this.changeReplacePbyS(this.replacePByS.isSelected()));
 
         aPropos  .addActionListener(e -> new APropos(this.currentColor));
         darkTheme.addActionListener(e -> this.changeTheme(darkTheme.isSelected()));
@@ -102,21 +98,10 @@ public class MenuBar extends JMenuBar
         this.reWritePrefParam();
     }
 
-    public void changeReplacePbyS( boolean replacePbyS )
-    {
-        this.ihm.changeReplacePbyS(replacePbyS);
-
-        if( this.replacePByS.isSelected() != replacePbyS )
-            this.replacePByS.setSelected(replacePbyS);
-
-        this.reWritePrefParam();
-    }
-
     private void reWritePrefParam()
     {
         this.ihm.saveBooleanPreferences("ignoreRenameProtection", !this.itemBlockIfNotMatchNumber.isSelected(), true);
         this.ihm.saveBooleanPreferences("darkMode", this.darkTheme.isSelected(), false);
-        this.ihm.saveBooleanPreferences("replace \".\" by \" \"", this.replacePByS.isSelected(), false);
     }
 
     @Override

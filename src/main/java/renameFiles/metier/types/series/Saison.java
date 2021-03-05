@@ -1,4 +1,4 @@
-package renameFiles.metier.types.videos;
+package renameFiles.metier.types.series;
 
 import org.jetbrains.annotations.NotNull;
 

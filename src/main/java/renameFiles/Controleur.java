@@ -65,13 +65,6 @@ public class Controleur
                         }
                         catch ( Exception ignored) { }
                             break;
-
-                        case 2: try
-                        {
-                            this.ihm.changeReplacePbySParam(listBool.get(i));
-                        }
-                        catch (Exception ignored)
-                        {}
                     }
                 }
             }
@@ -97,7 +90,6 @@ public class Controleur
                 {
                     this.saveBooleanPreferences("ignoreRenameProtection", false, true);
                     this.saveBooleanPreferences("darkMode", false, false);
-                    this.saveBooleanPreferences("replace \".\" by \" \"", false, false);
                 }
             }
             catch (IOException e)
@@ -188,5 +180,10 @@ public class Controleur
     public void setTypeCourant(FileType type )
     {
         this.metier.setTypeCourant(type);
+    }
+
+    public void setSaveNbIfExist(boolean selected)
+    {
+        this.metier.setSaveNbIfExistInAlea(selected);
     }
 }

@@ -1,11 +1,12 @@
 package renameFiles.metier;
 
-import renameFiles.metier.types.videos.VideoFile;
+import renameFiles.metier.types.series.VideoFile;
 
 public enum FileType
 {
     AUTRES(null),
-    VIDEOS(VideoFile.extensions);
+    ALEANAME(null),
+    SERIES(VideoFile.extensions);
 
     private final String[] extensions;
 

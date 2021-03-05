@@ -26,6 +26,7 @@ public class Aide extends JDialog
         if( font != null ) this.label.setFont(font);
 
         this.pack();
+        this.setSize(this.getWidth(), 750);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
@@ -77,7 +78,7 @@ public class Aide extends JDialog
                         "<p>Pour cela il faut juste choisir le repertoire ou sont les fichiers à renomer. </p>" +
                         "<h2>Les fichiers non répertoriés:</h2>" +
                         "<div class=\"marginLeft\">" +
-                        "<h3>Les extensions</h3>" +
+                        "<h3 id=\"autre-extensions\">Les extensions</h3>" +
                         "<p>Les fichiers pris en compte peuvent etre filtré selon leurs extensions. Plusieurs " +
                         "peuvent être choisi, il suffit de les séparé par une \",\"</p>" +
                         "<h3>Le nom</h3>" +
@@ -88,7 +89,7 @@ public class Aide extends JDialog
                         "<ul><li>fichier n°1.txt</li><li>fichier n°2.txt</li><li>fichier n°3.txt</li></ul>" +
                         "<p>P.S: Le programme prend en compte les nombres a virgule. (\",\" ou \".\")</p>" +
                         "</div>" +
-                        "<h2>Les vidéos</h2>" +
+                        "<h2>Les séries</h2>" +
                         "<div class=\"marginLeft\">" +
                         "<p>Les vidéos ont un fonctionnement totalement automatique. Le renommage se feras en suivant le précepte suivant:" +
                         "<p> NomDeLaSerie Saison Episode Qualité Compression.extension </p>" +
@@ -99,12 +100,20 @@ public class Aide extends JDialog
                         "<p>par exemple: [Une Team] Test (TV) S1 episode 5 1080p donneras -> Test S1 Ep 5 1080p</p>" +
                         "<p>Si vous choisissez de mettre un nom dans le champs \"paterne\", se seras celui-ci que seras mis au détriment de l'ancien.</p>" +
                         "</div>" +
+                        "<h2>Nom aléatoires</h2>" +
+                        "<div class=\"marginLeft\">" +
+                        "<p>Cette sections est plus situationnel. Elle permet de renommée un fichier avec un numéro aléatoire devant le nom du fichier.</p>" +
+                        "<p>Le numéro et le nom sont séparé par un \"-\", si un numéro est deja présent, il seras remplacé par un nouveau si la case a chocher \"save nb if exist\" est décoché</>" +
+                        "<p>La zones de saisie d'extension fonctionne de la même manière que pour \"Autres\", et aucun paterne ne peut etre saisie.</p>" +
+                        "<p>Cette section peut etre utile pour de vieux lecteur radio ou de vieux logiciels qui ne savent pas lire de façon aléatoire...</p>" +
+                        "</div>" +
                         "<h2>Options</h2>" +
-                        "<p>Il y as 3 options supplémentaires:</p>" +
+                        "<p>Il y as 4 options supplémentaires:</p>" +
                         "<ul>" +
                             "<li>Un thème sombre pour ceux qui ont des yeux sensibles.</li>" +
                             "<li>Une option de sécurité qui permet de ne pas renomer un fichier si la quantité de nombre ne correspond pas a celle de \"%%\"</li>" +
-                            "<li>Une option pour remplacer tous les points par des espaces (extension non incluse)." +
+                            "<li>Une option pour remplacer tous les points par des espaces (extension non incluse) [Pour séries].</li>" +
+                            "<li>La possibilité de sauvegarder l'eventuel nombre deja présent dans le nom [Pour Nom aléatoire].</li>" +
                         "</ul>" +
                     "</body>" +
                 "</html>";

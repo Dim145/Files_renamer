@@ -23,6 +23,9 @@ public class IHMGUI extends JFrame
     private final JTextField          paternField;
     private final JTextField          extensions;
 
+    private final JCheckBox saveNbIfExist;
+    private final JCheckBox replacePbyS;
+
     private final JButton launchRenamedScript;
 
     private final JLabel  console;
@@ -30,8 +33,6 @@ public class IHMGUI extends JFrame
     private final Picker picker;
 
     private final ArrayList<JPanel> allJPanel;
-
-    private boolean isReplacePbyS;
 
     public IHMGUI(Controleur ctrl)
     {
@@ -47,11 +48,11 @@ public class IHMGUI extends JFrame
         this.allTypes            = new JComboBox<>(FileType.values());
         this.paternField         = new JFormattedTextField();
         this.extensions          = new JFormattedTextField();
+        this.saveNbIfExist       = new JCheckBox("Save nb if exist");
+        this.replacePbyS         = new JCheckBox("Replace \".\" by \" \"");
         this.launchRenamedScript = new JButton("GO");
         this.console             = new JLabel();
         this.picker              = new Picker();
-
-        this.isReplacePbyS = false;
 
         this.setAutoRequestFocus(true);
 
@@ -61,7 +62,7 @@ public class IHMGUI extends JFrame
             {
                 this.ctrl.setExtensions(this.extensions.getText());
 
-                this.ctrl.renameFile(this.pathField.getText(), this.paternField.getForeground().equals(Color.GRAY) ? "" : this.paternField.getText(), this.isReplacePbyS);
+                this.ctrl.renameFile(this.pathField.getText(), this.paternField.getForeground().equals(Color.GRAY) ? "" : this.paternField.getText(), this.replacePbyS.isSelected());
             }
             else
             {
@@ -99,11 +100,23 @@ public class IHMGUI extends JFrame
             {
                 super.focusGained(e);
 
-                if( IHMGUI.this.paternField.getForeground().equals(Color.GRAY) )
+                if( IHMGUI.this.paternField.getForeground().equals(Color.GRAY) && IHMGUI.this.paternField.isEditable() )
                 {
                     IHMGUI.this.paternField.setText("");
                     Color baseColor = IHMGUI.this.paternField.getBackground().equals(Color.WHITE) ? new Color(50, 50, 50) : Color.WHITE;
                     IHMGUI.this.paternField.setForeground(IHMGUI.couleurPlusClair(baseColor, baseColor.equals(Color.WHITE)));
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e)
+            {
+                super.focusLost(e);
+
+                if( IHMGUI.this.paternField.getText().isEmpty() && IHMGUI.this.allTypes.getSelectedItem() == FileType.SERIES )
+                {
+                    IHMGUI.this.paternField.setForeground(Color.GRAY);
+                    IHMGUI.this.paternField.setText("Non obligatoire");
                 }
             }
         });
@@ -112,49 +125,81 @@ public class IHMGUI extends JFrame
         {
             IHMGUI.this.ctrl.setTypeCourant((FileType) event.getItem());
 
-            if( event.getItem() != FileType.AUTRES )
+            switch( (FileType) event.getItem() )
             {
-                this.extensions.setEditable(false);
-                this.extensions.setText(((FileType) event.getItem()).getListExtensionInString());
-
-                if( IHMGUI.this.paternField.getText().isEmpty() )
+                case SERIES:
                 {
+                    this.replacePbyS.setVisible(true);
+                    this.extensions.setEditable(false);
+                    this.extensions.setText(((FileType) event.getItem()).getListExtensionInString());
+
+                    if (IHMGUI.this.paternField.getText().isEmpty())
+                    {
+                        this.paternField.setForeground(Color.GRAY);
+                        this.paternField.setText("Non obligatoire");
+                    }
+
+                    this.paternField.setEditable(true);
+                    this.saveNbIfExist.setVisible(false);
+                }
+                break;
+
+                case ALEANAME:
+                {
+                    this.replacePbyS.setVisible(false);
+                    this.extensions.setEditable(true);
+                    this.extensions.setText("");
+
                     this.paternField.setForeground(Color.GRAY);
-                    this.paternField.setText("Non obligatoire");
-                }
-            }
-            else
-            {
-                this.extensions .setEditable(true);
-                this.extensions.setText("");
+                    this.paternField.setText("Rien a saisir");
+                    this.paternField.setEditable(false);
 
-                if( this.paternField.getForeground().equals(Color.GRAY))
-                {
-                    this.paternField.setText("");
-
-                    Color baseColor = IHMGUI.this.paternField.getBackground().equals(Color.WHITE) ? new Color(50, 50, 50) : Color.WHITE;
-                    IHMGUI.this.paternField.setForeground(IHMGUI.couleurPlusClair(baseColor, baseColor.equals(Color.WHITE)));
+                    this.saveNbIfExist.setVisible(true);
                 }
+                break;
+
+                default:
+                    this.replacePbyS.setVisible(false);
+                    this.extensions .setEditable(true);
+                    this.paternField.setEditable(true);
+                    this.saveNbIfExist.setVisible(false);
+                    this.extensions .setText("");
+
+                    if( this.paternField.getForeground().equals(Color.GRAY))
+                    {
+                        this.paternField.setText("");
+
+                        Color baseColor = IHMGUI.this.paternField.getBackground().equals(Color.WHITE) ? new Color(50, 50, 50) : Color.WHITE;
+                        IHMGUI.this.paternField.setForeground(IHMGUI.couleurPlusClair(baseColor, baseColor.equals(Color.WHITE)));
+                    }
             }
         });
+
+        this.saveNbIfExist.addActionListener(event -> this.ctrl.setSaveNbIfExist(this.saveNbIfExist.isSelected()));
 
         JPanel tmp  = new JPanel();
         JPanel tmp2 = new JPanel();
         JPanel tmp3 = new JPanel();
         JPanel tmp4 = new JPanel();
+        JPanel tmp5 = new JPanel();
+        JPanel tmp6 = new JPanel();
 
         this.allJPanel.add(tmp );
         this.allJPanel.add(tmp2);
         this.allJPanel.add(tmp3);
         this.allJPanel.add(tmp4);
+        this.allJPanel.add(tmp5);
+        this.allJPanel.add(tmp6);
 
         tmp .setLayout(new GridLayout(4, 1));
         tmp2.setLayout(new GridLayout(4, 1));
         tmp3.setLayout(new BorderLayout());
         tmp4.setLayout(new BorderLayout());
+        tmp5.setLayout(new BorderLayout());
+        tmp6.setLayout(new BorderLayout());
 
         tmp.add(this.pathField);
-        tmp.add(this.allTypes);
+        tmp.add(tmp5);
         tmp.add(this.extensions);
         tmp.add(tmp4);
 
@@ -168,6 +213,12 @@ public class IHMGUI extends JFrame
 
         tmp4.add(this.paternField        , BorderLayout.CENTER);
         tmp4.add(this.launchRenamedScript, BorderLayout.EAST  );
+
+        tmp5.add(this.allTypes, BorderLayout.CENTER);
+        tmp5.add(tmp6         , BorderLayout.EAST);
+
+        tmp6.add(this.replacePbyS  , BorderLayout.CENTER);
+        tmp6.add(this.saveNbIfExist, BorderLayout.EAST);
 
         JScrollPane panelScroll = new JScrollPane(this.console);
         JScrollBar bar = panelScroll.getVerticalScrollBar();
@@ -201,11 +252,8 @@ public class IHMGUI extends JFrame
         this.setLocationRelativeTo(null);
 
         this.extensions.grabFocus();
-    }
-
-    public void changeReplacePbyS( boolean isReplacePbyS )
-    {
-        this.isReplacePbyS = isReplacePbyS;
+        this.saveNbIfExist.setVisible(false);
+        this.replacePbyS.setVisible(false);
     }
 
     private static void majAllFonts(Container comp, Font font)
@@ -246,6 +294,9 @@ public class IHMGUI extends JFrame
 
     public void setColorForIHMAndChildren(Color baseColor)
     {
+        Color foreground  = baseColor == Color.WHITE ? Color.BLACK : Color.WHITE;
+        Color colorEpurer = IHMGUI.couleurPlusClair(baseColor, baseColor == Color.WHITE);
+
         this.setBackground(baseColor);
 
         for (JPanel panel : this.allJPanel )
@@ -253,33 +304,21 @@ public class IHMGUI extends JFrame
             panel.setBackground(baseColor);
 
             for (int i = 0; i < panel.getComponentCount(); i++)
+            {
                 if( !(panel.getComponent(i) instanceof JButton) && !(panel.getComponent(i) instanceof JComboBox) )
-                panel.getComponent(i).setForeground(baseColor == Color.WHITE ? Color.BLACK : Color.WHITE);
+                {
+                    if( panel.getComponent(i).getForeground() != Color.GRAY ) // Color.GRAY = desactivé, donc on ne change pas la couleur
+                        panel.getComponent(i).setForeground(foreground);
+
+                    panel.getComponent(i).setBackground(colorEpurer);
+                }
+            }
         }
 
-        this.extensions.setBackground(IHMGUI.couleurPlusClair(baseColor, baseColor == Color.WHITE));
-        this.pathField.setBackground(IHMGUI.couleurPlusClair(baseColor, baseColor == Color.WHITE));
-        this.paternField.setBackground(IHMGUI.couleurPlusClair(baseColor, baseColor == Color.WHITE));
-        this.console.setBackground(baseColor);
-        //this.launchRenamedScript.setBackground(baseColor);
-        this.picker.setBackground(baseColor);
+        this.console.setBackground(baseColor );
+        this.console.setForeground(foreground);
 
         this.changeConsoleColorByUIColor();
-
-        if( baseColor == Color.WHITE )
-        {
-            this.console.setForeground(Color.BLACK);
-            this.extensions.setForeground(Color.BLACK);
-            this.paternField.setForeground(Color.BLACK);
-            this.pathField.setForeground(Color.BLACK);
-        }
-        else
-        {
-            this.console.setForeground(Color.WHITE);
-            this.extensions.setForeground(Color.WHITE);
-            this.paternField.setForeground(Color.WHITE);
-            this.pathField.setForeground(Color.WHITE);
-        }
     }
 
     private void changeConsoleColorByUIColor()
@@ -312,11 +351,6 @@ public class IHMGUI extends JFrame
     public void changeBlockParam( boolean blockIfNotMatch)
     {
         ((MenuBar) this.getJMenuBar()).changeBlockParam(blockIfNotMatch);
-    }
-
-    public void changeReplacePbySParam( boolean isReplacePbyS)
-    {
-        ((MenuBar) this.getJMenuBar()).changeReplacePbyS(isReplacePbyS);
     }
 
     public void saveBooleanPreferences( String name, boolean value, boolean clearFile )

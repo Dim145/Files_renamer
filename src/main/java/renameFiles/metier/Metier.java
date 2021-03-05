@@ -3,8 +3,10 @@ package renameFiles.metier;
 import renameFiles.Controleur;
 import renameFiles.ihm.DialogAvancement;
 import renameFiles.metier.types.BaseFile;
-import renameFiles.metier.types.videos.Saison;
-import renameFiles.metier.types.videos.VideoFile;
+import renameFiles.metier.types.aleatoires.AleaNameFile;
+import renameFiles.metier.types.aleatoires.ListeFichierAlea;
+import renameFiles.metier.types.series.Saison;
+import renameFiles.metier.types.series.VideoFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,7 +17,9 @@ public class Metier
     private final ArrayList<File> files;
     private final Controleur  ctrl;
     private final List<String> acceptedExtension;
+
     private boolean blockIfNotMathPatern;
+    private boolean saveNbIfExistInAlea;
 
     private FileType typeCourant;
 
@@ -47,9 +51,15 @@ public class Metier
         return this.acceptedExtension.size() > 0;
     }
 
+    public void setSaveNbIfExistInAlea( boolean saveNbIfExistInAlea )
+    {
+        this.saveNbIfExistInAlea = saveNbIfExistInAlea;
+    }
+
+    // Todo optimisé l'algorithme en utilisant vraiment les objets (et la reflexivité ?)
     public void renameWithPaterneInPath( String path, String patern, boolean replaceAllPointInName )
     {
-        if( this.typeCourant != FileType.VIDEOS && (patern == null || patern.length() < 1 || !patern.contains("%%")) )
+        if( this.typeCourant == FileType.AUTRES && (patern == null || patern.length() < 1 || !patern.contains("%%")) )
         {
             this.ctrl.printConsole("<font color=\"red\">Saisissez un paterne avec au moins 1 fois \"%%\"</font>");
 
@@ -67,17 +77,47 @@ public class Metier
             return;
         }
 
-        DialogAvancement dialog = new DialogAvancement(this.typeCourant == FileType.VIDEOS ? "Lecture et recupération des donées..." : "Lecture et renommage des fichiers...", 0, this.files.size());
+        DialogAvancement dialog = new DialogAvancement(this.typeCourant == FileType.SERIES ? "Lecture et recupération des donées..." : "Lecture et renommage des fichiers...", 0, this.files.size());
 
         new Thread(() ->
         {
+            if( this.typeCourant == FileType.ALEANAME )
+            {
+                ListeFichierAlea listeAlea = new ListeFichierAlea(this.files, this.saveNbIfExistInAlea);
+
+                listeAlea.setNbAleaPostName(dialog);
+
+                dialog.setVisible(false);
+                dialog.setTitle("Renommage en cours...");
+                dialog.reset();
+                dialog.setVisible(true);
+
+                for (AleaNameFile aleaFile : listeAlea)
+                {
+                    dialog.setFichierCourant(aleaFile.toString());
+
+                    if( aleaFile.getFile().renameTo(new File(aleaFile.getNewPath())) )
+                        this.ctrl.printConsole("file: " + aleaFile.getFullname() + aleaFile.getExtension() + " -> <font color=\"rgb(0, 255, 255)\">" + aleaFile + "</font>");
+                    else
+                        this.ctrl.printConsole("<font color=\"red\">file: " + aleaFile.getFullname() + aleaFile.getExtension() + " not renamed</font>");
+
+                    dialog.avancerUneFois();
+                }
+
+                dialog.setVisible(false);
+
+                return;
+            }
+
             ArrayList<Saison> listSaison = new ArrayList<>();
+
+            dialog.setVisible(true);
 
             for (File file : this.files)
             {
                 String fileName  = file.getName().substring(0, file.getName().lastIndexOf("."));
 
-                if( this.typeCourant == FileType.VIDEOS)
+                if( this.typeCourant == FileType.SERIES)
                 {
                     VideoFile video = VideoFile.getVideoFileFromFile(file, replaceAllPointInName);
 
@@ -89,7 +129,6 @@ public class Metier
 
                     video.setFullFormatedName(patern);
                     video.setName(replaceAllPointInName);
-                    video.setInformationDetaillerInFile();
 
                     Saison s = new Saison(video.getName(), video.getNumeroSaison());
 
@@ -138,7 +177,7 @@ public class Metier
 
             dialog.setVisible(false);
 
-            if ( this.typeCourant == FileType.VIDEOS)
+            if ( this.typeCourant == FileType.SERIES)
             {
                 dialog.reset();
                 dialog.setTitle("Renommage des vidéos...");

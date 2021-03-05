@@ -6,11 +6,12 @@ import java.awt.*;
 public class DialogAvancement extends JDialog
 {
     private final int borneMin;
-    private final int borneMax;
 
     private final JProgressBar bar;
     private final JLabel       affichageAvancement;
     private final JLabel       affichageFichierCourant;
+
+    private int borneMax;
 
     public DialogAvancement( int borneMin, int borneMax )
     {
@@ -38,8 +39,13 @@ public class DialogAvancement extends JDialog
 
         this.affichageAvancement    .setFont(newFontSize);
         this.affichageFichierCourant.setFont(newFontSize);
+    }
 
-        this.setVisible(true);
+    public void setBorneMax( int newBorneMax )
+    {
+        if( this.borneMin > newBorneMax ) return;
+
+        this.borneMax = this.borneMin == newBorneMax ? newBorneMax +1 : newBorneMax;
     }
 
     public DialogAvancement(String title)
