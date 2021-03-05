@@ -186,4 +186,14 @@ public class Controleur
     {
         this.metier.setSaveNbIfExistInAlea(selected);
     }
+
+    public void setNbSDL(int parseInt)
+    {
+        this.metier.setMaxLevel(parseInt);
+    }
+
+    public int getLevelMax()
+    {
+        return this.metier.getLevelMax();
+    }
 }

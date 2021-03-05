@@ -22,6 +22,7 @@ public class Metier
     private boolean saveNbIfExistInAlea;
 
     private FileType typeCourant;
+    private int      maxLevel;
 
     public Metier(Controleur ctrl )
     {
@@ -31,6 +32,7 @@ public class Metier
 
         this.typeCourant          = FileType.AUTRES;
         this.blockIfNotMathPatern = true;
+        this.maxLevel             = 1;
     }
 
     public boolean setAcceptedExtensions( String extensions )
@@ -220,7 +222,7 @@ public class Metier
             {
                 if (this.accept(file.getName())) this.files.add(file);
             }
-            else if (file.isDirectory() && level <= 1 )
+            else if (file.isDirectory() && level <= this.maxLevel )
             {
                 readRepertory(file, ++level);
             }
@@ -228,6 +230,9 @@ public class Metier
 
     public boolean accept(String name)
     {
+        if( this.acceptedExtension.contains("*") )
+            return true;
+
         if( this.acceptedExtension.size() > 0 )
             for( String s : this.acceptedExtension )
                 if( name.endsWith("." + s))
@@ -249,5 +254,17 @@ public class Metier
     public void setTypeCourant(FileType typeCourant)
     {
         this.typeCourant = typeCourant;
+    }
+
+    public void setMaxLevel( int niveauDeRecherche )
+    {
+        if( niveauDeRecherche < 0 ) return;
+
+        this.maxLevel = niveauDeRecherche;
+    }
+
+    public int getLevelMax()
+    {
+        return this.maxLevel;
     }
 }

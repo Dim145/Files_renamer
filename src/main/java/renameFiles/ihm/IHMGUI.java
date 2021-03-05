@@ -5,9 +5,16 @@ import renameFiles.metier.FileType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,6 +29,7 @@ public class IHMGUI extends JFrame
     private final JComboBox<FileType> allTypes;
     private final JTextField          paternField;
     private final JTextField          extensions;
+    private final JTextField          levelRecherche;
 
     private final JCheckBox saveNbIfExist;
     private final JCheckBox replacePbyS;
@@ -54,12 +62,59 @@ public class IHMGUI extends JFrame
         this.console             = new JLabel();
         this.picker              = new Picker();
 
+
+        this.levelRecherche      = new JTextField(String.valueOf(this.ctrl.getLevelMax()+1))
+        {
+            private final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            private final DataFlavor flavor   = DataFlavor.stringFlavor;
+
+            @Override
+            public void paste()
+            {
+                Transferable trans  = clipboard.getContents(this);
+
+                if( trans != null && trans.isDataFlavorSupported(flavor) )
+                {
+                    try
+                    {
+                        String texteCopied = (String) trans.getTransferData(flavor);
+
+                        if( texteCopied.matches(".*[a-zA-Z].*"))
+                        {
+                            Toolkit.getDefaultToolkit().beep();
+                            return;
+                        }
+
+                        String txtAv = this.getText();
+
+                        super.paste();
+
+                        try
+                        {
+                            IHMGUI.this.setNbSDL();
+                        }
+                        catch (NumberFormatException err)
+                        {
+                            this.setText(txtAv);
+                        }
+                    }
+                    catch (UnsupportedFlavorException | IOException e)
+                    {
+                        // une erreur ? tant pis pour toi.
+                    }
+                }
+            }
+        };
+
         this.setAutoRequestFocus(true);
 
         launchRenamedScript.addActionListener(e ->
         {
             if( !this.pathField.getText().isEmpty() && !" ".equals(this.pathField.getText()) )
             {
+                if( !String.valueOf(this.ctrl.getLevelMax()+1).equals(this.levelRecherche.getText()) )
+                    this.levelRecherche.setText(String.valueOf(this.ctrl.getLevelMax()+1));
+
                 this.ctrl.setExtensions(this.extensions.getText());
 
                 this.ctrl.renameFile(this.pathField.getText(), this.paternField.getForeground().equals(Color.GRAY) ? "" : this.paternField.getText(), this.replacePbyS.isSelected());
@@ -175,6 +230,51 @@ public class IHMGUI extends JFrame
             }
         });
 
+        this.levelRecherche.addKeyListener(new KeyAdapter()
+        {
+            private String texteAv = null;
+
+            @Override
+            public void keyTyped(KeyEvent e)
+            {
+                char c = e.getKeyChar();
+
+                if( !Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE )
+                {
+                    if (!e.isControlDown())
+                        Toolkit.getDefaultToolkit().beep();
+
+                    e.consume();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e)
+            {
+                if( this.texteAv == null )
+                    this.texteAv = IHMGUI.this.levelRecherche.getText();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e)
+            {
+                try
+                {
+                    IHMGUI.this.setNbSDL();
+                }
+                catch (NumberFormatException err)
+                {
+                    Toolkit.getDefaultToolkit().beep();
+
+                    IHMGUI.this.levelRecherche.setText(this.texteAv);
+                }
+
+                this.texteAv = null;
+            }
+        });
+
+        this.levelRecherche.setColumns(2);
+
         this.saveNbIfExist.addActionListener(event -> this.ctrl.setSaveNbIfExist(this.saveNbIfExist.isSelected()));
 
         JPanel tmp  = new JPanel();
@@ -183,6 +283,8 @@ public class IHMGUI extends JFrame
         JPanel tmp4 = new JPanel();
         JPanel tmp5 = new JPanel();
         JPanel tmp6 = new JPanel();
+        JPanel tmp7 = new JPanel();
+        JPanel tmp8 = new JPanel();
 
         this.allJPanel.add(tmp );
         this.allJPanel.add(tmp2);
@@ -190,6 +292,8 @@ public class IHMGUI extends JFrame
         this.allJPanel.add(tmp4);
         this.allJPanel.add(tmp5);
         this.allJPanel.add(tmp6);
+        this.allJPanel.add(tmp7);
+        this.allJPanel.add(tmp8);
 
         tmp .setLayout(new GridLayout(4, 1));
         tmp2.setLayout(new GridLayout(4, 1));
@@ -197,8 +301,10 @@ public class IHMGUI extends JFrame
         tmp4.setLayout(new BorderLayout());
         tmp5.setLayout(new BorderLayout());
         tmp6.setLayout(new BorderLayout());
+        tmp7.setLayout(new BorderLayout());
+        //tmp8.setLayout(new BorderLayout());
 
-        tmp.add(this.pathField);
+        tmp.add(tmp7);
         tmp.add(tmp5);
         tmp.add(this.extensions);
         tmp.add(tmp4);
@@ -219,6 +325,16 @@ public class IHMGUI extends JFrame
 
         tmp6.add(this.replacePbyS  , BorderLayout.CENTER);
         tmp6.add(this.saveNbIfExist, BorderLayout.EAST);
+
+        tmp7.add(this.pathField, BorderLayout.CENTER);
+        tmp7.add(tmp8, BorderLayout.EAST);
+
+        JLabel label = new JLabel(" Nb S-D: ");
+        tmp8.add(label, BorderLayout.CENTER);
+        tmp8.add(this.levelRecherche, BorderLayout.EAST);
+
+        label.setToolTipText("Nombres de Sous-Dossiers à lire.");
+        this.levelRecherche.setToolTipText("Nombres de Sous-Dossiers à lire.");
 
         JScrollPane panelScroll = new JScrollPane(this.console);
         JScrollBar bar = panelScroll.getVerticalScrollBar();
@@ -254,6 +370,14 @@ public class IHMGUI extends JFrame
         this.extensions.grabFocus();
         this.saveNbIfExist.setVisible(false);
         this.replacePbyS.setVisible(false);
+    }
+
+    private void setNbSDL() throws NumberFormatException
+    {
+        if( this.levelRecherche.getText().isEmpty())
+            return;
+
+        this.ctrl.setNbSDL(Integer.parseInt(this.levelRecherche.getText())-1);
     }
 
     private static void majAllFonts(Container comp, Font font)
