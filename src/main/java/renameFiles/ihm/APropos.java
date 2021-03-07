@@ -1,8 +1,6 @@
 package renameFiles.ihm;
 
 import javax.swing.*;
-
-import javax.swing.UIManager;
 import javax.swing.plaf.UIResource;
 import java.awt.*;
 

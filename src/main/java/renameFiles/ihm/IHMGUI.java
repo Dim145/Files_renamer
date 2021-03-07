@@ -1,6 +1,7 @@
 package renameFiles.ihm;
 
 import renameFiles.Controleur;
+import renameFiles.ihm.composants.JConsoleLabel;
 import renameFiles.ihm.composants.JIntergerTextField;
 import renameFiles.ihm.composants.JTextFieldHideText;
 import renameFiles.metier.FileType;
@@ -11,7 +12,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class IHMGUI extends JFrame
 {
@@ -31,8 +31,9 @@ public class IHMGUI extends JFrame
     private final JCheckBox replacePbyS;
 
     private final JButton launchRenamedScript;
-    private final JLabel  console;
     private final Picker  picker;
+
+    private final JConsoleLabel console;
 
     private final ArrayList<JPanel> allJPanel;
 
@@ -53,7 +54,7 @@ public class IHMGUI extends JFrame
         this.saveNbIfExist       = new JCheckBox("Save nb if exist");
         this.replacePbyS         = new JCheckBox("Replace \".\" by \" \"");
         this.launchRenamedScript = new JButton("GO");
-        this.console             = new JLabel();
+        this.console             = new JConsoleLabel();
         this.picker              = new Picker();
 
         this.levelRecherche = new JIntergerTextField(this, String.valueOf(this.ctrl.getLevelMax()+1), e -> this.setNbSDL());
@@ -78,12 +79,6 @@ public class IHMGUI extends JFrame
 
         this.extensions.addActionListener(e -> this.paternField.grabFocus());
         this.paternField.addActionListener(e -> this.launchRenamedScript.doClick());
-
-        this.console.setText("<html>");
-        this.console.setOpaque(true);
-        this.console.setBackground(Color.WHITE);
-        this.console.setVerticalAlignment(JLabel.BOTTOM);
-        this.console.setVerticalTextPosition(JLabel.BOTTOM);
 
         this.pathField.addFocusListener(new FocusAdapter()
         {
@@ -187,20 +182,7 @@ public class IHMGUI extends JFrame
         label.setToolTipText("Nombres de Sous-Dossiers à lire.");
         this.levelRecherche.setToolTipText(label.getToolTipText());
 
-        JScrollPane panelScroll = new JScrollPane(this.console);
-        JScrollBar bar = panelScroll.getVerticalScrollBar();
-
-        AtomicInteger maximumValue = new AtomicInteger(bar.getMaximum());
-        bar.addAdjustmentListener(e ->
-        {
-            if ( maximumValue.get() - bar.getMaximum() == 0 )
-                return;
-
-            bar.setValue(bar.getMaximum());
-            maximumValue.set(bar.getMaximum());
-        });
-
-        this.add( panelScroll          , BorderLayout.CENTER );
+        this.add( this.console         , BorderLayout.CENTER );
         this.add( this.allJPanel.get(2), BorderLayout.NORTH  );
         this.setJMenuBar(new MenuBar(this));
 
@@ -248,17 +230,8 @@ public class IHMGUI extends JFrame
 
     public void printInConsole(String s)
     {
-        String[] consoleText = this.console.getText().split("<br/>");
+        this.console.addText(s);
 
-        if( consoleText.length > 70 )
-        {
-            this.console.setText("<html> ");
-
-            for (int cpt = 1; cpt < consoleText.length; cpt++ )
-                this.console.setText(this.console.getText() + consoleText[cpt] + "<br/>");
-        }
-
-        this.console.setText(this.console.getText() + s.replaceAll("\n", "<br/>") + "<br/>");
         this.changeConsoleColorByUIColor();
     }
 
