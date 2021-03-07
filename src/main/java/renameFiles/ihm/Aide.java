@@ -108,12 +108,18 @@ public class Aide extends JDialog
                         "<p>Cette section peut etre utile pour de vieux lecteur radio ou de vieux logiciels qui ne savent pas lire de façon aléatoire...</p>" +
                         "</div>" +
                         "<h2>Options</h2>" +
-                        "<p>Il y as 4 options supplémentaires:</p>" +
+                        "<p>Il y as 5 options supplémentaires:</p>" +
                         "<ul>" +
                             "<li>Un thème sombre pour ceux qui ont des yeux sensibles.</li>" +
                             "<li>Une option de sécurité qui permet de ne pas renomer un fichier si la quantité de nombre ne correspond pas a celle de \"%%\"</li>" +
                             "<li>Une option pour remplacer tous les points par des espaces (extension non incluse) [Pour séries].</li>" +
                             "<li>La possibilité de sauvegarder l'eventuel nombre deja présent dans le nom [Pour Nom aléatoire].</li>" +
+                            "<li>La modification du nombre de sous-repertoire parcouru: " +
+                                "<ul>" +
+                                    "<li>1 = dossier choisi</li>" +
+                                    "<li>2 = 1 + premier sous-répertoire</li>" +
+                                    "<li>3 = 2 + second sous-repertoire pour chaque premiers sous-répertoires.</li>" +
+                                    "<li>...</li>" +
                         "</ul>" +
                     "</body>" +
                 "</html>";

@@ -13,7 +13,7 @@ public class APropos extends JOptionPane
         String sAff = "<HTML><BODY><FONT COLOR=\"RED\"> <FONT SIZE=\"+1\"> <B>File Renamer</B> </FONT> </FONT></BODY></HTML>\n\n\n\n" +
                 "<HTML><BODY><FONT COLOR=\""+ ( background.equals(Color.WHITE) ? "black" : "white") + "\">Créer par:    Dimitri  Dubois</FONT> </BODY></HTML>\n\n"                   +
                 "<HTML><BODY><FONT COLOR=\""+ ( background.equals(Color.WHITE) ? "black" : "white") + "\">Développé en Octobre 2020</FONT> </BODY></HTML></FONT> </BODY></HTML> \n" +
-                "<HTML><BODY><FONT COLOR=\""+ ( background.equals(Color.WHITE) ? "black" : "white") + "\">Version 3.2.4</FONT> </BODY></HTML>";
+                "<HTML><BODY><FONT COLOR=\""+ ( background.equals(Color.WHITE) ? "black" : "white") + "\">Version 3.2.5</FONT> </BODY></HTML>";
 
         UIResource basePane  = (UIResource) UIManager.getColor( "OptionPane.background" );
         UIResource basePanel = (UIResource) UIManager.getColor( "Panel.background" );

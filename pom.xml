@@ -6,7 +6,7 @@
 
     <groupId>com.dim145.renamefiles</groupId>
     <artifactId>Files_renamer</artifactId>
-    <version>2.2</version>
+    <version>3.2.5</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
