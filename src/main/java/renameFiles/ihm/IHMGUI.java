@@ -1,20 +1,15 @@
 package renameFiles.ihm;
 
 import renameFiles.Controleur;
+import renameFiles.ihm.composants.JIntergerTextField;
+import renameFiles.ihm.composants.JTextFieldHideText;
 import renameFiles.metier.FileType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,19 +21,18 @@ public class IHMGUI extends JFrame
     private final Controleur ctrl;
 
     private final JTextField          pathField;
-    private final JComboBox<FileType> allTypes;
     private final JTextField          paternField;
     private final JTextField          extensions;
     private final JTextField          levelRecherche;
+
+    private final JComboBox<FileType> allTypes;
 
     private final JCheckBox saveNbIfExist;
     private final JCheckBox replacePbyS;
 
     private final JButton launchRenamedScript;
-
     private final JLabel  console;
-
-    private final Picker picker;
+    private final Picker  picker;
 
     private final ArrayList<JPanel> allJPanel;
 
@@ -54,7 +48,7 @@ public class IHMGUI extends JFrame
 
         this.pathField           = new JFormattedTextField();
         this.allTypes            = new JComboBox<>(FileType.values());
-        this.paternField         = new JFormattedTextField();
+        this.paternField         = new JTextFieldHideText(this);
         this.extensions          = new JFormattedTextField();
         this.saveNbIfExist       = new JCheckBox("Save nb if exist");
         this.replacePbyS         = new JCheckBox("Replace \".\" by \" \"");
@@ -62,53 +56,9 @@ public class IHMGUI extends JFrame
         this.console             = new JLabel();
         this.picker              = new Picker();
 
+        this.levelRecherche = new JIntergerTextField(this, String.valueOf(this.ctrl.getLevelMax()+1), e -> this.setNbSDL());
 
-        this.levelRecherche      = new JTextField(String.valueOf(this.ctrl.getLevelMax()+1))
-        {
-            private final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            private final DataFlavor flavor   = DataFlavor.stringFlavor;
-
-            @Override
-            public void paste()
-            {
-                Transferable trans  = clipboard.getContents(this);
-
-                if( trans != null && trans.isDataFlavorSupported(flavor) )
-                {
-                    try
-                    {
-                        String texteCopied = (String) trans.getTransferData(flavor);
-
-                        if( texteCopied.matches(".*[a-zA-Z].*"))
-                        {
-                            Toolkit.getDefaultToolkit().beep();
-                            return;
-                        }
-
-                        String txtAv = this.getText();
-
-                        super.paste();
-
-                        try
-                        {
-                            IHMGUI.this.setNbSDL();
-                        }
-                        catch (NumberFormatException err)
-                        {
-                            this.setText(txtAv);
-                        }
-                    }
-                    catch (UnsupportedFlavorException | IOException e)
-                    {
-                        // une erreur ? tant pis pour toi.
-                    }
-                }
-            }
-        };
-
-        this.setAutoRequestFocus(true);
-
-        launchRenamedScript.addActionListener(e ->
+        this.launchRenamedScript.addActionListener(e ->
         {
             if( !this.pathField.getText().isEmpty() && !" ".equals(this.pathField.getText()) )
             {
@@ -121,21 +71,22 @@ public class IHMGUI extends JFrame
             }
             else
             {
-                this.printInConsole("<font color=\"red\">Selectionnez un repertoire d'où partir</font>" );            }
+                this.printInConsole("<font color=\"red\">Selectionnez un repertoire d'où partir</font>" );
+            }
 
         });
 
         this.extensions.addActionListener(e -> this.paternField.grabFocus());
+        this.paternField.addActionListener(e -> this.launchRenamedScript.doClick());
 
-        this.extensions.setText("mp4,mkv");
-        this.launchRenamedScript.setOpaque(true);
         this.console.setText("<html>");
         this.console.setOpaque(true);
         this.console.setBackground(Color.WHITE);
         this.console.setVerticalAlignment(JLabel.BOTTOM);
         this.console.setVerticalTextPosition(JLabel.BOTTOM);
 
-        this.pathField.addFocusListener(new FocusAdapter() {
+        this.pathField.addFocusListener(new FocusAdapter()
+        {
             @Override
             public void focusGained(FocusEvent e)
             {
@@ -144,35 +95,7 @@ public class IHMGUI extends JFrame
 
                 String s = IHMGUI.this.picker.pickADirectory();
 
-                if( s != null )
-                    IHMGUI.this.setCurrentPath( s );
-            }
-        });
-
-        this.paternField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e)
-            {
-                super.focusGained(e);
-
-                if( IHMGUI.this.paternField.getForeground().equals(Color.GRAY) && IHMGUI.this.paternField.isEditable() )
-                {
-                    IHMGUI.this.paternField.setText("");
-                    Color baseColor = IHMGUI.this.paternField.getBackground().equals(Color.WHITE) ? new Color(50, 50, 50) : Color.WHITE;
-                    IHMGUI.this.paternField.setForeground(IHMGUI.couleurPlusClair(baseColor, baseColor.equals(Color.WHITE)));
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e)
-            {
-                super.focusLost(e);
-
-                if( IHMGUI.this.paternField.getText().isEmpty() && IHMGUI.this.allTypes.getSelectedItem() == FileType.SERIES )
-                {
-                    IHMGUI.this.paternField.setForeground(Color.GRAY);
-                    IHMGUI.this.paternField.setText("Non obligatoire");
-                }
+                if( s != null ) IHMGUI.this.setCurrentPath( s );
             }
         });
 
@@ -180,46 +103,35 @@ public class IHMGUI extends JFrame
         {
             IHMGUI.this.ctrl.setTypeCourant((FileType) event.getItem());
 
-            switch( (FileType) event.getItem() )
+            FileType current = this.getCurrentType();
+
+            this.replacePbyS  .setVisible ( current == FileType.SERIES  );
+            this.saveNbIfExist.setVisible ( current == FileType.ALEANAME);
+            this.extensions   .setEditable( current != FileType.SERIES  );
+            this.paternField  .setEditable( current != FileType.ALEANAME);
+
+            this.extensions.setText( current.getListExtensionInString() );
+
+            switch( current )
             {
                 case SERIES:
                 {
-                    this.replacePbyS.setVisible(true);
-                    this.extensions.setEditable(false);
-                    this.extensions.setText(((FileType) event.getItem()).getListExtensionInString());
-
-                    if (IHMGUI.this.paternField.getText().isEmpty())
+                    if (IHMGUI.this.paternField.getForeground() == Color.GRAY || IHMGUI.this.paternField.getText().isEmpty() )
                     {
                         this.paternField.setForeground(Color.GRAY);
                         this.paternField.setText("Non obligatoire");
                     }
-
-                    this.paternField.setEditable(true);
-                    this.saveNbIfExist.setVisible(false);
                 }
                 break;
 
                 case ALEANAME:
                 {
-                    this.replacePbyS.setVisible(false);
-                    this.extensions.setEditable(true);
-                    this.extensions.setText("");
-
                     this.paternField.setForeground(Color.GRAY);
                     this.paternField.setText("Rien a saisir");
-                    this.paternField.setEditable(false);
-
-                    this.saveNbIfExist.setVisible(true);
                 }
                 break;
 
                 default:
-                    this.replacePbyS.setVisible(false);
-                    this.extensions .setEditable(true);
-                    this.paternField.setEditable(true);
-                    this.saveNbIfExist.setVisible(false);
-                    this.extensions .setText("");
-
                     if( this.paternField.getForeground().equals(Color.GRAY))
                     {
                         this.paternField.setText("");
@@ -230,111 +142,50 @@ public class IHMGUI extends JFrame
             }
         });
 
-        this.levelRecherche.addKeyListener(new KeyAdapter()
-        {
-            private String texteAv = null;
-
-            @Override
-            public void keyTyped(KeyEvent e)
-            {
-                char c = e.getKeyChar();
-
-                if( !Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE )
-                {
-                    if (!e.isControlDown())
-                        Toolkit.getDefaultToolkit().beep();
-
-                    e.consume();
-                }
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e)
-            {
-                if( this.texteAv == null )
-                    this.texteAv = IHMGUI.this.levelRecherche.getText();
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e)
-            {
-                try
-                {
-                    IHMGUI.this.setNbSDL();
-                }
-                catch (NumberFormatException err)
-                {
-                    Toolkit.getDefaultToolkit().beep();
-
-                    IHMGUI.this.levelRecherche.setText(this.texteAv);
-                }
-
-                this.texteAv = null;
-            }
-        });
-
         this.levelRecherche.setColumns(2);
 
         this.saveNbIfExist.addActionListener(event -> this.ctrl.setSaveNbIfExist(this.saveNbIfExist.isSelected()));
 
-        JPanel tmp  = new JPanel();
-        JPanel tmp2 = new JPanel();
-        JPanel tmp3 = new JPanel();
-        JPanel tmp4 = new JPanel();
-        JPanel tmp5 = new JPanel();
-        JPanel tmp6 = new JPanel();
-        JPanel tmp7 = new JPanel();
-        JPanel tmp8 = new JPanel();
+        this.allJPanel.add(new JPanel(new GridLayout(4, 1)) );
+        this.allJPanel.add(new JPanel(new GridLayout(4, 1)));
+        this.allJPanel.add(new JPanel(new BorderLayout()));
+        this.allJPanel.add(new JPanel(new BorderLayout()));
+        this.allJPanel.add(new JPanel(new BorderLayout()));
+        this.allJPanel.add(new JPanel(new BorderLayout()));
+        this.allJPanel.add(new JPanel(new BorderLayout()));
+        this.allJPanel.add(new JPanel(new FlowLayout  ()));
 
-        this.allJPanel.add(tmp );
-        this.allJPanel.add(tmp2);
-        this.allJPanel.add(tmp3);
-        this.allJPanel.add(tmp4);
-        this.allJPanel.add(tmp5);
-        this.allJPanel.add(tmp6);
-        this.allJPanel.add(tmp7);
-        this.allJPanel.add(tmp8);
+        this.allJPanel.get(0).add(this.allJPanel.get(6));
+        this.allJPanel.get(0).add(this.allJPanel.get(4));
+        this.allJPanel.get(0).add(this.extensions);
+        this.allJPanel.get(0).add(this.allJPanel.get(3));
 
-        tmp .setLayout(new GridLayout(4, 1));
-        tmp2.setLayout(new GridLayout(4, 1));
-        tmp3.setLayout(new BorderLayout());
-        tmp4.setLayout(new BorderLayout());
-        tmp5.setLayout(new BorderLayout());
-        tmp6.setLayout(new BorderLayout());
-        tmp7.setLayout(new BorderLayout());
-        //tmp8.setLayout(new BorderLayout());
+        this.allJPanel.get(1).add(new JLabel("path: "));
+        this.allJPanel.get(1).add(new JLabel("type: "));
+        this.allJPanel.get(1).add(new JLabel("extensions: "));
+        this.allJPanel.get(1).add(new JLabel("name patern: "));
 
-        tmp.add(tmp7);
-        tmp.add(tmp5);
-        tmp.add(this.extensions);
-        tmp.add(tmp4);
+        this.allJPanel.get(2).add(this.allJPanel.get(0), BorderLayout.CENTER);
+        this.allJPanel.get(2).add(this.allJPanel.get(1), BorderLayout.WEST  );
 
-        tmp2.add(new JLabel("path: "));
-        tmp2.add(new JLabel("type: "));
-        tmp2.add(new JLabel("extensions: "));
-        tmp2.add(new JLabel("name patern: "));
+        this.allJPanel.get(3).add(this.paternField        , BorderLayout.CENTER);
+        this.allJPanel.get(3).add(this.launchRenamedScript, BorderLayout.EAST  );
 
-        tmp3.add(tmp, BorderLayout.CENTER);
-        tmp3.add(tmp2, BorderLayout.WEST);
+        this.allJPanel.get(4).add(this.allTypes        , BorderLayout.CENTER);
+        this.allJPanel.get(4).add(this.allJPanel.get(5), BorderLayout.EAST  );
 
-        tmp4.add(this.paternField        , BorderLayout.CENTER);
-        tmp4.add(this.launchRenamedScript, BorderLayout.EAST  );
+        this.allJPanel.get(5).add(this.replacePbyS  , BorderLayout.CENTER);
+        this.allJPanel.get(5).add(this.saveNbIfExist, BorderLayout.EAST  );
 
-        tmp5.add(this.allTypes, BorderLayout.CENTER);
-        tmp5.add(tmp6         , BorderLayout.EAST);
-
-        tmp6.add(this.replacePbyS  , BorderLayout.CENTER);
-        tmp6.add(this.saveNbIfExist, BorderLayout.EAST);
-
-        tmp7.add(this.pathField, BorderLayout.CENTER);
-        tmp7.add(tmp8, BorderLayout.EAST);
+        this.allJPanel.get(6).add(this.pathField       , BorderLayout.CENTER);
+        this.allJPanel.get(6).add(this.allJPanel.get(7), BorderLayout.EAST );
 
         JLabel label = new JLabel(" Nb S-D: ");
-        tmp8.add(label, BorderLayout.CENTER);
-        tmp8.add(this.levelRecherche, BorderLayout.EAST);
+        this.allJPanel.get(7).add(label              , BorderLayout.CENTER);
+        this.allJPanel.get(7).add(this.levelRecherche, BorderLayout.EAST );
 
         label.setToolTipText("Nombres de Sous-Dossiers à lire.");
-        this.levelRecherche.setToolTipText("Nombres de Sous-Dossiers à lire.");
+        this.levelRecherche.setToolTipText(label.getToolTipText());
 
         JScrollPane panelScroll = new JScrollPane(this.console);
         JScrollBar bar = panelScroll.getVerticalScrollBar();
@@ -349,12 +200,12 @@ public class IHMGUI extends JFrame
             maximumValue.set(bar.getMaximum());
         });
 
-        this.add( panelScroll, BorderLayout.CENTER );
-        this.add( tmp3       , BorderLayout.NORTH  );
+        this.add( panelScroll          , BorderLayout.CENTER );
+        this.add( this.allJPanel.get(2), BorderLayout.NORTH  );
         this.setJMenuBar(new MenuBar(this));
 
         Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        int height = (int)dimension.getHeight();
+        int height = (int) dimension.getHeight();
 
         this.pack();
 
@@ -372,7 +223,7 @@ public class IHMGUI extends JFrame
         this.replacePbyS.setVisible(false);
     }
 
-    private void setNbSDL() throws NumberFormatException
+    public void setNbSDL() throws NumberFormatException
     {
         if( this.levelRecherche.getText().isEmpty())
             return;
@@ -459,7 +310,7 @@ public class IHMGUI extends JFrame
         }
     }
 
-    private static Color couleurPlusClair(Color baseColor, boolean plusFoncer)
+    public static Color couleurPlusClair(Color baseColor, boolean plusFoncer)
     {
         if( plusFoncer )
             return new Color(baseColor.getRed() - ECART_COLOR, baseColor.getGreen() - ECART_COLOR, baseColor.getBlue() - ECART_COLOR);
@@ -480,5 +331,10 @@ public class IHMGUI extends JFrame
     public void saveBooleanPreferences( String name, boolean value, boolean clearFile )
     {
         this.ctrl.saveBooleanPreferences(name, value, clearFile);
+    }
+
+    public FileType getCurrentType()
+    {
+        return (FileType) this.allTypes.getSelectedItem();
     }
 }
