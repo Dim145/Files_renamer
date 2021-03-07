@@ -79,7 +79,7 @@ public class JConsoleLabel extends JScrollPane
     @Override
     public Font getFont()
     {
-        return this.console.getFont();
+        return this.console != null ? this.console.getFont() : super.getFont();
     }
 
     public static class ConsoleBarListener implements AdjustmentListener
