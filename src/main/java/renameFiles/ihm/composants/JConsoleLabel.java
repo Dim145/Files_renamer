@@ -7,7 +7,9 @@ import java.awt.event.AdjustmentListener;
 
 public class JConsoleLabel extends JScrollPane
 {
-    private final JLabel     console;
+    public static  final int MAX_LINES = 70;
+
+    private final JLabel console;
 
     public JConsoleLabel()
     {
@@ -38,7 +40,7 @@ public class JConsoleLabel extends JScrollPane
     {
         String[] consoleText = this.console.getText().split("<br/>");
 
-        if( consoleText.length > 70 )
+        if( consoleText.length > JConsoleLabel.MAX_LINES )
         {
             this.console.setText("<html> ");
 
@@ -47,6 +49,11 @@ public class JConsoleLabel extends JScrollPane
         }
 
         this.console.setText(this.console.getText() + text.replaceAll("\n", "<br/>") + "<br/>");
+    }
+
+    public int getNbLines()
+    {
+        return this.console.getText().split("<br/>").length;
     }
 
     @Override

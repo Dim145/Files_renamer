@@ -21,6 +21,8 @@ public class JIntergerTextField extends JTextField
 
     private final IHMGUI ihm;
 
+    private IntegerKeyListener listener;
+
     public JIntergerTextField( IHMGUI ihm )
     {
         this.ihm = ihm;
@@ -42,15 +44,11 @@ public class JIntergerTextField extends JTextField
 
     public void setKeyAction( Consumer<? super JTextComponent> action )
     {
-        for (KeyListener kl : this.getKeyListeners())
-            this.removeKeyListener(kl);
+        this.removeKeyListener(this.listener);
 
-        this.addKeyListener(new IntegerKeyListener(action));
-    }
+        this.listener = new IntegerKeyListener(action);
 
-    public void addKeyAction( Consumer<? super JTextComponent> action )
-    {
-        this.addKeyListener(new IntegerKeyListener(action));
+        this.addKeyListener(this.listener);
     }
 
     @Override
@@ -76,7 +74,8 @@ public class JIntergerTextField extends JTextField
 
                 try
                 {
-                    this.ihm.setNbSDL();
+                    if( this.listener != null && this.listener.getAction() != null )
+                        this.listener.getAction().accept(this);
                 }
                 catch (NumberFormatException err)
                 {
@@ -99,6 +98,11 @@ public class JIntergerTextField extends JTextField
         public IntegerKeyListener( Consumer<? super JTextComponent> action )
         {
             this.action = action;
+        }
+
+        public Consumer<? super JTextComponent> getAction()
+        {
+            return this.action;
         }
 
         @Override
@@ -127,7 +131,8 @@ public class JIntergerTextField extends JTextField
         {
             try
             {
-                this.action.accept( (JTextComponent) e.getComponent());
+                if( this.action != null )
+                    this.action.accept( (JTextComponent) e.getComponent());
             }
             catch (NumberFormatException err)
             {
