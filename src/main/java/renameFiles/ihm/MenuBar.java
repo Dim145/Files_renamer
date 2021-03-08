@@ -1,7 +1,12 @@
 package renameFiles.ihm;
 
+import renameFiles.ihm.dialogs.APropos;
+import renameFiles.ihm.dialogs.Aide;
+import renameFiles.metier.Metier;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 
 public class MenuBar extends JMenuBar
 {
@@ -98,10 +103,14 @@ public class MenuBar extends JMenuBar
         this.reWritePrefParam();
     }
 
-    private void reWritePrefParam()
+    public void reWritePrefParam()
     {
-        this.ihm.saveBooleanPreferences("ignoreRenameProtection", !this.itemBlockIfNotMatchNumber.isSelected(), true);
-        this.ihm.saveBooleanPreferences("darkMode", this.darkTheme.isSelected(), false);
+        HashMap<String, Object> prefs = new HashMap<>();
+
+        prefs.put(Metier.tabPreferences[0], this.itemBlockIfNotMatchNumber.isSelected());
+        prefs.put(Metier.tabPreferences[1], this.darkTheme.isSelected());
+
+        this.ihm.savePreferences(prefs, true);
     }
 
     @Override

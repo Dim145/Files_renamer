@@ -4,6 +4,7 @@ import renameFiles.Controleur;
 import renameFiles.ihm.composants.JConsoleLabel;
 import renameFiles.ihm.composants.JIntergerTextField;
 import renameFiles.ihm.composants.JTextFieldHideText;
+import renameFiles.ihm.dialogs.APropos;
 import renameFiles.metier.FileType;
 
 import javax.swing.*;
@@ -12,6 +13,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class IHMGUI extends JFrame
 {
@@ -32,6 +34,7 @@ public class IHMGUI extends JFrame
 
     private final JButton launchRenamedScript;
     private final Picker  picker;
+    private final MenuBar bar;
 
     private final JConsoleLabel console;
 
@@ -56,8 +59,9 @@ public class IHMGUI extends JFrame
         this.launchRenamedScript = new JButton("GO");
         this.console             = new JConsoleLabel();
         this.picker              = new Picker();
+        this.bar                 = new MenuBar(this);
 
-        this.levelRecherche = new JIntergerTextField(this, String.valueOf(this.ctrl.getLevelMax()+1), e -> this.setNbSDL());
+        this.levelRecherche = new JIntergerTextField(String.valueOf(this.ctrl.getLevelMax()+1), e -> this.setNbSDL(-1));
 
         this.launchRenamedScript.addActionListener(e ->
         {
@@ -184,7 +188,7 @@ public class IHMGUI extends JFrame
 
         this.add( this.console         , BorderLayout.CENTER );
         this.add( this.allJPanel.get(2), BorderLayout.NORTH  );
-        this.setJMenuBar(new MenuBar(this));
+        this.setJMenuBar(this.bar);
 
         Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         int height = (int) dimension.getHeight();
@@ -205,12 +209,20 @@ public class IHMGUI extends JFrame
         this.replacePbyS.setVisible(false);
     }
 
-    public void setNbSDL() throws NumberFormatException
+    public void setNbSDL( int val ) throws NumberFormatException
     {
+        if( val > 0 )
+        {
+            this.levelRecherche.setText(String.valueOf(val));
+            return;
+        }
+
         if( this.levelRecherche.getText().isEmpty())
             return;
 
-        this.ctrl.setNbSDL(Integer.parseInt(this.levelRecherche.getText())-1);
+        this.ctrl.setSDL(Integer.parseInt(this.levelRecherche.getText())-1);
+
+        this.bar.reWritePrefParam();
     }
 
     private static void majAllFonts(Container comp, Font font)
@@ -237,7 +249,7 @@ public class IHMGUI extends JFrame
 
     public void setBlockIfNotMathPatern(boolean b)
     {
-        this.ctrl.setBlockIfNotMathPatern(b);
+        this.ctrl.changeBlockParam(b);
     }
 
     public void setColorForIHMAndChildren(Color baseColor)
@@ -293,17 +305,17 @@ public class IHMGUI extends JFrame
 
     public void changeTheme( boolean darkTheme)
     {
-        ((MenuBar) this.getJMenuBar()).changeTheme(darkTheme);
+        this.bar.changeTheme(darkTheme);
     }
 
     public void changeBlockParam( boolean blockIfNotMatch)
     {
-        ((MenuBar) this.getJMenuBar()).changeBlockParam(blockIfNotMatch);
+        this.bar.changeBlockParam(blockIfNotMatch);
     }
 
-    public void saveBooleanPreferences( String name, boolean value, boolean clearFile )
+    public void savePreferences(HashMap<String, Object> prefs, boolean clearFile )
     {
-        this.ctrl.saveBooleanPreferences(name, value, clearFile);
+        this.ctrl.savePreferences(prefs, clearFile);
     }
 
     public FileType getCurrentType()

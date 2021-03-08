@@ -1,7 +1,8 @@
 package renameFiles.metier;
 
 import renameFiles.Controleur;
-import renameFiles.ihm.DialogAvancement;
+import renameFiles.ihm.MenuBar;
+import renameFiles.ihm.dialogs.DialogAvancement;
 import renameFiles.metier.types.BaseFile;
 import renameFiles.metier.types.aleatoires.AleaNameFile;
 import renameFiles.metier.types.aleatoires.ListeFichierAlea;
@@ -9,13 +10,17 @@ import renameFiles.metier.types.series.Saison;
 import renameFiles.metier.types.series.VideoFile;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class Metier
 {
+    public static final String[] tabPreferences = {"BlockIfNotMathPatern", "DarkMode", "SDL" };
+
     private final ArrayList<File> files;
-    private final Controleur  ctrl;
+    private final Controleur      ctrl;
     private final List<String> acceptedExtension;
 
     private boolean blockIfNotMathPatern;
@@ -23,6 +28,8 @@ public class Metier
 
     private FileType typeCourant;
     private int      maxLevel;
+
+    private File preferencesFile;
 
     public Metier(Controleur ctrl )
     {
@@ -33,6 +40,158 @@ public class Metier
         this.typeCourant          = FileType.AUTRES;
         this.blockIfNotMathPatern = true;
         this.maxLevel             = 1;
+        this.preferencesFile      = null;
+    }
+
+    public void setupPreferenceFile()
+    {
+        File appDirectorie = new File(System.getProperty("user.home") + "/.FileRenamer");
+
+        if( !appDirectorie.exists() )
+            if( appDirectorie.mkdir() ) this.ctrl.printConsole("File \".FileRenamer\" created.");
+            else                        this.ctrl.printConsole("<font color=\"red\">Error, cannot create the app file in user directory</font>");
+
+        this.preferencesFile = new File(appDirectorie.getAbsolutePath() + "/.preferences.conf");
+
+        if( this.preferencesFile.exists() )
+            this.readPreferenceFile();
+        else
+            this.createPrefFile();
+    }
+
+    private void createPrefFile()
+    {
+        try
+        {
+            if( this.preferencesFile.createNewFile() )
+            {
+                this.ctrl.printConsole("File preferences created");
+            }
+            else
+            {
+                this.ctrl.printConsole("<font color=\"red\">Error, cannot create the preferences file</font>");
+            }
+
+            if( this.preferencesFile.exists() )
+            {
+                HashMap<String, Object> prefs = new HashMap<>();
+
+                for (int i = 0; i < Metier.tabPreferences.length-1; i++)
+                    prefs.put(Metier.tabPreferences[i], false);
+
+                prefs.put(Metier.tabPreferences[2], 2);
+
+                this.savePreferences(prefs, true);
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void readPreferenceFile()
+    {
+        try(Scanner scanner = new Scanner(this.preferencesFile))
+        {
+            // Todo améliorer avec la reflexiviter
+            HashMap<String, String> prefs = new HashMap<>();
+
+            while( scanner.hasNext() )
+            {
+                String line = scanner.nextLine();
+                String[] tab = line.split("=");
+
+                if( tab.length < 2 ) continue;
+
+                prefs.put(tab[0], tab[1]);
+            }
+
+            List<String> listPref = Arrays.asList(Metier.tabPreferences);
+
+            Class<Controleur> controleurClass = Controleur.class;
+
+            for (String key : prefs.keySet())
+            {
+                if( !listPref.contains(key) ) continue;
+
+                Method m;
+                Class  c;
+
+                try
+                {
+                    c = Boolean.class;
+                    m = controleurClass.getMethod("set" + key, boolean.class);
+                }
+                catch (NoSuchMethodException e)
+                {
+                    try
+                    {
+                        c = Integer.class;
+                        m = controleurClass.getMethod("set" + key, int.class);
+                    }
+                    catch (NoSuchMethodException exception)
+                    {
+                        continue;
+                    }
+                }
+
+                Method parse = null;
+
+                for (Method method : c.getMethods())
+                {
+                    if( method.getName().contains("parse") )
+                    {
+                        parse = method;
+                        break;
+                    }
+                }
+
+                m.invoke(this.ctrl, parse.invoke(c, prefs.get(key)));
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void savePreferences(HashMap<String, Object> hashMap, boolean clearFile )
+    {
+        String fileValue = "";
+        if( !clearFile ) fileValue = this.readAllInPrefFile();
+
+        if ( !hashMap.containsKey( Metier.tabPreferences[2]) )
+            hashMap.put(Metier.tabPreferences[2], this.maxLevel);
+
+        try(FileWriter writer = new FileWriter(this.preferencesFile))
+        {
+            writer.append(fileValue);
+
+            for (String key : hashMap.keySet())
+                writer.append(key).append("=").append(String.valueOf(hashMap.get(key))).append("\n");
+        }
+        catch (Exception e)
+        {
+            this.ctrl.printConsole("<font color=\"red\">Error in file writting");
+            e.printStackTrace();
+        }
+    }
+
+    private String readAllInPrefFile()
+    {
+        StringBuilder res = new StringBuilder();
+
+        try(Scanner scanner = new Scanner(this.preferencesFile))
+        {
+            scanner.reset();
+
+            while( scanner.hasNext() )
+                res.append(scanner.nextLine()).append("\n");
+        }
+        catch (Exception e) { e.printStackTrace(); }
+
+        return res.toString();
     }
 
     public boolean setAcceptedExtensions( String extensions )

@@ -1,7 +1,7 @@
 package renameFiles.metier.types.aleatoires;
 
 import org.jetbrains.annotations.NotNull;
-import renameFiles.ihm.DialogAvancement;
+import renameFiles.ihm.dialogs.DialogAvancement;
 
 import java.io.File;
 import java.util.*;

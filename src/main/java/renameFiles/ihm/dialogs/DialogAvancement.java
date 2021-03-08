@@ -1,4 +1,6 @@
-package renameFiles.ihm;
+package renameFiles.ihm.dialogs;
+
+import renameFiles.ihm.IHMGUI;
 
 import javax.swing.*;
 import java.awt.*;

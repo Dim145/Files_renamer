@@ -1,7 +1,5 @@
 package renameFiles.ihm.composants;
 
-import renameFiles.ihm.IHMGUI;
-
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
@@ -19,25 +17,16 @@ public class JIntergerTextField extends JTextField
     private static final Clipboard  clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     private static final DataFlavor flavor   = DataFlavor.stringFlavor;
 
-    private final IHMGUI ihm;
-
     private IntegerKeyListener listener;
 
-    public JIntergerTextField( IHMGUI ihm )
+    public JIntergerTextField(String text)
     {
-        this.ihm = ihm;
+        this(text, null);
     }
 
-    public JIntergerTextField(IHMGUI ihm, String text )
+    public JIntergerTextField(String text, Consumer<? super JTextComponent> action)
     {
         super(text);
-
-        this.ihm = ihm;
-    }
-
-    public JIntergerTextField(IHMGUI ihm, String text, Consumer<? super JTextComponent> action )
-    {
-        this(ihm, text);
 
         this.setKeyAction(action);
     }
