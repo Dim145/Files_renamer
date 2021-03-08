@@ -5,7 +5,7 @@ import renameFiles.ihm.composants.JConsoleLabel;
 import renameFiles.ihm.composants.JIntergerTextField;
 import renameFiles.ihm.composants.JTextFieldHideText;
 import renameFiles.ihm.dialogs.APropos;
-import renameFiles.metier.FileType;
+import renameFiles.metier.enums.FileType;
 
 import javax.swing.*;
 import java.awt.*;

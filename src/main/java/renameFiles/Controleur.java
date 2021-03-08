@@ -1,7 +1,7 @@
 package renameFiles;
 
 import renameFiles.ihm.IHMGUI;
-import renameFiles.metier.FileType;
+import renameFiles.metier.enums.FileType;
 import renameFiles.metier.Metier;
 
 import javax.swing.*;

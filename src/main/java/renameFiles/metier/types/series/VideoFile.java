@@ -1,6 +1,7 @@
 package renameFiles.metier.types.series;
 
 import org.jetbrains.annotations.NotNull;
+import renameFiles.metier.enums.Definitions;
 import renameFiles.metier.types.BaseFile;
 
 import java.io.File;
@@ -12,15 +13,11 @@ import java.util.Arrays;
  */
 public class VideoFile extends BaseFile
 {
-    public static final int  HD = 720;
-    public static final int FHD = 1080;
-
     /**
      * The constant extensions.
      */
-    public static final String[] extensions = {"mp4", "mkv", "avi", "mov", "mpeg", "mpg", "wmv"};
-
-    public static final String[] listLanguages = {"vf", "fr", "vostfr", "en", "vosten"};
+    public static final String[] extensions    = {"mp4", "mkv", "avi"   , "mov"   , "mpeg", "mpg"   , "wmv"    };
+    public static final String[] listLanguages = {"vf" , "fr" , "vostfr", "french", "en"  , "vosten", "english"};
 
     private double numeroEpisode;
     private int    numeroSaison;
@@ -218,11 +215,14 @@ public class VideoFile extends BaseFile
 
         VideoFile video = new VideoFile(fileName, extension, file);
 
-        if( fileName.contains("HD") )
-            video.setQualiter(VideoFile.HD);
-
-        if ( fileName.contains("FHD") )
-            video.setQualiter(VideoFile.FHD);
+        for (Definitions def : Definitions.values())
+        {
+            if( fileName.contains(" " + def.name()) || fileName.contains(def.name() + " ") )
+            {
+                video.setQualiter(def.getQualiter());
+                break;
+            }
+        }
 
         String tmpFileName = fileName.toLowerCase();
 
@@ -262,7 +262,7 @@ public class VideoFile extends BaseFile
                     if( cpt < fileName.length() && fileName.toLowerCase().charAt(cpt) == 'p' || cpt+1 < fileName.length() && fileName.toLowerCase().charAt(cpt+1) == 'p' )
                     {
                         video.setQualiter((int) video.getNombre(video.getNbNombres()-1));
-                        //continue;
+                        continue;
                     }
 
                     int cpt2 = cpt - (tmp.length());

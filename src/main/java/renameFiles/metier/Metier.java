@@ -2,6 +2,7 @@ package renameFiles.metier;
 
 import renameFiles.Controleur;
 import renameFiles.ihm.dialogs.DialogAvancement;
+import renameFiles.metier.enums.FileType;
 import renameFiles.metier.types.BaseFile;
 import renameFiles.metier.types.aleatoires.AleaNameFile;
 import renameFiles.metier.types.aleatoires.ListeFichierAlea;
@@ -107,7 +108,6 @@ public class Metier
     {
         try(Scanner scanner = new Scanner(this.preferencesFile))
         {
-            // Todo améliorer avec la reflexiviter
             HashMap<String, String> prefs = new HashMap<>();
 
             while( scanner.hasNext() )

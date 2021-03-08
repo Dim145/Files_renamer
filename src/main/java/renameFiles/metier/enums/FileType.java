@@ -1,4 +1,4 @@
-package renameFiles.metier;
+package renameFiles.metier.enums;
 
 import renameFiles.metier.types.series.VideoFile;
 
