@@ -12,6 +12,9 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+/**
+ * The type J interger text field.
+ */
 public class JIntergerTextField extends JTextField
 {
     private static final Clipboard  clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -19,11 +22,22 @@ public class JIntergerTextField extends JTextField
 
     private IntegerKeyListener listener;
 
+    /**
+     * Instantiates a new J interger text field.
+     *
+     * @param text the text
+     */
     public JIntergerTextField(String text)
     {
         this(text, null);
     }
 
+    /**
+     * Instantiates a new J interger text field.
+     *
+     * @param text   the text
+     * @param action the action
+     */
     public JIntergerTextField(String text, Consumer<? super JTextComponent> action)
     {
         super(text);
@@ -31,6 +45,11 @@ public class JIntergerTextField extends JTextField
         this.setKeyAction(action);
     }
 
+    /**
+     * Sets key action.
+     *
+     * @param action the action
+     */
     public void setKeyAction( Consumer<? super JTextComponent> action )
     {
         this.removeKeyListener(this.listener);
@@ -78,17 +97,30 @@ public class JIntergerTextField extends JTextField
         }
     }
 
+    /**
+     * The type Integer key listener.
+     */
     public static class IntegerKeyListener implements KeyListener
     {
         private String texteAv = null;
 
         private final Consumer<? super JTextComponent> action;
 
+        /**
+         * Instantiates a new Integer key listener.
+         *
+         * @param action the action
+         */
         public IntegerKeyListener( Consumer<? super JTextComponent> action )
         {
             this.action = action;
         }
 
+        /**
+         * Gets action.
+         *
+         * @return the action
+         */
         public Consumer<? super JTextComponent> getAction()
         {
             return this.action;

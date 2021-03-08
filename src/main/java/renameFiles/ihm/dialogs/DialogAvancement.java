@@ -5,6 +5,9 @@ import renameFiles.ihm.IHMGUI;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Dialog avancement.
+ */
 public class DialogAvancement extends JDialog
 {
     private final int borneMin;
@@ -15,6 +18,12 @@ public class DialogAvancement extends JDialog
 
     private int borneMax;
 
+    /**
+     * Instantiates a new Dialog avancement.
+     *
+     * @param borneMin the borne min
+     * @param borneMax the borne max
+     */
     public DialogAvancement( int borneMin, int borneMax )
     {
         this.borneMin = Math.min(borneMin, borneMax);
@@ -43,6 +52,11 @@ public class DialogAvancement extends JDialog
         this.affichageFichierCourant.setFont(newFontSize);
     }
 
+    /**
+     * Sets borne max.
+     *
+     * @param newBorneMax the new borne max
+     */
     public void setBorneMax( int newBorneMax )
     {
         if( this.borneMin > newBorneMax ) return;
@@ -50,11 +64,23 @@ public class DialogAvancement extends JDialog
         this.borneMax = this.borneMin == newBorneMax ? newBorneMax +1 : newBorneMax;
     }
 
+    /**
+     * Instantiates a new Dialog avancement.
+     *
+     * @param title the title
+     */
     public DialogAvancement(String title)
     {
         this(title,0, 100);
     }
 
+    /**
+     * Instantiates a new Dialog avancement.
+     *
+     * @param title    the title
+     * @param borneMin the borne min
+     * @param borneMax the borne max
+     */
     public DialogAvancement( String title, int borneMin, int borneMax )
     {
         this(borneMin, borneMax);
@@ -62,6 +88,9 @@ public class DialogAvancement extends JDialog
         this.setTitle(title);
     }
 
+    /**
+     * Reset.
+     */
     public void reset()
     {
         this.bar.setValue(this.borneMin);
@@ -69,6 +98,11 @@ public class DialogAvancement extends JDialog
         this.affichageAvancement.setText(" 0.0%");
     }
 
+    /**
+     * Sets avancement.
+     *
+     * @param avancement the avancement
+     */
     public void setAvancement( int avancement )
     {
         if( avancement > this.borneMax ) avancement = this.borneMax;
@@ -78,11 +112,19 @@ public class DialogAvancement extends JDialog
         this.affichageAvancement.setText( " " + String.format("%02.2f", (this.bar.getValue()/(this.borneMax*1.0)) * 100) + "%" );
     }
 
+    /**
+     * Avancer une fois.
+     */
     public void avancerUneFois()
     {
         this.setAvancement(this.bar.getValue()+1);
     }
 
+    /**
+     * Sets fichier courant.
+     *
+     * @param nomFichier the nom fichier
+     */
     public void setFichierCourant( String nomFichier )
     {
         if( !this.affichageFichierCourant.isVisible() )

@@ -3,11 +3,20 @@ package renameFiles.ihm.dialogs;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Aide.
+ */
 public class Aide extends JDialog
 {
     private final JLabel label;
     private final Color currentColor;
 
+    /**
+     * Instantiates a new Aide.
+     *
+     * @param theme the theme
+     * @param font  the font
+     */
     public Aide( Color theme, Font font )
     {
         this.setTitle("Aide");
@@ -96,7 +105,7 @@ public class Aide extends JDialog
                         "<p> ce qui donne par exemple: Test S1 Ep01 720p x265.mkv</p><br/>" +
                         "<p>P.S: Si cette norme ne vous plait pas, il est possible de renommer les vidéos en selectionnant la catégorie \"Autres\" et en mettant les extensions correct.</p>" +
                         "<h3>Le nom</h3>" +
-                        "<p>Le nom n'est pas obligatoire. Il seras automatique récupé et adapter selon le nom de fichier.</p>" +
+                        "<p>Le nom n'est pas obligatoire. Il seras automatiquement récupéré et adapter selon le nom de fichier.</p>" +
                         "<p>par exemple: [Une Team] Test (TV) S1 episode 5 1080p donneras -> Test S1 Ep 5 1080p</p>" +
                         "<p>Si vous choisissez de mettre un nom dans le champs \"paterne\", se seras celui-ci que seras mis au détriment de l'ancien.</p>" +
                         "</div>" +

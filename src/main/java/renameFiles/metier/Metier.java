@@ -1,7 +1,6 @@
 package renameFiles.metier;
 
 import renameFiles.Controleur;
-import renameFiles.ihm.MenuBar;
 import renameFiles.ihm.dialogs.DialogAvancement;
 import renameFiles.metier.types.BaseFile;
 import renameFiles.metier.types.aleatoires.AleaNameFile;
@@ -15,8 +14,14 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * The type Metier.
+ */
 public class Metier
 {
+    /**
+     * The constant tabPreferences.
+     */
     public static final String[] tabPreferences = {"BlockIfNotMathPatern", "DarkMode", "SDL" };
 
     private final ArrayList<File> files;
@@ -31,6 +36,11 @@ public class Metier
 
     private File preferencesFile;
 
+    /**
+     * Instantiates a new Metier.
+     *
+     * @param ctrl the ctrl
+     */
     public Metier(Controleur ctrl )
     {
         this.files             = new ArrayList<>();
@@ -43,6 +53,9 @@ public class Metier
         this.preferencesFile      = null;
     }
 
+    /**
+     * Sets preference file.
+     */
     public void setupPreferenceFile()
     {
         File appDirectorie = new File(System.getProperty("user.home") + "/.FileRenamer");
@@ -115,8 +128,8 @@ public class Metier
             {
                 if( !listPref.contains(key) ) continue;
 
-                Method m;
-                Class  c;
+                Method    m;
+                Class<?>  c;
 
                 try
                 {
@@ -147,7 +160,8 @@ public class Metier
                     }
                 }
 
-                m.invoke(this.ctrl, parse.invoke(c, prefs.get(key)));
+                if( parse != null )
+                    m.invoke(this.ctrl, parse.invoke(c, prefs.get(key)));
             }
         }
         catch (Exception e)
@@ -156,6 +170,12 @@ public class Metier
         }
     }
 
+    /**
+     * Save preferences.
+     *
+     * @param hashMap   the hash map
+     * @param clearFile the clear file
+     */
     public void savePreferences(HashMap<String, Object> hashMap, boolean clearFile )
     {
         String fileValue = "";
@@ -194,6 +214,12 @@ public class Metier
         return res.toString();
     }
 
+    /**
+     * Sets accepted extensions.
+     *
+     * @param extensions the extensions
+     * @return the accepted extensions
+     */
     public boolean setAcceptedExtensions( String extensions )
     {
         if( extensions == null || extensions.length() < 1) return false;
@@ -212,11 +238,23 @@ public class Metier
         return this.acceptedExtension.size() > 0;
     }
 
+    /**
+     * Sets save nb if exist in alea.
+     *
+     * @param saveNbIfExistInAlea the save nb if exist in alea
+     */
     public void setSaveNbIfExistInAlea( boolean saveNbIfExistInAlea )
     {
         this.saveNbIfExistInAlea = saveNbIfExistInAlea;
     }
 
+    /**
+     * Rename with paterne in path.
+     *
+     * @param path                  the path
+     * @param patern                the patern
+     * @param replaceAllPointInName the replace all point in name
+     */
     // Todo optimisé l'algorithme en utilisant vraiment les objets (et la reflexivité ?)
     public void renameWithPaterneInPath( String path, String patern, boolean replaceAllPointInName )
     {
@@ -387,6 +425,12 @@ public class Metier
             }
     }
 
+    /**
+     * Accept boolean.
+     *
+     * @param name the name
+     * @return the boolean
+     */
     public boolean accept(String name)
     {
         if( this.acceptedExtension.contains("*") )
@@ -400,21 +444,41 @@ public class Metier
         return false;
     }
 
+    /**
+     * Sets block if not math patern.
+     *
+     * @param b the b
+     */
     public void setBlockIfNotMathPatern(boolean b)
     {
         this.blockIfNotMathPatern = b;
     }
 
+    /**
+     * Gets type courant.
+     *
+     * @return the type courant
+     */
     public FileType getTypeCourant()
     {
         return typeCourant;
     }
 
+    /**
+     * Sets type courant.
+     *
+     * @param typeCourant the type courant
+     */
     public void setTypeCourant(FileType typeCourant)
     {
         this.typeCourant = typeCourant;
     }
 
+    /**
+     * Sets max level.
+     *
+     * @param niveauDeRecherche the niveau de recherche
+     */
     public void setMaxLevel( int niveauDeRecherche )
     {
         if( niveauDeRecherche < 0 ) return;
@@ -422,6 +486,11 @@ public class Metier
         this.maxLevel = niveauDeRecherche;
     }
 
+    /**
+     * Gets level max.
+     *
+     * @return the level max
+     */
     public int getLevelMax()
     {
         return this.maxLevel;

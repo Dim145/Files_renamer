@@ -15,10 +15,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * The type Ihmgui.
+ */
 public class IHMGUI extends JFrame
 {
+    /**
+     * The constant ECART_COLOR.
+     */
     public static final int ECART_COLOR   = 25;
-    public static final int PAS_FONT_SIZE = 200;
+    /**
+     * The constant PAS_FONT_SIZE.
+     */
+    public static final int PAS_FONT_SIZE = 400;
 
     private final Controleur ctrl;
 
@@ -40,6 +49,11 @@ public class IHMGUI extends JFrame
 
     private final ArrayList<JPanel> allJPanel;
 
+    /**
+     * Instantiates a new Ihmgui.
+     *
+     * @param ctrl the ctrl
+     */
     public IHMGUI(Controleur ctrl)
     {
         super();
@@ -209,6 +223,12 @@ public class IHMGUI extends JFrame
         this.replacePbyS.setVisible(false);
     }
 
+    /**
+     * Sets nb sdl.
+     *
+     * @param val the val
+     * @throws NumberFormatException the number format exception
+     */
     public void setNbSDL( int val ) throws NumberFormatException
     {
         if( val > 0 )
@@ -234,12 +254,22 @@ public class IHMGUI extends JFrame
                 majAllFonts((Container) comp.getComponent(i), font);
     }
 
+    /**
+     * Sets current path.
+     *
+     * @param path the path
+     */
     public void setCurrentPath(String path)
     {
         this.pathField.setText(path);
         this.picker.setCurrentDirectory(new File(path));
     }
 
+    /**
+     * Print in console.
+     *
+     * @param s the s
+     */
     public void printInConsole(String s)
     {
         this.console.addText(s);
@@ -247,11 +277,21 @@ public class IHMGUI extends JFrame
         this.changeConsoleColorByUIColor();
     }
 
+    /**
+     * Sets block if not math patern.
+     *
+     * @param b the b
+     */
     public void setBlockIfNotMathPatern(boolean b)
     {
         this.ctrl.changeBlockParam(b);
     }
 
+    /**
+     * Sets color for ihm and children.
+     *
+     * @param baseColor the base color
+     */
     public void setColorForIHMAndChildren(Color baseColor)
     {
         Color foreground  = baseColor == Color.WHITE ? Color.BLACK : Color.WHITE;
@@ -295,6 +335,13 @@ public class IHMGUI extends JFrame
         }
     }
 
+    /**
+     * Couleur plus clair color.
+     *
+     * @param baseColor  the base color
+     * @param plusFoncer the plus foncer
+     * @return the color
+     */
     public static Color couleurPlusClair(Color baseColor, boolean plusFoncer)
     {
         if( plusFoncer )
@@ -303,21 +350,42 @@ public class IHMGUI extends JFrame
             return new Color(baseColor.getRed() + ECART_COLOR, baseColor.getGreen() + ECART_COLOR, baseColor.getBlue() + ECART_COLOR);
     }
 
+    /**
+     * Change theme.
+     *
+     * @param darkTheme the dark theme
+     */
     public void changeTheme( boolean darkTheme)
     {
         this.bar.changeTheme(darkTheme);
     }
 
+    /**
+     * Change block param.
+     *
+     * @param blockIfNotMatch the block if not match
+     */
     public void changeBlockParam( boolean blockIfNotMatch)
     {
         this.bar.changeBlockParam(blockIfNotMatch);
     }
 
+    /**
+     * Save preferences.
+     *
+     * @param prefs     the prefs
+     * @param clearFile the clear file
+     */
     public void savePreferences(HashMap<String, Object> prefs, boolean clearFile )
     {
         this.ctrl.savePreferences(prefs, clearFile);
     }
 
+    /**
+     * Gets current type.
+     *
+     * @return the current type
+     */
     public FileType getCurrentType()
     {
         return (FileType) this.allTypes.getSelectedItem();

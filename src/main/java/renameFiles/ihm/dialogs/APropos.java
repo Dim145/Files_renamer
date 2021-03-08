@@ -4,13 +4,21 @@ import javax.swing.*;
 import javax.swing.plaf.UIResource;
 import java.awt.*;
 
+/**
+ * The type A propos.
+ */
 public class APropos extends JOptionPane
 {
+    /**
+     * Instantiates a new A propos.
+     *
+     * @param background the background
+     */
     public APropos(Color background)
     {
         String sAff = "<HTML><BODY><FONT COLOR=\"RED\"> <FONT SIZE=\"+1\"> <B>File Renamer</B> </FONT> </FONT></BODY></HTML>\n\n\n\n" +
                 "<HTML><BODY><FONT COLOR=\""+ ( background.equals(Color.WHITE) ? "black" : "white") + "\">Créer par:    Dimitri  Dubois</FONT> </BODY></HTML>\n\n"                   +
-                "<HTML><BODY><FONT COLOR=\""+ ( background.equals(Color.WHITE) ? "black" : "white") + "\">Développé en Octobre 2020</FONT> </BODY></HTML></FONT> </BODY></HTML> \n" +
+                "<HTML><BODY><FONT COLOR=\""+ ( background.equals(Color.WHITE) ? "black" : "white") + "\">Développé en 2020-2021</FONT> </BODY></HTML></FONT> </BODY></HTML> \n" +
                 "<HTML><BODY><FONT COLOR=\""+ ( background.equals(Color.WHITE) ? "black" : "white") + "\">Version 3.2.5</FONT> </BODY></HTML>";
 
         UIResource basePane  = (UIResource) UIManager.getColor( "OptionPane.background" );

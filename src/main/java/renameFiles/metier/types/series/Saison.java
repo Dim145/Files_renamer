@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
+/**
+ * The type Saison.
+ */
 public class Saison
 {
     private final ArrayList<VideoFile> listeEpisode;
@@ -14,11 +17,22 @@ public class Saison
     private int numeroSaison;
     private int nbEpisodes;
 
+    /**
+     * Instantiates a new Saison.
+     *
+     * @param nomSerie the nom serie
+     */
     public Saison(@NotNull String nomSerie)
     {
         this(nomSerie, 1);
     }
 
+    /**
+     * Instantiates a new Saison.
+     *
+     * @param nomSerie     the nom serie
+     * @param numeroSaison the numero saison
+     */
     public Saison(@NotNull String nomSerie, int numeroSaison)
     {
         this.listeEpisode = new ArrayList<>();
@@ -28,26 +42,52 @@ public class Saison
         this.nomSerie     = nomSerie;
     }
 
+    /**
+     * Gets numero saison.
+     *
+     * @return the numero saison
+     */
     public int getNumeroSaison()
     {
         return numeroSaison;
     }
 
+    /**
+     * Sets numero saison.
+     *
+     * @param numeroSaison the numero saison
+     */
     public void setNumeroSaison(int numeroSaison)
     {
         this.numeroSaison = numeroSaison;
     }
 
+    /**
+     * Gets nb episodes.
+     *
+     * @return the nb episodes
+     */
     public int getNbEpisodes()
     {
         return nbEpisodes;
     }
 
+    /**
+     * Sets nb episodes.
+     *
+     * @param nbEpisodes the nb episodes
+     */
     public void setNbEpisodes(int nbEpisodes)
     {
         this.nbEpisodes = nbEpisodes;
     }
 
+    /**
+     * Ajouter episode boolean.
+     *
+     * @param video the video
+     * @return the boolean
+     */
     public boolean ajouterEpisode(@NotNull VideoFile video)
     {
         if (video.getName() == null) video.setName(false);
@@ -67,6 +107,12 @@ public class Saison
         return false;
     }
 
+    /**
+     * Ajouter episodes boolean.
+     *
+     * @param collections the collections
+     * @return the boolean
+     */
     public boolean ajouterEpisodes(@NotNull Collection<VideoFile> collections)
     {
         for (VideoFile video : collections)
@@ -75,11 +121,19 @@ public class Saison
         return true;
     }
 
+    /**
+     * Get all episodes video file [ ].
+     *
+     * @return the video file [ ]
+     */
     public VideoFile[] getAllEpisodes()
     {
         return this.listeEpisode.toArray(new VideoFile[0]);
     }
-    
+
+    /**
+     * Sets round all apisode.
+     */
     public void setRoundAllApisode()
     {
         if( this.nbEpisodes > 0 )

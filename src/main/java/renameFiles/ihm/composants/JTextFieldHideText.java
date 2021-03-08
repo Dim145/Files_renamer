@@ -8,11 +8,21 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+/**
+ * The type J text field hide text.
+ */
 public class JTextFieldHideText extends JTextField implements FocusListener
 {
     private final IHMGUI ihm;
     private final String textFocusLost;
 
+    /**
+     * Instantiates a new J text field hide text.
+     *
+     * @param ihm            the ihm
+     * @param basePath       the base path
+     * @param texteFocusLost the texte focus lost
+     */
     public JTextFieldHideText(IHMGUI ihm, String basePath, String texteFocusLost )
     {
         super(basePath);
@@ -24,11 +34,22 @@ public class JTextFieldHideText extends JTextField implements FocusListener
         this.addFocusListener(this);
     }
 
+    /**
+     * Instantiates a new J text field hide text.
+     *
+     * @param ihm      the ihm
+     * @param basePath the base path
+     */
     public JTextFieldHideText(IHMGUI ihm, String basePath )
     {
         this(ihm, basePath, "Non Obligatoire");
     }
 
+    /**
+     * Instantiates a new J text field hide text.
+     *
+     * @param ihm the ihm
+     */
     public JTextFieldHideText(IHMGUI ihm )
     {
         this(ihm, "");

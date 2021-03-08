@@ -2,10 +2,22 @@ package renameFiles.metier;
 
 import renameFiles.metier.types.series.VideoFile;
 
+/**
+ * The enum File type.
+ */
 public enum FileType
 {
+    /**
+     * Autres file type.
+     */
     AUTRES(null),
+    /**
+     * Aleaname file type.
+     */
     ALEANAME(null),
+    /**
+     * Series file type.
+     */
     SERIES(VideoFile.extensions);
 
     private final String[] extensions;
@@ -15,6 +27,11 @@ public enum FileType
         this.extensions = extensions;
     }
 
+    /**
+     * Gets list extension in string.
+     *
+     * @return the list extension in string
+     */
     public String getListExtensionInString()
     {
         if( this.extensions == null ) return "";

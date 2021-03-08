@@ -7,8 +7,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * The type Video file.
+ */
 public class VideoFile extends BaseFile
 {
+    /**
+     * The constant extensions.
+     */
     public static final String[] extensions = {"mp4", "mkv", "avi", "mov", "mpeg", "mpg", "wmv"};
 
     private double numeroEpisode;
@@ -22,26 +28,63 @@ public class VideoFile extends BaseFile
     private boolean isEpisodeSpecial;
     private boolean isOAV;
 
+    /**
+     * Instantiates a new Video file.
+     *
+     * @param name      the name
+     * @param extension the extension
+     */
     public VideoFile(String name, String extension)
     {
         this(name, extension, -1, -1, null);
     }
 
+    /**
+     * Instantiates a new Video file.
+     *
+     * @param name      the name
+     * @param extension the extension
+     * @param file      the file
+     */
     public VideoFile(String name, String extension, File file)
     {
         this(name, extension, -1, -1, file);
     }
 
+    /**
+     * Instantiates a new Video file.
+     *
+     * @param name the name
+     */
     public VideoFile(String name)
     {
         this(name, null);
     }
 
+    /**
+     * Instantiates a new Video file.
+     *
+     * @param name         the name
+     * @param extension    the extension
+     * @param numeroEp     the numero ep
+     * @param numeroSaison the numero saison
+     * @param file         the file
+     */
     public VideoFile(String name, String extension, int numeroEp, int numeroSaison, File file)
     {
         this(name, extension, numeroEp, numeroSaison, -1, file);
     }
 
+    /**
+     * Instantiates a new Video file.
+     *
+     * @param name         the name
+     * @param extension    the extension
+     * @param numeroEp     the numero ep
+     * @param numeroSaison the numero saison
+     * @param qualiter     the qualiter
+     * @param file         the file
+     */
     public VideoFile(String name, String extension, int numeroEp, int numeroSaison, int qualiter, File file)
     {
         super(name, extension, file);
@@ -54,46 +97,93 @@ public class VideoFile extends BaseFile
         this.compression   = -1;
     }
 
+    /**
+     * Gets numero episode.
+     *
+     * @return the numero episode
+     */
     public double getNumeroEpisode()
     {
         return numeroEpisode;
     }
 
+    /**
+     * Sets numero episode.
+     *
+     * @param numeroEpisode the numero episode
+     */
     public void setNumeroEpisode(double numeroEpisode)
     {
         this.numeroEpisode = numeroEpisode;
     }
 
+    /**
+     * Gets numero saison.
+     *
+     * @return the numero saison
+     */
     public int getNumeroSaison()
     {
         return numeroSaison;
     }
 
+    /**
+     * Sets numero saison.
+     *
+     * @param numeroSaison the numero saison
+     */
     public void setNumeroSaison(int numeroSaison)
     {
         this.numeroSaison = numeroSaison;
     }
 
+    /**
+     * Gets qualiter.
+     *
+     * @return the qualiter
+     */
     public int getQualiter()
     {
         return qualiter;
     }
 
+    /**
+     * Sets qualiter.
+     *
+     * @param qualiter the qualiter
+     */
     public void setQualiter(int qualiter)
     {
         this.qualiter = qualiter;
     }
 
+    /**
+     * Gets compression.
+     *
+     * @return the compression
+     */
     public int getCompression()
     {
         return compression;
     }
 
+    /**
+     * Sets compression.
+     *
+     * @param compression the compression
+     */
     public void setCompression(int compression)
     {
         this.compression = compression;
     }
 
+    /**
+     * Gets video file from file.
+     *
+     * @param file           the file
+     * @param replaceAllPbyS the replace all pby s
+     * @return the video file from file
+     */
     public static VideoFile getVideoFileFromFile(@NotNull File file, boolean replaceAllPbyS )
     {
         int indexOfPoint = file.getName().lastIndexOf(".");
@@ -219,6 +309,11 @@ public class VideoFile extends BaseFile
         return this.fullname + this.extension;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param replaceAllPointInName the replace all point in name
+     */
     public void setName(boolean replaceAllPointInName)
     {
         String nameToUse = this.fullname;
@@ -313,7 +408,7 @@ public class VideoFile extends BaseFile
             }
         }
 
-        int min = listAllIndex.stream().mapToInt(i -> i).min().getAsInt()+1;
+        int min = listAllIndex.stream().mapToInt(i -> i).min().orElse(nameToUse.length()-1)+1;
         int indexSeparateurMoins = nameToUse.indexOf("-");
 
         if( indexSeparateurMoins > 0 && indexSeparateurMoins < min )
@@ -325,21 +420,41 @@ public class VideoFile extends BaseFile
             this.name = this.name.substring(0, this.name.indexOf("(TV)")).trim();
     }
 
+    /**
+     * Gets nb max episode.
+     *
+     * @return the nb max episode
+     */
     public int getNbMaxEpisode()
     {
         return nbMaxEpisode;
     }
 
+    /**
+     * Sets nb max episode.
+     *
+     * @param nbMaxEpisode the nb max episode
+     */
     public void setNbMaxEpisode(int nbMaxEpisode)
     {
         this.nbMaxEpisode = nbMaxEpisode;
     }
 
+    /**
+     * Is episode special boolean.
+     *
+     * @return the boolean
+     */
     public boolean isEpisodeSpecial()
     {
         return isEpisodeSpecial;
     }
 
+    /**
+     * Sets episode special.
+     *
+     * @param episodeSpecial the episode special
+     */
     public void setEpisodeSpecial(boolean episodeSpecial)
     {
         isEpisodeSpecial = episodeSpecial;
@@ -348,11 +463,21 @@ public class VideoFile extends BaseFile
             this.setOAV(false);
     }
 
+    /**
+     * Is oav boolean.
+     *
+     * @return the boolean
+     */
     public boolean isOAV()
     {
         return isOAV;
     }
 
+    /**
+     * Sets oav.
+     *
+     * @param OAV the oav
+     */
     public void setOAV(boolean OAV)
     {
         isOAV = OAV;

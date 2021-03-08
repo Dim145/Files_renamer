@@ -3,6 +3,12 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Files_renamer_jar</output-path>
     <root id="archive" name="Files_renamer.jar">
       <element id="module-output" name="Files_renamer" />
+      <element id="extracted-dir" path="$USER_HOME$/.m2/repository/org/slf4j/slf4j-api/1.7.24/slf4j-api-1.7.24.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/junit-4.13.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/hamcrest-core-1.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.m2/repository/org/mp4parser/isoparser/1.9.41/isoparser-1.9.41.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/annotations-20.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.m2/repository/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

@@ -5,12 +5,21 @@ import java.awt.*;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 
+/**
+ * The type J console label.
+ */
 public class JConsoleLabel extends JScrollPane
 {
+    /**
+     * The constant MAX_LINES.
+     */
     public static  final int MAX_LINES = 70;
 
     private final JLabel console;
 
+    /**
+     * Instantiates a new J console label.
+     */
     public JConsoleLabel()
     {
         super(new JLabel());
@@ -26,16 +35,31 @@ public class JConsoleLabel extends JScrollPane
         scrollBar.addAdjustmentListener(new ConsoleBarListener());
     }
 
+    /**
+     * Gets text.
+     *
+     * @return the text
+     */
     public String getText()
     {
         return this.console.getText();
     }
 
+    /**
+     * Sets text.
+     *
+     * @param text the text
+     */
     public void setText( String text )
     {
         this.console.setText(text);
     }
 
+    /**
+     * Add text.
+     *
+     * @param text the text
+     */
     public void addText( String text )
     {
         String[] consoleText = this.console.getText().split("<br/>");
@@ -51,6 +75,11 @@ public class JConsoleLabel extends JScrollPane
         this.console.setText(this.console.getText() + text.replaceAll("\n", "<br/>") + "<br/>");
     }
 
+    /**
+     * Gets nb lines.
+     *
+     * @return the nb lines
+     */
     public int getNbLines()
     {
         return this.console.getText().split("<br/>").length;
@@ -89,10 +118,16 @@ public class JConsoleLabel extends JScrollPane
         return this.console != null ? this.console.getFont() : super.getFont();
     }
 
+    /**
+     * The type Console bar listener.
+     */
     public static class ConsoleBarListener implements AdjustmentListener
     {
         private int maximum;
 
+        /**
+         * Instantiates a new Console bar listener.
+         */
         public ConsoleBarListener()
         {
             this.maximum = 0;

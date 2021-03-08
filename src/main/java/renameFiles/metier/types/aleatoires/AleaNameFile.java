@@ -4,12 +4,23 @@ import renameFiles.metier.types.BaseFile;
 
 import java.io.File;
 
+/**
+ * The type Alea name file.
+ */
 public class AleaNameFile extends BaseFile
 {
     private int chiffrePostNom;
 
     private int nbRound;
 
+    /**
+     * Instantiates a new Alea name file.
+     *
+     * @param fullname      the fullname
+     * @param extension     the extension
+     * @param file          the file
+     * @param saveNbIfExist the save nb if exist
+     */
     public AleaNameFile(String fullname, String extension, File file, boolean saveNbIfExist)
     {
         super(fullname, extension, file);
@@ -38,11 +49,22 @@ public class AleaNameFile extends BaseFile
         this.nbRound = 2;
     }
 
+    /**
+     * Sets chiffre post nom.
+     *
+     * @param nouveauChiffre the nouveau chiffre
+     */
     public void setChiffrePostNom( int nouveauChiffre )
     {
         this.chiffrePostNom = nouveauChiffre;
     }
 
+    /**
+     * Sets chiffre post nom if not exist.
+     *
+     * @param nouveauChiffre the nouveau chiffre
+     * @return the chiffre post nom if not exist
+     */
     public boolean setChiffrePostNomIfNotExist( int nouveauChiffre )
     {
         if( this.chiffrePostNom != -1 || nouveauChiffre < 0 ) return false;
@@ -52,16 +74,31 @@ public class AleaNameFile extends BaseFile
         return true;
     }
 
+    /**
+     * Gets chiffre post nom.
+     *
+     * @return the chiffre post nom
+     */
     public int getChiffrePostNom()
     {
         return this.chiffrePostNom;
     }
 
+    /**
+     * Gets nb round.
+     *
+     * @return the nb round
+     */
     public int getNbRound()
     {
         return nbRound;
     }
 
+    /**
+     * Sets nb round.
+     *
+     * @param nbRound the nb round
+     */
     public void setNbRound(int nbRound)
     {
         this.nbRound = Math.max(nbRound, 2);
@@ -76,6 +113,11 @@ public class AleaNameFile extends BaseFile
         return this.fullname + this.extension;
     }
 
+    /**
+     * Gets new path.
+     *
+     * @return the new path
+     */
     public String getNewPath()
     {
         return this.getFile().getParent() + "/" + this.toString();

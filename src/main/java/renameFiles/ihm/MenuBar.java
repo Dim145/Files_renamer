@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 
+/**
+ * The type Menu bar.
+ */
 public class MenuBar extends JMenuBar
 {
     private final IHMGUI ihm;
@@ -18,6 +21,11 @@ public class MenuBar extends JMenuBar
 
     private Color currentColor;
 
+    /**
+     * Instantiates a new Menu bar.
+     *
+     * @param ihm the ihm
+     */
     public MenuBar( IHMGUI ihm )
     {
         this.ihm        = ihm;
@@ -52,6 +60,11 @@ public class MenuBar extends JMenuBar
         this.currentColor = Color.WHITE;
     }
 
+    /**
+     * Change theme.
+     *
+     * @param bDarkTheme the b dark theme
+     */
     public void changeTheme( boolean bDarkTheme )
     {
         Color baseColor = bDarkTheme ? new Color(50, 50, 50) : Color.WHITE;
@@ -82,6 +95,11 @@ public class MenuBar extends JMenuBar
         }
     }
 
+    /**
+     * Change block param.
+     *
+     * @param blockIfNotMatch the block if not match
+     */
     public void changeBlockParam( boolean blockIfNotMatch )
     {
         System.out.println("Param block changed");
@@ -103,6 +121,9 @@ public class MenuBar extends JMenuBar
         this.reWritePrefParam();
     }
 
+    /**
+     * Re write pref param.
+     */
     public void reWritePrefParam()
     {
         HashMap<String, Object> prefs = new HashMap<>();

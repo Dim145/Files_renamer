@@ -6,6 +6,9 @@ import renameFiles.ihm.dialogs.DialogAvancement;
 import java.io.File;
 import java.util.*;
 
+/**
+ * The type Liste fichier alea.
+ */
 public class ListeFichierAlea implements Iterable<AleaNameFile>
 {
     private final ArrayList<Integer>      listeChiffreExistant;
@@ -13,6 +16,11 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>
 
     private boolean saveNbIfExist;
 
+    /**
+     * Instantiates a new Liste fichier alea.
+     *
+     * @param saveNbIfExist the save nb if exist
+     */
     public ListeFichierAlea( boolean saveNbIfExist )
     {
         this.listeChiffreExistant = new ArrayList<>();
@@ -21,6 +29,12 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>
         this.saveNbIfExist = saveNbIfExist;
     }
 
+    /**
+     * Instantiates a new Liste fichier alea.
+     *
+     * @param files         the files
+     * @param saveNbIfExist the save nb if exist
+     */
     public ListeFichierAlea( Collection<File> files, boolean saveNbIfExist )
     {
         this(saveNbIfExist);
@@ -28,6 +42,11 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>
         this.addFiles(files);
     }
 
+    /**
+     * Add files.
+     *
+     * @param files the files
+     */
     public void addFiles(Collection<File> files )
     {
         if( files.size() == 0 ) return;
@@ -36,6 +55,11 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>
             this.addFile(f);
     }
 
+    /**
+     * Add file.
+     *
+     * @param f the f
+     */
     public void addFile( File f )
     {
         int lastIndexOfP = f.getName().lastIndexOf(".");
@@ -54,12 +78,20 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>
         }
     }
 
+    /**
+     * Clear.
+     */
     public void clear()
     {
         this.listeFiles.clear();
         this.listeChiffreExistant.clear();
     }
 
+    /**
+     * Sets nb alea post name.
+     *
+     * @param dialog the dialog
+     */
     public void setNbAleaPostName(DialogAvancement dialog)
     {
         int max = this.listeFiles.size();
