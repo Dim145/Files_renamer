@@ -262,7 +262,7 @@ public class VideoFile extends BaseFile
                     if( cpt < fileName.length() && fileName.toLowerCase().charAt(cpt) == 'p' || cpt+1 < fileName.length() && fileName.toLowerCase().charAt(cpt+1) == 'p' )
                     {
                         video.setQualiter((int) video.getNombre(video.getNbNombres()-1));
-                        continue;
+                        //continue;
                     }
 
                     int cpt2 = cpt - (tmp.length());
