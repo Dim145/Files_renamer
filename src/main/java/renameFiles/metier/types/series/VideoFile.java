@@ -12,10 +12,15 @@ import java.util.Arrays;
  */
 public class VideoFile extends BaseFile
 {
+    public static final int  HD = 720;
+    public static final int FHD = 1080;
+
     /**
      * The constant extensions.
      */
     public static final String[] extensions = {"mp4", "mkv", "avi", "mov", "mpeg", "mpg", "wmv"};
+
+    public static final String[] listLanguages = {"vf", "fr", "vostfr", "en", "vosten"};
 
     private double numeroEpisode;
     private int    numeroSaison;
@@ -27,6 +32,8 @@ public class VideoFile extends BaseFile
 
     private boolean isEpisodeSpecial;
     private boolean isOAV;
+
+    private String language;
 
     /**
      * Instantiates a new Video file.
@@ -95,6 +102,18 @@ public class VideoFile extends BaseFile
 
         this.nbMaxEpisode  = -1;
         this.compression   = -1;
+
+        this.language = null;
+    }
+
+    public String getLanguage()
+    {
+        return language;
+    }
+
+    public void setLanguage(String language)
+    {
+        this.language = language;
     }
 
     /**
@@ -199,6 +218,20 @@ public class VideoFile extends BaseFile
 
         VideoFile video = new VideoFile(fileName, extension, file);
 
+        if( fileName.contains("HD") )
+            video.setQualiter(VideoFile.HD);
+
+        if ( fileName.contains("FHD") )
+            video.setQualiter(VideoFile.FHD);
+
+        String tmpFileName = fileName.toLowerCase();
+
+        for (String s : VideoFile.listLanguages)
+        {
+            if( tmpFileName.contains(s) )
+                video.setLanguage(s);
+        }
+
         for (int cpt = 0; cpt < fileName.length(); cpt++)
         {
             char lettre = fileName.charAt(cpt);
@@ -300,6 +333,7 @@ public class VideoFile extends BaseFile
             if( this.numeroSaison  > -1 ) name += "S"  + this.numeroSaison  + " ";
             if( this.numeroEpisode > -1 ) name += (this.isEpisodeSpecial ? "Sp" : this.isOAV ? "OAV" : "Ep") + (this.numeroEpisode % 1 == 0 ? String.format("%0"+nbRound+"d", (int)this.numeroEpisode) : String.format(
                     "%0"+nbRound+".2f", this.numeroEpisode)) + " ";
+            if( this.language != null   ) name += this.language + " ";
             if( this.qualiter      > -1 ) name += this.qualiter + "p ";
             if( this.compression   > -1 ) name += "x"  + this.compression   + " ";
 
@@ -366,6 +400,10 @@ public class VideoFile extends BaseFile
                 try
                 {
                     int cpt2 = cpt - (tmp.length());
+
+                    if( Double.parseDouble(tmp.toString()) == this.getNbMaxEpisode() )
+                        listAllIndex.add(cpt2);
+
                     tmp.delete(0, tmp.length());
 
                     if( cpt < nameToUse.length() && nameToUse.toLowerCase().charAt(cpt) == 'p' || cpt+1 < nameToUse.length() && nameToUse.toLowerCase().charAt(cpt+1) == 'p' )
@@ -413,6 +451,28 @@ public class VideoFile extends BaseFile
 
         if( indexSeparateurMoins > 0 && indexSeparateurMoins < min )
             min = indexSeparateurMoins;
+
+        if( min == nameToUse.length() ) // dans le cas ou ni saison ni rien d'autre n'est données
+        {
+            for (int i = 0; i < nameToUse.length(); i++)
+            {
+                if( Character.isDigit(nameToUse.charAt(i)) )
+                {
+                    int tmp = min = i;
+
+                    StringBuilder nb = new StringBuilder();
+                    do
+                    {
+                        nb.append(nameToUse.charAt(tmp++));
+                    }
+                    while (Character.isDigit(nameToUse.charAt(tmp)) || nameToUse.charAt(tmp) == '.' || nameToUse.charAt(tmp) == ',' );
+
+                    this.setNumeroEpisode(Double.parseDouble(nb.toString()));
+
+                    break;
+                }
+            }
+        }
 
         this.name = nameToUse.substring(0, min).trim();
 
