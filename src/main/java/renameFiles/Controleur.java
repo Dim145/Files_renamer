@@ -31,6 +31,14 @@ public class Controleur
         this.ihm.setVisible(true);
     }
 
+    public Controleur( FileType type )
+    {
+        this();
+
+        if( type != null )
+            this.ihm.setTypeCourant(type);
+    }
+
     /**
      * Save preferences.
      *
@@ -172,7 +180,13 @@ public class Controleur
             try   { UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() ); }
             catch ( Exception ignored) {} // Theme de l'app, ici, celle du system sur lequel est lancer l'app
 
-        Controleur ctrl = new Controleur();
+        FileType t = null;
+        if ( args != null && args.length > 1 )
+            for (FileType type : FileType.values())
+                if( type.name().toLowerCase().equals(args[1]))
+                    t = type;
+
+        Controleur ctrl = new Controleur(t);
 
         if( args != null && args.length > 0)
             ctrl.setCurrentPath(args[0]);

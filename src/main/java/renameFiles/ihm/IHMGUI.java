@@ -261,6 +261,9 @@ public class IHMGUI extends JFrame
      */
     public void setCurrentPath(String path)
     {
+        if( path.endsWith("\\.") || path.endsWith("/.") )
+            path = path.substring(0, path.length()-2);
+
         this.pathField.setText(path);
         this.picker.setCurrentDirectory(new File(path));
     }
@@ -275,6 +278,11 @@ public class IHMGUI extends JFrame
         this.console.addText(s);
 
         this.changeConsoleColorByUIColor();
+    }
+
+    public void setTypeCourant( FileType type )
+    {
+        this.allTypes.setSelectedItem(type);
     }
 
     /**
