@@ -246,4 +246,9 @@ public class BaseFile
     {
         return file;
     }
+
+    public void setName( boolean replaceAllPointInName )
+    {
+        this.remplirListeNombre();
+    }
 }

@@ -107,6 +107,11 @@ public class Saison
         return false;
     }
 
+    public String getNomSerie()
+    {
+        return this.getNomSerie();
+    }
+
     /**
      * Ajouter episodes boolean.
      *

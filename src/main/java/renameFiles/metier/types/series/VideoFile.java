@@ -348,6 +348,7 @@ public class VideoFile extends BaseFile
      *
      * @param replaceAllPointInName the replace all point in name
      */
+    @Override
     public void setName(boolean replaceAllPointInName)
     {
         String nameToUse = this.fullname;

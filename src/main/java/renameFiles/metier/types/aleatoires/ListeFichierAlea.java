@@ -2,6 +2,7 @@ package renameFiles.metier.types.aleatoires;
 
 import org.jetbrains.annotations.NotNull;
 import renameFiles.ihm.dialogs.DialogAvancement;
+import renameFiles.metier.types.AbstractListe;
 
 import java.io.File;
 import java.util.*;
@@ -9,7 +10,7 @@ import java.util.*;
 /**
  * The type Liste fichier alea.
  */
-public class ListeFichierAlea implements Iterable<AleaNameFile>
+public class ListeFichierAlea extends AbstractListe implements Iterable<AleaNameFile>
 {
     private final ArrayList<Integer>      listeChiffreExistant;
     private final ArrayList<AleaNameFile> listeFiles;
@@ -46,28 +47,37 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>
      * Add files.
      *
      * @param files the files
+     * @return
      */
-    public void addFiles(Collection<File> files )
+    public boolean addFiles(Collection<File> files )
     {
-        if( files.size() == 0 ) return;
+        if( files.size() == 0 ) return false;
 
         for (File f : files)
-            this.addFile(f);
+            if( !this.add(f) )
+                return false;
+
+        return true;
     }
 
     /**
      * Add file.
      *
-     * @param f the f
+     * @param obj the File
      */
-    public void addFile( File f )
+    @Override
+    public boolean add( Object obj )
     {
+        if( obj instanceof Collection ) return this.addFiles( (Collection) obj);
+
+        if( !( obj instanceof File) ) return false;
+
+        File f = (File) obj;
+
         int lastIndexOfP = f.getName().lastIndexOf(".");
         String fileName  = f.getName().substring(0, lastIndexOfP);
 
         AleaNameFile file = new AleaNameFile(fileName, f.getName().substring(lastIndexOfP), f, this.saveNbIfExist);
-
-        this.listeFiles.add(file);
 
         if( file.getChiffrePostNom() != -1 )
         {
@@ -76,6 +86,8 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>
             else
                 this.listeChiffreExistant.add(file.getChiffrePostNom());
         }
+
+        return this.listeFiles.add(file);
     }
 
     /**
@@ -149,5 +161,51 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>
     public Spliterator<AleaNameFile> spliterator()
     {
         return this.listeFiles.spliterator();
+    }
+
+    @Override
+    public String traitement(DialogAvancement dialog)
+    {
+        StringBuilder sRet = new StringBuilder();
+
+        this.setNbAleaPostName(dialog);
+
+        dialog.setVisible(false);
+        dialog.setTitle("Renommage en cours...");
+        dialog.reset();
+        dialog.setVisible(true);
+
+        for (AleaNameFile aleaFile : this)
+        {
+            dialog.setFichierCourant(aleaFile.toString());
+
+            if( aleaFile.getFile().renameTo(new File(aleaFile.getNewPath())) )
+                sRet.append("file: ").append(aleaFile.getFullname()).append(aleaFile.getExtension()).append(
+                        " -> <font color=\"rgb(0, 255, 255)\">").append(aleaFile).append("</font>\n");
+            else
+                sRet.append("<font color=\"red\">file: ").append(aleaFile.getFullname()).append(
+                        aleaFile.getExtension()).append(" not renamed</font>\n");
+
+            dialog.avancerUneFois();
+        }
+
+        dialog.setVisible(false);
+
+        return sRet.toString();
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ListeFichierAlea that = (ListeFichierAlea) o;
+        return saveNbIfExist == that.saveNbIfExist && listeFiles.equals(that.listeFiles);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(listeFiles, saveNbIfExist);
     }
 }
