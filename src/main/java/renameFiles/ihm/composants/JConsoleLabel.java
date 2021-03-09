@@ -62,6 +62,8 @@ public class JConsoleLabel extends JScrollPane
      */
     public void addText( String text )
     {
+        if( text == null || text.isEmpty() ) return;
+
         String[] consoleText = this.console.getText().split("<br/>");
 
         if( consoleText.length > JConsoleLabel.MAX_LINES )
@@ -72,7 +74,9 @@ public class JConsoleLabel extends JScrollPane
                 this.console.setText(this.console.getText() + consoleText[cpt] + "<br/>");
         }
 
-        this.console.setText(this.console.getText() + text.replaceAll("\n", "<br/>") + "<br/>");
+        String versionCorriger = text.replaceAll("\n", "<br/>");
+
+        this.console.setText(this.console.getText() + versionCorriger + (versionCorriger.endsWith("<br/>") ? "" : "<br/>"));
     }
 
     /**

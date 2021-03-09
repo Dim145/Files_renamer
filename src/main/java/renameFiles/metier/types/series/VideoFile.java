@@ -228,6 +228,8 @@ public class VideoFile extends BaseFile
 
         String tmpFileName = fileName.toLowerCase();
 
+        fileName = fileName.replaceAll("]\\[", "] [");
+
         for (String s : VideoFile.listLanguages)
         {
             if( tmpFileName.contains(s) )
@@ -290,6 +292,8 @@ public class VideoFile extends BaseFile
 
                     String texteAvNb = tmp.reverse().toString().trim().toLowerCase();
 
+                    if( texteAvNb.startsWith("[") ) texteAvNb = texteAvNb.substring(1);
+
                     if( texteAvNb.equals("e") || texteAvNb.equals("ep") || texteAvNb.equals("episode") || texteAvNb.equals("épisode") )
                         video.setNumeroEpisode(video.getNombre(video.getNbNombres()-1));
 
@@ -312,8 +316,9 @@ public class VideoFile extends BaseFile
                         if ( video.getNumeroSaison() != -1 ) video.setNumeroEpisode((int) video.getNombre(video.getNbNombres()-1));
                         else                                 video.setNumeroSaison ((int) video.getNombre(video.getNbNombres()-1));
 
-                    if( texteAvNb.equals("x") )
-                        video.setCompression((int) video.getNombre(video.getNbNombres()-1));
+                    if( texteAvNb.equals("x") || texteAvNb.equals("hevc") || texteAvNb.equals("hevc-") )
+                        if(video.getCompression() == -1 )
+                            video.setCompression((int) video.getNombre(video.getNbNombres()-1));
                 }
                 catch (Exception ignored)
                 { }

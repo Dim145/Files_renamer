@@ -106,6 +106,12 @@ public class Metier
         }
     }
 
+    /**
+     * Preference file is
+     * pref=value
+     *
+     * value = Integer or Boolean.
+     */
     private void readPreferenceFile()
     {
         try(Scanner scanner = new Scanner(this.preferencesFile))
@@ -334,6 +340,8 @@ public class Metier
 
             if( dialog.isVisible() )
                 dialog.setVisible(false);
+
+            this.ctrl.printConsole("<center>FIN</center>");
         }).start();
     }
 
