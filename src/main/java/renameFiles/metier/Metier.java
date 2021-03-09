@@ -5,6 +5,8 @@ import renameFiles.ihm.dialogs.DialogAvancement;
 import renameFiles.metier.enums.FileType;
 import renameFiles.metier.types.AbstractListe;
 import renameFiles.metier.types.BaseFile;
+import renameFiles.metier.types.BaseFileListe;
+import renameFiles.metier.types.aleatoires.AleaNameFile;
 import renameFiles.metier.types.aleatoires.ListeFichierAlea;
 import renameFiles.metier.types.series.Serie;
 import renameFiles.metier.types.series.VideoFile;
@@ -261,7 +263,6 @@ public class Metier
         if( this.typeCourant == FileType.AUTRES && (patern == null || patern.length() < 1 || !patern.contains("%%")) )
         {
             this.ctrl.printConsole("<font color=\"red\">Saisissez un paterne avec au moins 1 fois \"%%\"</font>");
-
             return;
         }
 
@@ -282,20 +283,25 @@ public class Metier
         {
             ArrayList<AbstractListe> lists = new ArrayList<>();
 
-            if( this.typeCourant == FileType.ALEANAME )
-            {
-                lists.add(new ListeFichierAlea(this.saveNbIfExistInAlea));
-                lists.get(0).add(files);
-            }
+            lists.add(new ListeFichierAlea(this.saveNbIfExistInAlea));
+            lists.add(new BaseFileListe(replaceAllPointInName));
 
             dialog.setVisible(true);
 
-            if( lists.size() == 0) for (File file : this.files)
+            for (File file : this.files)
             {
                 String fileName  = file.getName().substring(0, file.getName().lastIndexOf("."));
                 String extension = file.getName().substring(file.getName().lastIndexOf("."));
 
-                BaseFile baseFile = this.typeCourant == FileType.SERIES ? VideoFile.getVideoFileFromFile(file, replaceAllPointInName) : new BaseFile(fileName, extension, file);
+                BaseFile baseFile;
+
+                switch (this.typeCourant)
+                {
+                    case ALEANAME: baseFile = new AleaNameFile(fileName, extension, file, this.saveNbIfExistInAlea);break;
+                    case SERIES  : baseFile = VideoFile.getVideoFileFromFile(file, replaceAllPointInName);break;
+                    case AUTRES  : baseFile = new BaseFile(fileName, extension, file);break;
+                    default      : baseFile = null;
+                }
 
                 if( baseFile == null )
                 {
@@ -306,43 +312,21 @@ public class Metier
                 baseFile.setFullFormatedName(patern);
                 baseFile.setName(replaceAllPointInName);
 
-                if( this.typeCourant == FileType.AUTRES )
+                boolean isAjouter = false;
+                for (AbstractListe liste : lists)
                 {
-                    if( !baseFile.replaceFullFormatedName(blockIfNotMathPatern) )
-                    {
-                        this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " ne contient pas le meme nombres de %% que le patern.</font>");
-                        continue;
-                    }
-
-                    if( file.renameTo(new File(file.getParent() + "/" + baseFile.toString())) )
-                        this.ctrl.printConsole("file: " + fileName + extension + " -> <font color=\"rgb(0, 255, 255)\">" + baseFile.toString() + "</font>");
-                    else
-                        this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " not renamed</font>");
+                    if (liste.add(baseFile))
+                        isAjouter = true;
                 }
-                else
+
+                if( !isAjouter ) // l'ajout ne peut echouer que dans le cas d'une serie
                 {
-                    int index = lists.indexOf(baseFile.getName());
-
-                    if( index == -1 )
-                    {
-                        lists.add(new Serie(baseFile.getName()));
-                        index = lists.size()-1;
-                    }
-
-                    lists.get(index).add(baseFile);
+                    lists.add(new Serie(baseFile.getName()));
+                    lists.get(lists.size()-1).add(baseFile);
                 }
 
                 dialog.avancerUneFois();
                 dialog.setFichierCourant(fileName);
-
-                /*try
-                {
-                    Thread.sleep(500); // pour debug
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }*/
             }
 
             for (AbstractListe liste : lists)

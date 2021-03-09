@@ -43,6 +43,8 @@ public class Serie extends AbstractListe
 
         VideoFile video = (VideoFile) s;
 
+        if( !video.getName().equals(this.serieName) ) return false;
+
         Saison saison = new Saison(video.getName(), video.getNumeroSaison());
 
         int index = listSaison.indexOf(saison);
@@ -53,9 +55,7 @@ public class Serie extends AbstractListe
             index = listSaison.size()-1;
         }
 
-        listSaison.get(index).ajouterEpisode(video);
-
-        return false;
+        return listSaison.get(index).ajouterEpisode(video);
     }
 
     public Saison getSaison( int numeroSaison )
@@ -93,7 +93,7 @@ public class Serie extends AbstractListe
 
                 if( file.renameTo(new File(file.getParent() + "/" + video.toString())) )
                     sRet.append("file: ").append(file.getName()).append(" -> <font color=\"rgb(0, 255, 255)\">").append(
-                            video.toString()).append("</font>");
+                            video.toString()).append("</font>\n");
                 else
                     sRet.append("<font color=\"red\">file: ").append(video.getName()).append(" not renamed</font>\n");
 

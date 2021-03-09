@@ -68,7 +68,8 @@ public class ListeFichierAlea extends AbstractListe implements Iterable<AleaName
     @Override
     public boolean add( Object obj )
     {
-        if( obj instanceof Collection ) return this.addFiles( (Collection) obj);
+        if( obj instanceof Collection  ) return this.addFiles( (Collection) obj);
+        if( obj instanceof AleaNameFile) return this.add((AleaNameFile) obj);
 
         if( !( obj instanceof File) ) return false;
 
@@ -77,8 +78,11 @@ public class ListeFichierAlea extends AbstractListe implements Iterable<AleaName
         int lastIndexOfP = f.getName().lastIndexOf(".");
         String fileName  = f.getName().substring(0, lastIndexOfP);
 
-        AleaNameFile file = new AleaNameFile(fileName, f.getName().substring(lastIndexOfP), f, this.saveNbIfExist);
+        return this.add( new AleaNameFile(fileName, f.getName().substring(lastIndexOfP), f, this.saveNbIfExist));
+    }
 
+    public boolean add( AleaNameFile file )
+    {
         if( file.getChiffrePostNom() != -1 )
         {
             if (this.listeChiffreExistant.contains(file.getChiffrePostNom()))
@@ -170,10 +174,10 @@ public class ListeFichierAlea extends AbstractListe implements Iterable<AleaName
 
         this.setNbAleaPostName(dialog);
 
-        dialog.setVisible(false);
         dialog.setTitle("Renommage en cours...");
         dialog.reset();
-        dialog.setVisible(true);
+
+        if( !dialog.isVisible() ) dialog.setVisible(true);
 
         for (AleaNameFile aleaFile : this)
         {
