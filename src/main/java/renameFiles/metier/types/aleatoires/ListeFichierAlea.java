@@ -2,7 +2,7 @@ package renameFiles.metier.types.aleatoires;
 
 import org.jetbrains.annotations.NotNull;
 import renameFiles.ihm.dialogs.DialogAvancement;
-import renameFiles.metier.types.AbstractListe;
+import renameFiles.metier.types.ListeInterface;
 
 import java.io.File;
 import java.util.*;
@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * The type Liste fichier alea.
  */
-public class ListeFichierAlea extends AbstractListe implements Iterable<AleaNameFile>
+public class ListeFichierAlea implements Iterable<AleaNameFile>, ListeInterface
 {
     private final ArrayList<Integer>      listeChiffreExistant;
     private final ArrayList<AleaNameFile> listeFiles;
@@ -22,7 +22,7 @@ public class ListeFichierAlea extends AbstractListe implements Iterable<AleaName
      *
      * @param saveNbIfExist the save nb if exist
      */
-    public ListeFichierAlea( boolean saveNbIfExist )
+    public ListeFichierAlea(boolean saveNbIfExist )
     {
         this.listeChiffreExistant = new ArrayList<>();
         this.listeFiles           = new ArrayList<>();
@@ -36,7 +36,7 @@ public class ListeFichierAlea extends AbstractListe implements Iterable<AleaName
      * @param files         the files
      * @param saveNbIfExist the save nb if exist
      */
-    public ListeFichierAlea( Collection<File> files, boolean saveNbIfExist )
+    public ListeFichierAlea(Collection<File> files, boolean saveNbIfExist )
     {
         this(saveNbIfExist);
 

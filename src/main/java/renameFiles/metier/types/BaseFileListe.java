@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
-public class BaseFileListe extends AbstractListe
+public class BaseFileListe implements ListeInterface
 {
     private final ArrayList<BaseFile> list;
     private final boolean             blockIfNotMathPatern;
 
-    public BaseFileListe( boolean blockIfNotMathPatern )
+    public BaseFileListe(boolean blockIfNotMathPatern )
     {
         this.list                 = new ArrayList<>();
         this.blockIfNotMathPatern = blockIfNotMathPatern;

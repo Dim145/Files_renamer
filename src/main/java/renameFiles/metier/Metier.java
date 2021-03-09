@@ -3,7 +3,7 @@ package renameFiles.metier;
 import renameFiles.Controleur;
 import renameFiles.ihm.dialogs.DialogAvancement;
 import renameFiles.metier.enums.FileType;
-import renameFiles.metier.types.AbstractListe;
+import renameFiles.metier.types.ListeInterface;
 import renameFiles.metier.types.BaseFile;
 import renameFiles.metier.types.BaseFileListe;
 import renameFiles.metier.types.aleatoires.AleaNameFile;
@@ -281,7 +281,7 @@ public class Metier
 
         new Thread(() ->
         {
-            ArrayList<AbstractListe> lists = new ArrayList<>();
+            ArrayList<ListeInterface> lists = new ArrayList<>();
 
             lists.add(new ListeFichierAlea(this.saveNbIfExistInAlea));
             lists.add(new BaseFileListe(replaceAllPointInName));
@@ -313,7 +313,7 @@ public class Metier
                 baseFile.setName(replaceAllPointInName);
 
                 boolean isAjouter = false;
-                for (AbstractListe liste : lists)
+                for (ListeInterface liste : lists)
                 {
                     if (liste.add(baseFile))
                         isAjouter = true;
@@ -329,7 +329,7 @@ public class Metier
                 dialog.setFichierCourant(fileName);
             }
 
-            for (AbstractListe liste : lists)
+            for (ListeInterface liste : lists)
                 this.ctrl.printConsole(liste.traitement(dialog));
 
             if( dialog.isVisible() )

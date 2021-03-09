@@ -26,6 +26,7 @@ public class VideoFile extends BaseFile
     private int compression;
 
     private int nbMaxEpisode;
+    private int nbMaxSaison;
 
     private boolean isEpisodeSpecial;
     private boolean isOAV;
@@ -97,7 +98,8 @@ public class VideoFile extends BaseFile
         this.numeroSaison  = numeroSaison;
         this.qualiter      = qualiter;
 
-        this.nbMaxEpisode  = -1;
+        this.nbMaxSaison   = 1;
+        this.nbMaxEpisode  = 1;
         this.compression   = -1;
 
         this.language = null;
@@ -328,11 +330,12 @@ public class VideoFile extends BaseFile
         {
             String name = this.name + " ";
 
-            int nbRound = Math.max(String.valueOf(this.nbMaxEpisode).length(), 2);
+            int nbRoundEpisode = Math.max(String.valueOf(this.nbMaxEpisode).length(), 2);
+            int nbRoundSaison  = Math.max(String.valueOf( this.nbMaxSaison).length(), 1);
 
-            if( this.numeroSaison  > -1 ) name += "S"  + this.numeroSaison  + " ";
-            if( this.numeroEpisode > -1 ) name += (this.isEpisodeSpecial ? "Sp" : this.isOAV ? "OAV" : "Ep") + (this.numeroEpisode % 1 == 0 ? String.format("%0"+nbRound+"d", (int)this.numeroEpisode) : String.format(
-                    "%0"+nbRound+".2f", this.numeroEpisode)) + " ";
+            if( this.numeroSaison  > -1 ) name += "S"  + String.format("%0" + nbRoundSaison + "d", this.numeroSaison)  + " ";
+            if( this.numeroEpisode > -1 ) name += (this.isEpisodeSpecial ? "Sp" : this.isOAV ? "OAV" : "Ep") + (this.numeroEpisode % 1 == 0 ? String.format("%0"+nbRoundEpisode+"d", (int)this.numeroEpisode) : String.format(
+                    "%0"+nbRoundEpisode+".2f", this.numeroEpisode)) + " ";
             if( this.language != null   ) name += this.language + " ";
             if( this.qualiter      > -1 ) name += this.qualiter + "p ";
             if( this.compression   > -1 ) name += "x"  + this.compression   + " ";
@@ -499,6 +502,11 @@ public class VideoFile extends BaseFile
     public void setNbMaxEpisode(int nbMaxEpisode)
     {
         this.nbMaxEpisode = nbMaxEpisode;
+    }
+
+    public void setNbMaxSaison( int nbMaxSaison )
+    {
+        this.nbMaxSaison = nbMaxSaison;
     }
 
     /**

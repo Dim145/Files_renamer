@@ -1,14 +1,14 @@
 package renameFiles.metier.types.series;
 
 import renameFiles.ihm.dialogs.DialogAvancement;
-import renameFiles.metier.types.AbstractListe;
+import renameFiles.metier.types.ListeInterface;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
-public class Serie extends AbstractListe
+public class Serie implements ListeInterface
 {
     private final ArrayList<Saison> listSaison;
 
@@ -72,6 +72,18 @@ public class Serie extends AbstractListe
         return true;
     }
 
+    public void setNbMaxSaisonAllSaison()
+    {
+        int max = 0;
+
+        for (Saison s : this.listSaison)
+            if( max < s.getNumeroSaison() )
+                max = s.getNumeroSaison();
+
+        for (Saison s : this.listSaison)
+            s.setRoundSaisonAllEpisode(max);
+    }
+
     @Override
     public String traitement(DialogAvancement dialog)
     {
@@ -81,11 +93,13 @@ public class Serie extends AbstractListe
 
         if( !dialog.isVisible() ) dialog.setVisible(true);
 
+        this.setNbMaxSaisonAllSaison();
+
         for (Saison s : listSaison)
         {
             dialog.setTitle("Renommage de la saison " + s.getNumeroSaison());
 
-            s.setRoundAllApisode();
+            s.setRoundEpisodeAllEpisode();
 
             for (VideoFile video : s.getAllEpisodes())
             {

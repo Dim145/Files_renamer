@@ -109,7 +109,7 @@ public class Saison
 
     public String getNomSerie()
     {
-        return this.getNomSerie();
+        return this.nomSerie;
     }
 
     /**
@@ -139,11 +139,18 @@ public class Saison
     /**
      * Sets round all apisode.
      */
-    public void setRoundAllApisode()
+    public void setRoundEpisodeAllEpisode()
     {
         if( this.nbEpisodes > 0 )
             for (VideoFile video : this.listeEpisode)
                 video.setNbMaxEpisode(this.nbEpisodes);
+    }
+
+    public void setRoundSaisonAllEpisode( int nbMaxSaison )
+    {
+        if( nbMaxSaison > 0 )
+            for (VideoFile video : this.listeEpisode)
+                video.setNbMaxSaison(nbMaxSaison);
     }
 
     @Override
