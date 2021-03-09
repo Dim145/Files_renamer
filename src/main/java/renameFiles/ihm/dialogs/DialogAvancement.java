@@ -46,7 +46,7 @@ public class DialogAvancement extends JDialog
         Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         int height = (int)dimension.getHeight();
 
-        Font newFontSize = this.affichageAvancement.getFont().deriveFont(this.getFont().getSize() + (1f * height / IHMGUI.PAS_FONT_SIZE));
+        Font newFontSize = this.affichageAvancement.getFont().deriveFont(this.affichageAvancement.getFont().getSize() + (1f * height / IHMGUI.PAS_FONT_SIZE));
 
         this.affichageAvancement    .setFont(newFontSize);
         this.affichageFichierCourant.setFont(newFontSize);

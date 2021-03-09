@@ -285,7 +285,7 @@ public class Metier
 
         DialogAvancement dialog = new DialogAvancement(this.typeCourant == FileType.SERIES ? "Lecture et recupération des donées..." : "Lecture et renommage des fichiers...", 0, this.files.size());
 
-        new Thread(() ->
+        Thread t = new Thread(() ->
         {
             ArrayList<ListeInterface> lists = new ArrayList<>();
 
@@ -342,7 +342,9 @@ public class Metier
                 dialog.setVisible(false);
 
             this.ctrl.printConsole("<center>FIN</center>");
-        }).start();
+        });
+
+        t.start();
     }
 
     private void readRepertory( final File rep, int level )
