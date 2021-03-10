@@ -16,8 +16,8 @@ public class VideoFile extends BaseFile
     /**
      * The constant extensions.
      */
-    public static final String[] extensions    = {"mp4", "mkv", "avi"   , "mov"   , "mpeg", "mpg"   , "wmv"    };
-    public static final String[] listLanguages = {"vf" , "fr" , "vostfr", "french", "en"  , "vosten", "english"};
+    public static final String[] extensions    = {"mp4", "mkv"   , "avi"   , "mov"   , "mpeg"   , "mpg"   , "wmv"    };
+    public static final String[] listLanguages = {"vf" , "vostfr", "french", "vosten", "english", "jap"};
 
     private double numeroEpisode;
     private int    numeroSaison;
@@ -102,7 +102,7 @@ public class VideoFile extends BaseFile
         this.nbMaxEpisode  = 1;
         this.compression   = -1;
 
-        this.language = null;
+        this.language = "";
     }
 
     public String getLanguage()
@@ -110,9 +110,9 @@ public class VideoFile extends BaseFile
         return language;
     }
 
-    public void setLanguage(String language)
+    public void addLanguages(String language)
     {
-        this.language = language;
+        this.language += language + " ";
     }
 
     /**
@@ -232,8 +232,8 @@ public class VideoFile extends BaseFile
 
         for (String s : VideoFile.listLanguages)
         {
-            if( tmpFileName.contains(s) )
-                video.setLanguage(s);
+            if( tmpFileName.contains(s.toLowerCase()) )
+                video.addLanguages(s);
         }
 
         for (int cpt = 0; cpt < fileName.length(); cpt++)
@@ -282,13 +282,15 @@ public class VideoFile extends BaseFile
                             if( tmp.length() > 0 )
                                 oneWhiteSpace = false;
 
+                            if( tmp.length() > 1 ) break;
+
                             continue;
                         }
 
                         if( !Character.isDigit(lettre) )
                             tmp.append(lettre);
                     }
-                    while( Character.isDigit(lettre) || oneWhiteSpace );
+                    while( (Character.isDigit(lettre) || oneWhiteSpace) && cpt2 > -1);
 
                     String texteAvNb = tmp.reverse().toString().trim().toLowerCase();
 
@@ -309,8 +311,9 @@ public class VideoFile extends BaseFile
                         video.setOAV(true);
                     }
 
-                    if( texteAvNb.equals("") || texteAvNb.equals("-") ) // par default, on considere que c'est un episode
-                        video.setNumeroEpisode(video.getNombre(video.getNbNombres()-1));
+                    if( texteAvNb.equals("") || texteAvNb.equals("-") ) // par default, on considere que c'est un episode si il n'est pas deja present
+                        if( video.getNumeroEpisode() == -1 )
+                            video.setNumeroEpisode(video.getNombre(video.getNbNombres()-1));
 
                     if( texteAvNb.equals("s") || texteAvNb.equals("saison") ) // Todo améliorer la reconnaissance
                         if ( video.getNumeroSaison() != -1 ) video.setNumeroEpisode((int) video.getNombre(video.getNbNombres()-1));
@@ -331,9 +334,14 @@ public class VideoFile extends BaseFile
     @Override
     public String toString()
     {
+        this.language = this.language.trim();
+
         if( this.name != null && !this.name.isEmpty())
         {
             String name = this.name + " ";
+
+            if( this.language.contains(" ") ) // "vostfr vf" -> "[vostfr/vf]"
+                this.language = "[" + this.language.replaceAll(" ", "," ) + "]";
 
             int nbRoundEpisode = Math.max(String.valueOf(this.nbMaxEpisode).length(), 2);
             int nbRoundSaison  = Math.max(String.valueOf( this.nbMaxSaison).length(), 1);
@@ -341,7 +349,7 @@ public class VideoFile extends BaseFile
             if( this.numeroSaison  > -1 ) name += "S"  + String.format("%0" + nbRoundSaison + "d", this.numeroSaison)  + " ";
             if( this.numeroEpisode > -1 ) name += (this.isEpisodeSpecial ? "Sp" : this.isOAV ? "OAV" : "Ep") + (this.numeroEpisode % 1 == 0 ? String.format("%0"+nbRoundEpisode+"d", (int)this.numeroEpisode) : String.format(
                     "%0"+nbRoundEpisode+".2f", this.numeroEpisode)) + " ";
-            if( this.language != null   ) name += this.language + " ";
+            if( !this.language.isEmpty()) name += this.language + " ";
             if( this.qualiter      > -1 ) name += this.qualiter + "p ";
             if( this.compression   > -1 ) name += "x"  + this.compression   + " ";
 
@@ -410,16 +418,10 @@ public class VideoFile extends BaseFile
                 {
                     int cpt2 = cpt - (tmp.length());
 
-                    if( Double.parseDouble(tmp.toString()) == this.getNbMaxEpisode() )
+                    if( Double.parseDouble(tmp.toString()) == this.getNumeroEpisode() )
                         listAllIndex.add(cpt2);
 
                     tmp.delete(0, tmp.length());
-
-                    if( cpt < nameToUse.length() && nameToUse.toLowerCase().charAt(cpt) == 'p' || cpt+1 < nameToUse.length() && nameToUse.toLowerCase().charAt(cpt+1) == 'p' )
-                    {
-                        listAllIndex.add(cpt2-1);
-                        continue;
-                    }
 
                     boolean oneWhiteSpace = true;
                     do
@@ -447,7 +449,10 @@ public class VideoFile extends BaseFile
                     if( texteAvNb.equals("s") || texteAvNb.equals("saison") )
                         listAllIndex.add(cpt2);
 
-                    if( texteAvNb.equals("x") )
+                    if( texteAvNb.equals("sp") || texteAvNb.equals("spécial") || texteAvNb.equals("special") )
+                        listAllIndex.add(cpt2);
+
+                    if( texteAvNb.equals("oav") )
                         listAllIndex.add(cpt2);
                 }
                 catch (Exception ignored)
@@ -481,6 +486,8 @@ public class VideoFile extends BaseFile
                     break;
                 }
             }
+
+            min = min != nameToUse.length() ? min - 1 : min;
         }
 
         this.name = nameToUse.substring(0, min).trim();
