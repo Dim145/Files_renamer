@@ -341,7 +341,7 @@ public class Metier
             if( dialog.isVisible() )
                 dialog.setVisible(false);
 
-            this.ctrl.printConsole("<center>FIN</center>");
+            this.ctrl.printConsole("<center color=\"red\">FIN</center>");
         });
 
         t.start();

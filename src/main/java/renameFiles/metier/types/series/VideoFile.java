@@ -2,11 +2,14 @@ package renameFiles.metier.types.series;
 
 import org.jetbrains.annotations.NotNull;
 import renameFiles.metier.enums.Definitions;
+import renameFiles.metier.enums.Languages;
 import renameFiles.metier.types.BaseFile;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The type Video file.
@@ -17,7 +20,6 @@ public class VideoFile extends BaseFile
      * The constant extensions.
      */
     public static final String[] extensions    = {"mp4", "mkv"   , "avi"   , "mov"   , "mpeg"   , "mpg"   , "wmv"    };
-    public static final String[] listLanguages = {"vf" , "vostfr", "french", "vosten", "english", "jap"};
 
     private double numeroEpisode;
     private int    numeroSaison;
@@ -230,9 +232,11 @@ public class VideoFile extends BaseFile
 
         fileName = fileName.replaceAll("]\\[", "] [");
 
-        for (String s : VideoFile.listLanguages)
+        for (String s : Languages.getAllValues())
         {
-            if( tmpFileName.contains(s.toLowerCase()) )
+            Matcher match = Pattern.compile("[|, \\[(]"+s.toLowerCase()+"[, \\])]").matcher(fileName);
+
+            if( match.find() )
                 video.addLanguages(s);
         }
 
