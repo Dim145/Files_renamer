@@ -1,6 +1,8 @@
 package renameFiles.ihm.dialogs;
 
 import renameFiles.ihm.IHMGUI;
+import renameFiles.metier.resources.ResourceManager;
+import renameFiles.metier.resources.Resources;
 
 import javax.swing.*;
 import java.awt.*;
@@ -130,6 +132,6 @@ public class DialogAvancement extends JDialog
         if( !this.affichageFichierCourant.isVisible() )
             this.setVisible(true);
 
-        this.affichageFichierCourant.setText("traitement: " + nomFichier);
+        this.affichageFichierCourant.setText(ResourceManager.getInstance().getString(Resources.TREATMENT) + " " + nomFichier);
     }
 }

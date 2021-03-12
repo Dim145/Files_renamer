@@ -1,12 +1,17 @@
 package renameFiles.ihm.dialogs;
 
+import renameFiles.metier.resources.Languages;
+import renameFiles.metier.resources.ResourceManager;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * The type Aide.
  */
-public class Aide extends JDialog
+public class Aide extends JDialog implements Languages
 {
     private final JLabel label;
     private final Color currentColor;
@@ -38,6 +43,19 @@ public class Aide extends JDialog
         this.setSize(this.getWidth(), 750);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+
+        ResourceManager.getInstance().addObjectToTranslate(this);
+
+        this.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosed(WindowEvent e)
+            {
+                super.windowClosed(e);
+
+                ResourceManager.getInstance().removeObjectToTranlate(Aide.this);
+            }
+        });
     }
 
     private void setRecursiveColor( Color color, Component component)
@@ -52,6 +70,7 @@ public class Aide extends JDialog
         }
     }
 
+    //Todo utiliser les fichiers de ressources
     private void setHTMLText()
     {
         String html =
@@ -134,5 +153,11 @@ public class Aide extends JDialog
                 "</html>";
 
         this.label.setText(html);
+    }
+
+    @Override
+    public void setNewText()
+    {
+
     }
 }

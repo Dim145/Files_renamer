@@ -1,11 +1,15 @@
 package renameFiles.ihm;
 
 import renameFiles.Controleur;
+import renameFiles.ihm.composants.JComboBoxRenderer;
 import renameFiles.ihm.composants.JConsoleLabel;
 import renameFiles.ihm.composants.JIntergerTextField;
 import renameFiles.ihm.composants.JTextFieldHideText;
 import renameFiles.ihm.dialogs.APropos;
 import renameFiles.metier.enums.FileType;
+import renameFiles.metier.resources.Languages;
+import renameFiles.metier.resources.ResourceManager;
+import renameFiles.metier.resources.Resources;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +22,10 @@ import java.util.HashMap;
 /**
  * The type Ihmgui.
  */
-public class IHMGUI extends JFrame
+public class IHMGUI extends JFrame implements Languages
 {
+    private static final ResourceManager MANAGER = ResourceManager.getInstance();
+
     /**
      * The constant ECART_COLOR.
      */
@@ -49,6 +55,12 @@ public class IHMGUI extends JFrame
 
     private final ArrayList<JPanel> allJPanel;
 
+    private final JLabel labelPath;
+    private final JLabel labelType;
+    private final JLabel labelExte;
+    private final JLabel labelPate;
+    private final JLabel labelNBSD;
+
     /**
      * Instantiates a new Ihmgui.
      *
@@ -61,19 +73,21 @@ public class IHMGUI extends JFrame
         this.ctrl      = ctrl;
         this.allJPanel = new ArrayList<>();
 
-        this.setTitle("Renamer");
+        this.setTitle(MANAGER.getString(Resources.TITLE));
         this.setIconImage(new ImageIcon( APropos.class.getResource("/images/Files_renamer.png")).getImage());
 
         this.pathField           = new JFormattedTextField();
         this.allTypes            = new JComboBox<>(FileType.values());
         this.paternField         = new JTextFieldHideText(this);
         this.extensions          = new JFormattedTextField();
-        this.saveNbIfExist       = new JCheckBox("Save nb if exist");
-        this.replacePbyS         = new JCheckBox("Replace \".\" by \" \"");
-        this.launchRenamedScript = new JButton("GO");
+        this.saveNbIfExist       = new JCheckBox(MANAGER.getString(Resources.CB_SAVENBIFEXIST));
+        this.replacePbyS         = new JCheckBox(MANAGER.getString(Resources.CB_REPLACEPBYS));
+        this.launchRenamedScript = new JButton(MANAGER.getString(Resources.BTN_LAUNCH));
         this.console             = new JConsoleLabel();
         this.picker              = new Picker();
         this.bar                 = new MenuBar(this);
+
+        this.allTypes.setRenderer(new JComboBoxRenderer(this.allTypes.getRenderer()));
 
         this.levelRecherche = new JIntergerTextField(String.valueOf(this.ctrl.getLevelMax()+1), e -> this.setNbSDL(-1));
 
@@ -132,7 +146,7 @@ public class IHMGUI extends JFrame
                     if (IHMGUI.this.paternField.getForeground() == Color.GRAY || IHMGUI.this.paternField.getText().isEmpty() )
                     {
                         this.paternField.setForeground(Color.GRAY);
-                        this.paternField.setText("Non obligatoire");
+                        this.paternField.setText(MANAGER.getString(Resources.NO_REQUIRED));
                     }
                 }
                 break;
@@ -140,7 +154,7 @@ public class IHMGUI extends JFrame
                 case ALEANAME:
                 {
                     this.paternField.setForeground(Color.GRAY);
-                    this.paternField.setText("Rien a saisir");
+                    this.paternField.setText(MANAGER.getString(Resources.NO_TO_WRITE));
                 }
                 break;
 
@@ -173,10 +187,15 @@ public class IHMGUI extends JFrame
         this.allJPanel.get(0).add(this.extensions);
         this.allJPanel.get(0).add(this.allJPanel.get(3));
 
-        this.allJPanel.get(1).add(new JLabel("path: "));
-        this.allJPanel.get(1).add(new JLabel("type: "));
-        this.allJPanel.get(1).add(new JLabel("extensions: "));
-        this.allJPanel.get(1).add(new JLabel("name patern: "));
+        this.labelPath = new JLabel(MANAGER.getString(Resources.PATH));
+        this.labelType = new JLabel(MANAGER.getString(Resources.TYPE_APP));
+        this.labelExte = new JLabel(MANAGER.getString(Resources.EXTENSIONS));
+        this.labelPate = new JLabel(MANAGER.getString(Resources.NAME_PATERN));
+
+        this.allJPanel.get(1).add(this.labelPath);
+        this.allJPanel.get(1).add(this.labelType);
+        this.allJPanel.get(1).add(this.labelExte);
+        this.allJPanel.get(1).add(this.labelPate);
 
         this.allJPanel.get(2).add(this.allJPanel.get(0), BorderLayout.CENTER);
         this.allJPanel.get(2).add(this.allJPanel.get(1), BorderLayout.WEST  );
@@ -193,12 +212,12 @@ public class IHMGUI extends JFrame
         this.allJPanel.get(6).add(this.pathField       , BorderLayout.CENTER);
         this.allJPanel.get(6).add(this.allJPanel.get(7), BorderLayout.EAST );
 
-        JLabel label = new JLabel(" Nb S-D: ");
-        this.allJPanel.get(7).add(label              , BorderLayout.CENTER);
+        this.labelNBSD = new JLabel(MANAGER.getString(Resources.NB_SD));
+        this.allJPanel.get(7).add(labelNBSD              , BorderLayout.CENTER);
         this.allJPanel.get(7).add(this.levelRecherche, BorderLayout.EAST );
 
-        label.setToolTipText("Nombres de Sous-Dossiers à lire.");
-        this.levelRecherche.setToolTipText(label.getToolTipText());
+        labelNBSD.setToolTipText(MANAGER.getString(Resources.TOOLTIP_NB_SD));
+        this.levelRecherche.setToolTipText(labelNBSD.getToolTipText());
 
         this.add( this.console         , BorderLayout.CENTER );
         this.add( this.allJPanel.get(2), BorderLayout.NORTH  );
@@ -221,6 +240,8 @@ public class IHMGUI extends JFrame
         this.extensions.grabFocus();
         this.saveNbIfExist.setVisible(false);
         this.replacePbyS.setVisible(false);
+
+        ResourceManager.getInstance().addObjectToTranslate(this);
     }
 
     /**
@@ -397,5 +418,25 @@ public class IHMGUI extends JFrame
     public FileType getCurrentType()
     {
         return (FileType) this.allTypes.getSelectedItem();
+    }
+
+    @Override
+    public void setNewText()
+    {
+        this.setTitle(MANAGER.getString(Resources.TITLE));
+
+        this.saveNbIfExist.setText(MANAGER.getString(Resources.CB_SAVENBIFEXIST));
+        this.replacePbyS  .setText(MANAGER.getString(Resources.CB_REPLACEPBYS));
+        this.launchRenamedScript.setText(MANAGER.getString(Resources.BTN_LAUNCH));
+
+        if( this.paternField.getForeground() == Color.GRAY )
+            this.paternField.setText(MANAGER.getString(this.getCurrentType() == FileType.ALEANAME ? Resources.NO_TO_WRITE : Resources.NO_REQUIRED));
+
+        this.labelExte.setText(MANAGER.getString(Resources.EXTENSIONS));
+        this.labelPate.setText(MANAGER.getString(Resources.NAME_PATERN));
+        this.labelPath.setText(MANAGER.getString(Resources.PATH));
+        this.labelType.setText(MANAGER.getString(Resources.TYPE_APP));
+        this.labelNBSD.setText(MANAGER.getString(Resources.NB_SD));
+        this.labelNBSD.setToolTipText(MANAGER.getString(Resources.TOOLTIP_NB_SD));
     }
 }

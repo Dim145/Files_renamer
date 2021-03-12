@@ -22,6 +22,8 @@ public class Controleur
     public Controleur()
     {
         this.metier = new Metier(this);
+        this.metier.setLanguesByPrefFile();
+
         this.ihm    = new IHMGUI(this);
 
         this.metier.setupPreferenceFile();

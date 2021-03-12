@@ -3,21 +3,35 @@ package renameFiles.ihm;
 import renameFiles.ihm.dialogs.APropos;
 import renameFiles.ihm.dialogs.Aide;
 import renameFiles.metier.Metier;
+import renameFiles.metier.resources.Languages;
+import renameFiles.metier.resources.ResourceManager;
+import renameFiles.metier.resources.Resources;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * The type Menu bar.
  */
-public class MenuBar extends JMenuBar
+public class MenuBar extends JMenuBar implements Languages
 {
+    private static final ResourceManager MANAGER = ResourceManager.getInstance();
+
     private final IHMGUI ihm;
+
     private final JMenuItem aide;
+    private final JMenuItem aPropos;
 
     private final JCheckBoxMenuItem itemBlockIfNotMatchNumber;
     private final JCheckBoxMenuItem darkTheme;
+    private final JCheckBoxMenuItem french;
+    private final JCheckBoxMenuItem english;
+
+    private final JMenu optionMenu;
+    private final JMenu aideMenu;
+    private final JMenu languageMenu;
 
     private Color currentColor;
 
@@ -30,15 +44,17 @@ public class MenuBar extends JMenuBar
     {
         this.ihm        = ihm;
 
-        JMenu optionMenu = new JMenu("option");
-        JMenu aideMenu   = new JMenu("aide");
-        //Todo modifier la page d'aide
+        this.optionMenu   = new JMenu(MANAGER.getString(Resources.MENU_OPTION));
+        this.aideMenu     = new JMenu(MANAGER.getString(Resources.HELP));
+        this.languageMenu = new JMenu(ResourceManager.getInstance().getString(Resources.LANGUAGES));
 
-        this.itemBlockIfNotMatchNumber = new JCheckBoxMenuItem("Block if not match");
-        this.darkTheme                 = new JCheckBoxMenuItem("Dark thème");
+        this.itemBlockIfNotMatchNumber = new JCheckBoxMenuItem(MANAGER.getString(Resources.BLOCK_NOT_MATCH));
+        this.darkTheme                 = new JCheckBoxMenuItem(MANAGER.getString(Resources.DARK_THEME));
+        this.french                    = new JCheckBoxMenuItem(ResourceManager.getInstance().getString(Resources.FRENCH));
+        this.english                   = new JCheckBoxMenuItem(ResourceManager.getInstance().getString(Resources.ENGLISH));
 
-        this.aide         = new JMenuItem("aide");
-        JMenuItem aPropos = new JMenuItem("a propos");
+        this.aide         = new JMenuItem(MANAGER.getString(Resources.HELP));
+        this.aPropos = new JMenuItem(MANAGER.getString(Resources.ABOUT));
 
         optionMenu.add(itemBlockIfNotMatchNumber);
         optionMenu.add(darkTheme);
@@ -46,18 +62,34 @@ public class MenuBar extends JMenuBar
         aideMenu.add(aide);
         aideMenu.add(aPropos);
 
+        languageMenu.add(this.french);
+        languageMenu.add(this.english);
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(this.french);
+        group.add(this.english);
+
         this.itemBlockIfNotMatchNumber.addActionListener(e -> changeBlockParam(this.itemBlockIfNotMatchNumber.isSelected()));
 
         aPropos  .addActionListener(e -> new APropos(this.currentColor));
         darkTheme.addActionListener(e -> this.changeTheme(darkTheme.isSelected()));
         this.aide.addActionListener(e -> new Aide(this.currentColor, this.getFont()));
 
+        this.french .addActionListener(e -> this.setLanguage(Locale.FRENCH));
+        this.english.addActionListener(e -> this.setLanguage(Locale.ENGLISH));
+
         this.add(optionMenu);
         this.add(aideMenu);
+        this.add(languageMenu);
 
         this.setOpaque(true);
 
         this.currentColor = Color.WHITE;
+
+        if( ResourceManager.getInstance().getLocale().getLanguage().equals(Locale.FRENCH.getLanguage())      ) this.french .setSelected(true);
+        else if( ResourceManager.getInstance().getLocale().getLanguage().equals(Locale.ENGLISH.getLanguage()) ) this.english.setSelected(true);
+
+        ResourceManager.getInstance().addObjectToTranslate(this);
     }
 
     /**
@@ -83,6 +115,13 @@ public class MenuBar extends JMenuBar
         this.reWritePrefParam();
     }
 
+    private void setLanguage( Locale locale )
+    {
+        ResourceManager.getInstance().setLocale(locale);
+
+        this.reWritePrefParam();
+    }
+
     private void setRecursiveColor( Color color, Component component)
     {
         component.setBackground(color);
@@ -102,8 +141,6 @@ public class MenuBar extends JMenuBar
      */
     public void changeBlockParam( boolean blockIfNotMatch )
     {
-        System.out.println("Param block changed");
-
         if( this.itemBlockIfNotMatchNumber.isSelected() )
         {
             this.itemBlockIfNotMatchNumber.setBackground(Color.RED);
@@ -143,4 +180,19 @@ public class MenuBar extends JMenuBar
         g2d.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
     }
 
+    @Override
+    public void setNewText()
+    {
+        this.optionMenu  .setText(MANAGER.getString(Resources.MENU_OPTION));
+        this.aideMenu    .setText(MANAGER.getString(Resources.HELP));
+        this.languageMenu.setText(MANAGER.getString(Resources.LANGUAGES));
+
+        this.itemBlockIfNotMatchNumber.setText(MANAGER.getString(Resources.BLOCK_NOT_MATCH));
+        this.darkTheme.setText(MANAGER.getString(Resources.DARK_THEME));
+        this.french   .setText(MANAGER.getString(Resources.FRENCH));
+        this.english  .setText(MANAGER.getString(Resources.ENGLISH));
+
+        this.aide   .setText(MANAGER.getString(Resources.HELP));
+        this.aPropos.setText(MANAGER.getString(Resources.ABOUT));
+    }
 }

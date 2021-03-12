@@ -1,11 +1,14 @@
 package renameFiles.ihm;
 
+import renameFiles.metier.resources.Languages;
+import renameFiles.metier.resources.ResourceManager;
+
 import javax.swing.*;
 
 /**
  * The type Picker.
  */
-public class Picker extends JFileChooser
+public class Picker extends JFileChooser implements Languages
 {
     /**
      * Instantiates a new Picker.
@@ -15,6 +18,8 @@ public class Picker extends JFileChooser
         this.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.setMultiSelectionEnabled(false);
         this.setFileHidingEnabled(false);
+
+        ResourceManager.getInstance().addObjectToTranslate(this);
     }
 
     /**
@@ -31,5 +36,11 @@ public class Picker extends JFileChooser
             return this.getSelectedFile().getPath();
         }
         else return null;
+    }
+
+    @Override
+    public void setNewText()
+    {
+        this.setLocale(ResourceManager.getInstance().getLocale());
     }
 }

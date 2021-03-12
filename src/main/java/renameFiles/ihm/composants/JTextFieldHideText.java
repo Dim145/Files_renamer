@@ -2,6 +2,9 @@ package renameFiles.ihm.composants;
 
 import renameFiles.ihm.IHMGUI;
 import renameFiles.metier.enums.FileType;
+import renameFiles.metier.resources.Languages;
+import renameFiles.metier.resources.ResourceManager;
+import renameFiles.metier.resources.Resources;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,25 +14,24 @@ import java.awt.event.FocusListener;
 /**
  * The type J text field hide text.
  */
-public class JTextFieldHideText extends JTextField implements FocusListener
+public class JTextFieldHideText extends JTextField implements FocusListener, Languages
 {
     private final IHMGUI ihm;
-    private final String textFocusLost;
+    private final Resources resLostFocusText;
 
     /**
      * Instantiates a new J text field hide text.
      *
      * @param ihm            the ihm
      * @param basePath       the base path
-     * @param texteFocusLost the texte focus lost
      */
-    public JTextFieldHideText(IHMGUI ihm, String basePath, String texteFocusLost )
+    public JTextFieldHideText(IHMGUI ihm, String basePath, Resources resLostFocusText )
     {
         super(basePath);
 
         this.ihm = ihm;
 
-        this.textFocusLost = texteFocusLost;
+        this.resLostFocusText = resLostFocusText;
 
         this.addFocusListener(this);
     }
@@ -42,7 +44,7 @@ public class JTextFieldHideText extends JTextField implements FocusListener
      */
     public JTextFieldHideText(IHMGUI ihm, String basePath )
     {
-        this(ihm, basePath, "Non Obligatoire");
+        this(ihm, basePath, Resources.NO_REQUIRED);
     }
 
     /**
@@ -73,7 +75,14 @@ public class JTextFieldHideText extends JTextField implements FocusListener
         if( this.getText().isEmpty() && this.ihm.getCurrentType() == FileType.SERIES )
         {
             this.setForeground(Color.GRAY);
-            this.setText(this.textFocusLost);
+            this.setText(ResourceManager.getInstance().getString(this.resLostFocusText));
         }
+    }
+
+    @Override
+    public void setNewText()
+    {
+        if( this.getForeground() == Color.GRAY )
+            this.setText(ResourceManager.getInstance().getString(this.resLostFocusText));
     }
 }

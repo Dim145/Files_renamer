@@ -234,7 +234,7 @@ public class VideoFile extends BaseFile
 
         for (String s : Languages.getAllValues())
         {
-            Matcher match = Pattern.compile("[|, \\[(]"+s.toLowerCase()+"[, \\])]").matcher(fileName);
+            Matcher match = Pattern.compile("[|, \\[(]"+s.toLowerCase()+"[, \\])]").matcher(tmpFileName);
 
             if( match.find() )
                 video.addLanguages(s);

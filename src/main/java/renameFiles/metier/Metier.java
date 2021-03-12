@@ -3,6 +3,7 @@ package renameFiles.metier;
 import renameFiles.Controleur;
 import renameFiles.ihm.dialogs.DialogAvancement;
 import renameFiles.metier.enums.FileType;
+import renameFiles.metier.resources.ResourceManager;
 import renameFiles.metier.types.ListeInterface;
 import renameFiles.metier.types.BaseFile;
 import renameFiles.metier.types.BaseFileListe;
@@ -25,7 +26,7 @@ public class Metier
     /**
      * The constant tabPreferences.
      */
-    public static final String[] tabPreferences = {"BlockIfNotMathPatern", "DarkMode", "SDL" };
+    public static final String[] tabPreferences = {"BlockIfNotMathPatern", "DarkMode", "SDL", "Language" };
 
     private final ArrayList<File> files;
     private final Controleur      ctrl;
@@ -54,6 +55,14 @@ public class Metier
         this.blockIfNotMathPatern = true;
         this.maxLevel             = 1;
         this.preferencesFile      = null;
+
+        File appDirectorie = new File(System.getProperty("user.home") + "/.FileRenamer");
+
+        if( !appDirectorie.exists() )
+            if( appDirectorie.mkdir() ) System.out.println("File \".FileRenamer\" created.");
+            else                        System.err.println("Error, cannot create the app file in user directory");
+
+        this.preferencesFile = new File(appDirectorie.getAbsolutePath() + "/.preferences.conf");
     }
 
     /**
@@ -61,14 +70,6 @@ public class Metier
      */
     public void setupPreferenceFile()
     {
-        File appDirectorie = new File(System.getProperty("user.home") + "/.FileRenamer");
-
-        if( !appDirectorie.exists() )
-            if( appDirectorie.mkdir() ) this.ctrl.printConsole("File \".FileRenamer\" created.");
-            else                        this.ctrl.printConsole("<font color=\"red\">Error, cannot create the app file in user directory</font>");
-
-        this.preferencesFile = new File(appDirectorie.getAbsolutePath() + "/.preferences.conf");
-
         if( this.preferencesFile.exists() )
             this.readPreferenceFile();
         else
@@ -106,12 +107,7 @@ public class Metier
         }
     }
 
-    /**
-     * Preference file is
-     * pref=value
-     *
-     * value = Integer or Boolean.
-     */
+    //todo améliorer, pb pour la langue
     private void readPreferenceFile()
     {
         try(Scanner scanner = new Scanner(this.preferencesFile))
@@ -135,6 +131,9 @@ public class Metier
             for (String key : prefs.keySet())
             {
                 if( !listPref.contains(key) ) continue;
+
+                if( key.equals(Metier.tabPreferences[3]) )
+                    continue;
 
                 Method    m;
                 Class<?>  c;
@@ -178,6 +177,34 @@ public class Metier
         }
     }
 
+    public void setLanguesByPrefFile()
+    {
+        String locale = null;
+
+        try(Scanner scanner = new Scanner(this.preferencesFile))
+        {
+            HashMap<String, String> prefs = new HashMap<>();
+
+            while( scanner.hasNext() )
+            {
+                String line = scanner.nextLine();
+                String[] tab = line.split("=");
+
+                if( tab.length < 2 ) continue;
+
+                prefs.put(tab[0], tab[1]);
+            }
+
+            locale = prefs.get(Metier.tabPreferences[3]);
+        }
+        catch (Exception e)
+        {
+            //e.printStackTrace();
+        }
+
+        ResourceManager.getInstance().setLocale(locale != null ? new Locale(locale) : Locale.getDefault());
+    }
+
     /**
      * Save preferences.
      *
@@ -191,6 +218,9 @@ public class Metier
 
         if ( !hashMap.containsKey( Metier.tabPreferences[2]) )
             hashMap.put(Metier.tabPreferences[2], this.maxLevel);
+
+        if( !hashMap.containsKey(Metier.tabPreferences[3]) )
+            hashMap.put(Metier.tabPreferences[3], ResourceManager.getInstance().getLocale().toString());
 
         try(FileWriter writer = new FileWriter(this.preferencesFile))
         {
