@@ -6,12 +6,13 @@
 
     <groupId>com.dim145.renamefiles</groupId>
     <artifactId>Files_renamer</artifactId>
-    <version>3.5</version>
+    <version>4.0</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <build>

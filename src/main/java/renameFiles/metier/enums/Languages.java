@@ -7,7 +7,7 @@ public enum Languages
 {
     FRENCH  ("vostfr", "fre", "french"  , "fra", "francais", "français",  "vf" ),
     ENGLISH ("vosten", "eng", "english" ),
-    JAPANESE("vostjp", "jpn", "japanese", "jp" ),
+    JAPANESE("vostjp", "jpn", "japanese", "jp", "jap" ),
     MULTI   ("multi");
 
 

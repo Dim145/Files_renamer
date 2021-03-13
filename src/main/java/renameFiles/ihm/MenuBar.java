@@ -26,8 +26,10 @@ public class MenuBar extends JMenuBar implements Languages
 
     private final JCheckBoxMenuItem itemBlockIfNotMatchNumber;
     private final JCheckBoxMenuItem darkTheme;
+
     private final JCheckBoxMenuItem french;
     private final JCheckBoxMenuItem english;
+    private final JCheckBoxMenuItem japanese;
 
     private final JMenu optionMenu;
     private final JMenu aideMenu;
@@ -46,14 +48,16 @@ public class MenuBar extends JMenuBar implements Languages
 
         this.optionMenu   = new JMenu(MANAGER.getString(Resources.MENU_OPTION));
         this.aideMenu     = new JMenu(MANAGER.getString(Resources.HELP));
-        this.languageMenu = new JMenu(ResourceManager.getInstance().getString(Resources.LANGUAGES));
+        this.languageMenu = new JMenu(MANAGER.getString(Resources.LANGUAGES));
 
         this.itemBlockIfNotMatchNumber = new JCheckBoxMenuItem(MANAGER.getString(Resources.BLOCK_NOT_MATCH));
         this.darkTheme                 = new JCheckBoxMenuItem(MANAGER.getString(Resources.DARK_THEME));
-        this.french                    = new JCheckBoxMenuItem(ResourceManager.getInstance().getString(Resources.FRENCH));
-        this.english                   = new JCheckBoxMenuItem(ResourceManager.getInstance().getString(Resources.ENGLISH));
+        
+        this.french                    = new JCheckBoxMenuItem(MANAGER.getString(Resources.FRENCH));
+        this.english                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.ENGLISH));
+        this.japanese                  = new JCheckBoxMenuItem(MANAGER.getString(Resources.JAPANESE));
 
-        this.aide         = new JMenuItem(MANAGER.getString(Resources.HELP));
+        this.aide    = new JMenuItem(MANAGER.getString(Resources.HELP));
         this.aPropos = new JMenuItem(MANAGER.getString(Resources.ABOUT));
 
         optionMenu.add(itemBlockIfNotMatchNumber);
@@ -64,10 +68,12 @@ public class MenuBar extends JMenuBar implements Languages
 
         languageMenu.add(this.french);
         languageMenu.add(this.english);
+        languageMenu.add(this.japanese);
 
         ButtonGroup group = new ButtonGroup();
         group.add(this.french);
         group.add(this.english);
+        group.add(this.japanese);
 
         this.itemBlockIfNotMatchNumber.addActionListener(e -> changeBlockParam(this.itemBlockIfNotMatchNumber.isSelected()));
 
@@ -75,8 +81,9 @@ public class MenuBar extends JMenuBar implements Languages
         darkTheme.addActionListener(e -> this.changeTheme(darkTheme.isSelected()));
         this.aide.addActionListener(e -> new Aide(this.currentColor, this.getFont()));
 
-        this.french .addActionListener(e -> this.setLanguage(Locale.FRENCH));
-        this.english.addActionListener(e -> this.setLanguage(Locale.ENGLISH));
+        this.french  .addActionListener(e -> this.setLanguage(Locale.FRENCH));
+        this.english .addActionListener(e -> this.setLanguage(Locale.ENGLISH));
+        this.japanese.addActionListener(e -> this.setLanguage(Locale.JAPANESE));
 
         this.add(optionMenu);
         this.add(aideMenu);
@@ -189,8 +196,10 @@ public class MenuBar extends JMenuBar implements Languages
 
         this.itemBlockIfNotMatchNumber.setText(MANAGER.getString(Resources.BLOCK_NOT_MATCH));
         this.darkTheme.setText(MANAGER.getString(Resources.DARK_THEME));
+
         this.french   .setText(MANAGER.getString(Resources.FRENCH));
         this.english  .setText(MANAGER.getString(Resources.ENGLISH));
+        this.japanese .setText(MANAGER.getString(Resources.JAPANESE));
 
         this.aide   .setText(MANAGER.getString(Resources.HELP));
         this.aPropos.setText(MANAGER.getString(Resources.ABOUT));

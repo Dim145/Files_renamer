@@ -27,7 +27,8 @@ public enum Resources
     NO_TO_WRITE("no_to_write"),
     LANGUAGES("languages"),
     FRENCH("french"),
-    ENGLISH("english");
+    ENGLISH("english"),
+    JAPANESE("japanese");
 
 
     private final String resourceKey;

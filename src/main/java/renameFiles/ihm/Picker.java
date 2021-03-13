@@ -42,5 +42,6 @@ public class Picker extends JFileChooser implements Languages
     public void setNewText()
     {
         this.setLocale(ResourceManager.getInstance().getLocale());
+        this.updateUI();
     }
 }
