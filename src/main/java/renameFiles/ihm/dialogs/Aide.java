@@ -1,7 +1,8 @@
 package renameFiles.ihm.dialogs;
 
-import renameFiles.metier.resources.Traduisible;
 import renameFiles.metier.resources.ResourceManager;
+import renameFiles.metier.resources.Resources;
+import renameFiles.metier.resources.Traduisible;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,8 @@ import java.awt.event.WindowEvent;
  */
 public class Aide extends JDialog implements Traduisible
 {
+    private final static ResourceManager MANAGER = ResourceManager.getInstance();
+
     private final JLabel label;
     private final Color currentColor;
 
@@ -101,53 +104,54 @@ public class Aide extends JDialog implements Traduisible
                         "</style>" +
                     "</head>" +
                     "<body>" +
-                        "<h1>File renamer</h1>" +
-                        "<p>Cette application permet de renomer tous un ensemble de fichiers de la même façon.</p>" +
-                        "<p>Pour cela il faut juste choisir le repertoire ou sont les fichiers à renomer. </p>" +
-                        "<h2>Les fichiers non répertoriés:</h2>" +
+                        "<h1>" + MANAGER.getString(Resources.APP_NAME) + "</h1>" +
+                        "<p>"  + MANAGER.getHelpString(1) + "</p>" +
+                        "<p>"  + MANAGER.getHelpString(2) + "</p>" +
+                        "<h2>" + MANAGER.getHelpString(3) + "</h2>" +
                         "<div class=\"marginLeft\">" +
-                        "<h3 id=\"autre-extensions\">Les extensions</h3>" +
-                        "<p>Les fichiers pris en compte peuvent etre filtré selon leurs extensions. Plusieurs " +
-                        "peuvent être choisi, il suffit de les séparé par une \",\"</p>" +
-                        "<h3>Le nom</h3>" +
-                        "<p>Le nom seras appliqué a tous les fichiers du dossiers, plus ceux des sous-dossiers. " +
-                        "Les eventuels chiffres ou nombres devrons etre remplacer par les deux caractères \"%%\".</p>" +
-                        "<p>Par exemple: fichier n°%%.txt</p>" +
-                        "<p> Si nous avons 3 fichiers avec un chiffre allant de 1 à 3 dans le dossier courrant, les noms seront donc:</p>" +
-                        "<ul><li>fichier n°1.txt</li><li>fichier n°2.txt</li><li>fichier n°3.txt</li></ul>" +
-                        "<p>P.S: Le programme prend en compte les nombres a virgule. (\",\" ou \".\")</p>" +
-                        "</div>" +
-                        "<h2>Les séries</h2>" +
-                        "<div class=\"marginLeft\">" +
-                        "<p>Les vidéos ont un fonctionnement totalement automatique. Le renommage se feras en suivant le précepte suivant:" +
-                        "<p> NomDeLaSerie Saison Episode Qualité Compression.extension </p>" +
-                        "<p> ce qui donne par exemple: Test S1 Ep01 720p x265.mkv</p><br/>" +
-                        "<p>P.S: Si cette norme ne vous plait pas, il est possible de renommer les vidéos en selectionnant la catégorie \"Autres\" et en mettant les extensions correct.</p>" +
-                        "<h3>Le nom</h3>" +
-                        "<p>Le nom n'est pas obligatoire. Il seras automatiquement récupéré et adapter selon le nom de fichier.</p>" +
-                        "<p>par exemple: [Une Team] Test (TV) S1 episode 5 1080p donneras -> Test S1 Ep 5 1080p</p>" +
-                        "<p>Si vous choisissez de mettre un nom dans le champs \"paterne\", se seras celui-ci que seras mis au détriment de l'ancien.</p>" +
-                        "</div>" +
-                        "<h2>Nom aléatoires</h2>" +
-                        "<div class=\"marginLeft\">" +
-                        "<p>Cette sections est plus situationnel. Elle permet de renommée un fichier avec un numéro aléatoire devant le nom du fichier.</p>" +
-                        "<p>Le numéro et le nom sont séparé par un \"-\", si un numéro est deja présent, il seras remplacé par un nouveau si la case a chocher \"save nb if exist\" est décoché</>" +
-                        "<p>La zones de saisie d'extension fonctionne de la même manière que pour \"Autres\", et aucun paterne ne peut etre saisie.</p>" +
-                        "<p>Cette section peut etre utile pour de vieux lecteur radio ou de vieux logiciels qui ne savent pas lire de façon aléatoire...</p>" +
-                        "</div>" +
-                        "<h2>Options</h2>" +
-                        "<p>Il y as 5 options supplémentaires:</p>" +
+                        "<h3 id=\"autre-extensions\">" + MANAGER.getString(Resources.EXTENSIONS) + "</h3>" +
+                        "<p>"  + MANAGER.getHelpString(4) + "</p>" +
+                        "<h3>" + MANAGER.getString(Resources.NAME_PATERN) + "</h3>" +
+                        "<p>"  + MANAGER.getHelpString(5) + "</p>" +
+                        "<p>"  + MANAGER.getHelpString(6) + "</p>" +
+                        "<p>"  + MANAGER.getHelpString(7) + "</p>" +
                         "<ul>" +
-                            "<li>Un thème sombre pour ceux qui ont des yeux sensibles.</li>" +
-                            "<li>Une option de sécurité qui permet de ne pas renomer un fichier si la quantité de nombre ne correspond pas a celle de \"%%\"</li>" +
-                            "<li>Une option pour remplacer tous les points par des espaces (extension non incluse) [Pour séries].</li>" +
-                            "<li>La possibilité de sauvegarder l'eventuel nombre deja présent dans le nom [Pour Nom aléatoire].</li>" +
-                            "<li>La modification du nombre de sous-repertoire parcouru: " +
+                            "<li>"+ MANAGER.getHelpString(8)  +"</li>" +
+                            "<li>"+ MANAGER.getHelpString(9)  +"</li>" +
+                            "<li>"+ MANAGER.getHelpString(10) +"</li>" +
+                        "</ul>" +
+                        "<p>"+ MANAGER.getHelpString(11) +"</p>" +
+                        "</div>" +
+                        "<h2>" + MANAGER.getString(Resources.SERIES) + "</h2>" +
+                        "<div class=\"marginLeft\">" +
+                        "<p>"+ MANAGER.getHelpString(12) +"</p>" +
+                        "<p>"+ MANAGER.getHelpString(13) +"</p>" +
+                        "<p>"+ MANAGER.getHelpString(14) +"</p>" +
+                        "<h3>" + MANAGER.getString(Resources.NAME_PATERN) + "</h3>" +
+                        "<p>"+ MANAGER.getHelpString(15) +"</p>" +
+                        "<p>"+ MANAGER.getHelpString(16) +"</p>" +
+                        "<p>"+ MANAGER.getHelpString(17) +"</p>" +
+                        "</div>" +
+                        "<h2>" + MANAGER.getString(Resources.ALEANAME) + "</h2>" +
+                        "<div class=\"marginLeft\">" +
+                        "<p>"+ MANAGER.getHelpString(18) +"</p>" +
+                        "<p>"+ MANAGER.getHelpString(19) +"</p>" +
+                        "<p>"+ MANAGER.getHelpString(20) +"</p>" +
+                        "<p>"+ MANAGER.getHelpString(21) +"</p>" +
+                        "</div>" +
+                        "<h2>" + MANAGER.getString(Resources.MENU_OPTION) + "</h2>" +
+                        "<p>"+ MANAGER.getHelpString(22) +"</p>" +
+                        "<ul>" +
+                            "<li>" + MANAGER.getHelpString(23) + "</li>" +
+                            "<li>" + MANAGER.getHelpString(24) + "</li>" +
+                            "<li>" + MANAGER.getHelpString(25) + "</li>" +
+                            "<li>" + MANAGER.getHelpString(26) + "</li>" +
+                            "<li>" + MANAGER.getHelpString(27) + " " +
                                 "<ul>" +
-                                    "<li>1 = dossier choisi</li>" +
-                                    "<li>2 = 1 + premier sous-répertoire</li>" +
-                                    "<li>3 = 2 + second sous-repertoire pour chaque premiers sous-répertoires.</li>" +
-                                    "<li>...</li>" +
+                                    "<li>" + MANAGER.getHelpString(28) + "</li>" +
+                                    "<li>" + MANAGER.getHelpString(29) + "</li>" +
+                                    "<li>" + MANAGER.getHelpString(30) + "</li>" +
+                                    "<li>" + MANAGER.getHelpString(31) + "</li>" +
                         "</ul>" +
                     "</body>" +
                 "</html>";

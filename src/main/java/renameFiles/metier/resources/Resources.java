@@ -30,7 +30,9 @@ public enum Resources
     ENGLISH("english"),
     JAPANESE("japanese"),
     SPANISH("spanish"),
-    RENAME_FILES("renaming_files");
+    RENAME_FILES("renaming_files"),
+    SERIES("SERIES"),
+    ALEANAME("ALEANAME");
 
 
     private final String resourceKey;

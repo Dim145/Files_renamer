@@ -17,6 +17,7 @@ public class ResourceManager
 
     private Locale locale;
     private ResourceBundle ihmStringBundle;
+    private ResourceBundle helpBundle;
 
     private final ArrayList<Traduisible> listToTranlate;
 
@@ -33,6 +34,7 @@ public class ResourceManager
 
         this.locale          = locale;
         this.ihmStringBundle = ResourceBundle.getBundle("ihmStrings", locale);
+        this.helpBundle      = ResourceBundle.getBundle("helpText"  , locale);
 
         this.tranlate();
     }
@@ -50,6 +52,16 @@ public class ResourceManager
     public String getString(Resources res)
     {
         return this.getString(res.getKey());
+    }
+
+    public String getHelpString(int ligne)
+    {
+        return this.helpBundle.getString(String.valueOf(ligne));
+    }
+
+    public boolean helpContainsLigne(int ligne)
+    {
+        return this.helpBundle.containsKey(String.valueOf(ligne));
     }
 
     public boolean addObjectToTranslate( Traduisible l )
