@@ -1,6 +1,6 @@
 package renameFiles.ihm.dialogs;
 
-import renameFiles.metier.resources.Languages;
+import renameFiles.metier.resources.Traduisible;
 import renameFiles.metier.resources.ResourceManager;
 
 import javax.swing.*;
@@ -11,7 +11,7 @@ import java.awt.event.WindowEvent;
 /**
  * The type Aide.
  */
-public class Aide extends JDialog implements Languages
+public class Aide extends JDialog implements Traduisible
 {
     private final JLabel label;
     private final Color currentColor;

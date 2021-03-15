@@ -1,6 +1,6 @@
 package renameFiles.ihm;
 
-import renameFiles.metier.resources.Languages;
+import renameFiles.metier.resources.Traduisible;
 import renameFiles.metier.resources.ResourceManager;
 
 import javax.swing.*;
@@ -8,7 +8,7 @@ import javax.swing.*;
 /**
  * The type Picker.
  */
-public class Picker extends JFileChooser implements Languages
+public class Picker extends JFileChooser implements Traduisible
 {
     /**
      * Instantiates a new Picker.

@@ -1,6 +1,6 @@
 package renameFiles.metier.resources;
 
-public interface Languages
+public interface Traduisible
 {
     void setNewText();
 }

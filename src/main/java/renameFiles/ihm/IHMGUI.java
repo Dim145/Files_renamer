@@ -7,7 +7,7 @@ import renameFiles.ihm.composants.JIntergerTextField;
 import renameFiles.ihm.composants.JTextFieldHideText;
 import renameFiles.ihm.dialogs.APropos;
 import renameFiles.metier.enums.FileType;
-import renameFiles.metier.resources.Languages;
+import renameFiles.metier.resources.Traduisible;
 import renameFiles.metier.resources.ResourceManager;
 import renameFiles.metier.resources.Resources;
 
@@ -22,7 +22,7 @@ import java.util.HashMap;
 /**
  * The type Ihmgui.
  */
-public class IHMGUI extends JFrame implements Languages
+public class IHMGUI extends JFrame implements Traduisible
 {
     private static final ResourceManager MANAGER = ResourceManager.getInstance();
 
@@ -299,6 +299,13 @@ public class IHMGUI extends JFrame implements Languages
         this.console.addText(s);
 
         this.changeConsoleColorByUIColor();
+    }
+
+    public void addTextToTampon(String text, boolean pushToConsole)
+    {
+        this.console.addTexteToTampon(text);
+
+        if( pushToConsole ) this.console.addTamponToConsole();
     }
 
     public void setTypeCourant( FileType type )

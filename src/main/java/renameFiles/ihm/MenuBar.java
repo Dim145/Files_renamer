@@ -3,7 +3,7 @@ package renameFiles.ihm;
 import renameFiles.ihm.dialogs.APropos;
 import renameFiles.ihm.dialogs.Aide;
 import renameFiles.metier.Metier;
-import renameFiles.metier.resources.Languages;
+import renameFiles.metier.resources.Traduisible;
 import renameFiles.metier.resources.ResourceManager;
 import renameFiles.metier.resources.Resources;
 
@@ -15,9 +15,10 @@ import java.util.Locale;
 /**
  * The type Menu bar.
  */
-public class MenuBar extends JMenuBar implements Languages
+public class MenuBar extends JMenuBar implements Traduisible
 {
     private static final ResourceManager MANAGER = ResourceManager.getInstance();
+    private static final Locale          SPANISH = new Locale("spa", "");
 
     private final IHMGUI ihm;
 
@@ -30,6 +31,7 @@ public class MenuBar extends JMenuBar implements Languages
     private final JCheckBoxMenuItem french;
     private final JCheckBoxMenuItem english;
     private final JCheckBoxMenuItem japanese;
+    private final JCheckBoxMenuItem spanish;
 
     private final JMenu optionMenu;
     private final JMenu aideMenu;
@@ -56,6 +58,7 @@ public class MenuBar extends JMenuBar implements Languages
         this.french                    = new JCheckBoxMenuItem(MANAGER.getString(Resources.FRENCH));
         this.english                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.ENGLISH));
         this.japanese                  = new JCheckBoxMenuItem(MANAGER.getString(Resources.JAPANESE));
+        this.spanish                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.SPANISH));
 
         this.aide    = new JMenuItem(MANAGER.getString(Resources.HELP));
         this.aPropos = new JMenuItem(MANAGER.getString(Resources.ABOUT));
@@ -69,11 +72,13 @@ public class MenuBar extends JMenuBar implements Languages
         languageMenu.add(this.french);
         languageMenu.add(this.english);
         languageMenu.add(this.japanese);
+        languageMenu.add(this.spanish);
 
         ButtonGroup group = new ButtonGroup();
         group.add(this.french);
         group.add(this.english);
         group.add(this.japanese);
+        group.add(this.spanish);
 
         this.itemBlockIfNotMatchNumber.addActionListener(e -> changeBlockParam(this.itemBlockIfNotMatchNumber.isSelected()));
 
@@ -84,6 +89,7 @@ public class MenuBar extends JMenuBar implements Languages
         this.french  .addActionListener(e -> this.setLanguage(Locale.FRENCH));
         this.english .addActionListener(e -> this.setLanguage(Locale.ENGLISH));
         this.japanese.addActionListener(e -> this.setLanguage(Locale.JAPANESE));
+        this.spanish .addActionListener(e -> this.setLanguage(MenuBar.SPANISH));
 
         this.add(optionMenu);
         this.add(aideMenu);
@@ -93,8 +99,14 @@ public class MenuBar extends JMenuBar implements Languages
 
         this.currentColor = Color.WHITE;
 
-        if( ResourceManager.getInstance().getLocale().getLanguage().equals(Locale.FRENCH.getLanguage())      ) this.french .setSelected(true);
-        else if( ResourceManager.getInstance().getLocale().getLanguage().equals(Locale.ENGLISH.getLanguage()) ) this.english.setSelected(true);
+        switch (ResourceManager.getInstance().getLocale().getLanguage().toLowerCase())
+        {
+            case "fr" : this.french .setSelected(true); break;
+            case "en" : this.english.setSelected(true); break;
+            case "spa": this.spanish.setSelected(true); break;
+            case "ja" :
+            case "jpn": this.japanese.setSelected(true); break;
+        }
 
         ResourceManager.getInstance().addObjectToTranslate(this);
     }
@@ -200,6 +212,7 @@ public class MenuBar extends JMenuBar implements Languages
         this.french   .setText(MANAGER.getString(Resources.FRENCH));
         this.english  .setText(MANAGER.getString(Resources.ENGLISH));
         this.japanese .setText(MANAGER.getString(Resources.JAPANESE));
+        this.spanish  .setText(MANAGER.getString(Resources.SPANISH));
 
         this.aide   .setText(MANAGER.getString(Resources.HELP));
         this.aPropos.setText(MANAGER.getString(Resources.ABOUT));

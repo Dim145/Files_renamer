@@ -28,7 +28,9 @@ public enum Resources
     LANGUAGES("languages"),
     FRENCH("french"),
     ENGLISH("english"),
-    JAPANESE("japanese");
+    JAPANESE("japanese"),
+    SPANISH("spanish"),
+    RENAME_FILES("renaming_files");
 
 
     private final String resourceKey;

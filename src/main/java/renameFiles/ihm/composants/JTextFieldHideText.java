@@ -2,7 +2,7 @@ package renameFiles.ihm.composants;
 
 import renameFiles.ihm.IHMGUI;
 import renameFiles.metier.enums.FileType;
-import renameFiles.metier.resources.Languages;
+import renameFiles.metier.resources.Traduisible;
 import renameFiles.metier.resources.ResourceManager;
 import renameFiles.metier.resources.Resources;
 
@@ -14,7 +14,7 @@ import java.awt.event.FocusListener;
 /**
  * The type J text field hide text.
  */
-public class JTextFieldHideText extends JTextField implements FocusListener, Languages
+public class JTextFieldHideText extends JTextField implements FocusListener, Traduisible
 {
     private final IHMGUI ihm;
     private final Resources resLostFocusText;

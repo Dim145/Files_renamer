@@ -17,6 +17,8 @@ public class JConsoleLabel extends JScrollPane
 
     private final JLabel console;
 
+    private String textTampon;
+
     /**
      * Instantiates a new J console label.
      */
@@ -24,7 +26,8 @@ public class JConsoleLabel extends JScrollPane
     {
         super(new JLabel());
 
-        this.console = (JLabel) this.getViewport().getView();
+        this.console    = (JLabel) this.getViewport().getView();
+        this.textTampon = "";
 
         this.console.setText("<html>");
         this.console.setOpaque(true);
@@ -77,6 +80,23 @@ public class JConsoleLabel extends JScrollPane
         String versionCorriger = text.replaceAll("\n", "<br/>");
 
         this.console.setText(this.console.getText() + versionCorriger + (versionCorriger.endsWith("<br/>") ? "" : "<br/>"));
+    }
+
+    public void addTexteToTampon(String texte)
+    {
+        if( texte == null ) return;
+
+        this.textTampon += texte;
+
+        if( !texte.endsWith("\n") && !texte.endsWith("<br/>") )
+            this.textTampon += "\n";
+    }
+
+    public void addTamponToConsole()
+    {
+        this.addText(this.textTampon);
+
+        this.textTampon = "";
     }
 
     /**

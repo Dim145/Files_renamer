@@ -171,6 +171,11 @@ public class Controleur
         this.ihm.changeTheme(aBoolean);
     }
 
+    public void addTextToTampon(String text, boolean pushToConsole)
+    {
+        this.ihm.addTextToTampon(text, pushToConsole);
+    }
+
     /**
      * The entry point of application.
      *

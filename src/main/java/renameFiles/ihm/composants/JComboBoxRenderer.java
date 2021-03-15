@@ -1,7 +1,7 @@
 package renameFiles.ihm.composants;
 
 import renameFiles.metier.enums.FileType;
-import renameFiles.metier.resources.Languages;
+import renameFiles.metier.resources.Traduisible;
 import renameFiles.metier.resources.ResourceManager;
 
 import javax.swing.*;
@@ -9,7 +9,7 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class JComboBoxRenderer extends DefaultListCellRenderer implements Languages
+public class JComboBoxRenderer extends DefaultListCellRenderer implements Traduisible
 {
     private Method setText;
     private FileType type;

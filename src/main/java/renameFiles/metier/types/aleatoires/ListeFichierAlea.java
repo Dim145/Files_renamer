@@ -113,13 +113,8 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>, ListeInterface
         int max = this.listeFiles.size();
 
         if( dialog != null )
-        {
-            dialog.setVisible(false);
-            dialog.setTitle("Calcule des chiffres aléatoires a distribuer");
-            dialog.setBorneMax(max);
-            dialog.reset();
-            dialog.setVisible(true);
-        }
+            if (!dialog.isVisible())
+                dialog.setVisible(true);
 
         for (AleaNameFile file : this.listeFiles)
         {
@@ -150,8 +145,6 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>, ListeInterface
             for (AleaNameFile file : this.listeFiles)
                 file.setNbRound(String.valueOf(oi.getAsInt()).length());
         }
-
-        if( dialog != null ) dialog.setVisible(false);
     }
 
     @NotNull
@@ -174,9 +167,6 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>, ListeInterface
 
         this.setNbAleaPostName(dialog);
 
-        dialog.setTitle("Renommage en cours...");
-        dialog.reset();
-
         if( !dialog.isVisible() ) dialog.setVisible(true);
 
         for (AleaNameFile aleaFile : this)
@@ -192,8 +182,6 @@ public class ListeFichierAlea implements Iterable<AleaNameFile>, ListeInterface
 
             dialog.avancerUneFois();
         }
-
-        dialog.setVisible(false);
 
         return sRet.toString();
     }

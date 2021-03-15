@@ -4,6 +4,7 @@ import renameFiles.Controleur;
 import renameFiles.ihm.dialogs.DialogAvancement;
 import renameFiles.metier.enums.FileType;
 import renameFiles.metier.resources.ResourceManager;
+import renameFiles.metier.resources.Resources;
 import renameFiles.metier.types.ListeInterface;
 import renameFiles.metier.types.BaseFile;
 import renameFiles.metier.types.BaseFileListe;
@@ -220,7 +221,7 @@ public class Metier
             hashMap.put(Metier.tabPreferences[2], this.maxLevel);
 
         if( !hashMap.containsKey(Metier.tabPreferences[3]) )
-            hashMap.put(Metier.tabPreferences[3], ResourceManager.getInstance().getLocale().toString());
+            hashMap.put(Metier.tabPreferences[3], ResourceManager.getInstance().getLocale().getLanguage());
 
         try(FileWriter writer = new FileWriter(this.preferencesFile))
         {
@@ -365,13 +366,18 @@ public class Metier
                 dialog.setFichierCourant(fileName);
             }
 
+            dialog.setVisible(false);
+            dialog.reset();
+            dialog.setTitle(ResourceManager.getInstance().getString(Resources.RENAME_FILES));
+            dialog.setVisible(true);
+
             for (ListeInterface liste : lists)
-                this.ctrl.printConsole(liste.traitement(dialog));
+                this.ctrl.addTextToTampon(liste.traitement(dialog), false);
 
             if( dialog.isVisible() )
                 dialog.setVisible(false);
 
-            this.ctrl.printConsole("<center color=\"red\">FIN</center>");
+            this.ctrl.addTextToTampon("<center color=\"red\">FIN</center>", true);
         });
 
         t.start();

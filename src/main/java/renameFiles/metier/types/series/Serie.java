@@ -89,21 +89,18 @@ public class Serie implements ListeInterface
     {
         StringBuilder sRet = new StringBuilder();
 
-        dialog.reset();
-
-        if( !dialog.isVisible() ) dialog.setVisible(true);
+        if( dialog != null && !dialog.isVisible() ) dialog.setVisible(true);
 
         this.setNbMaxSaisonAllSaison();
 
         for (Saison s : listSaison)
         {
-            dialog.setTitle("Renommage de la saison " + s.getNumeroSaison());
-
             s.setRoundEpisodeAllEpisode();
 
             for (VideoFile video : s.getAllEpisodes())
             {
                 File file = video.getFile();
+                if(dialog != null) dialog.setFichierCourant(file.getName());
 
                 if( file.renameTo(new File(file.getParent() + "/" + video.toString())) )
                     sRet.append("file: ").append(file.getName()).append(" -> <font color=\"rgb(0, 255, 255)\">").append(
@@ -111,7 +108,7 @@ public class Serie implements ListeInterface
                 else
                     sRet.append("<font color=\"red\">file: ").append(video.getName()).append(" not renamed</font>\n");
 
-                dialog.avancerUneFois();
+                if( dialog != null ) dialog.avancerUneFois();
             }
         }
 

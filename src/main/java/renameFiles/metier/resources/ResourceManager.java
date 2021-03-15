@@ -18,7 +18,7 @@ public class ResourceManager
     private Locale locale;
     private ResourceBundle ihmStringBundle;
 
-    private final ArrayList<Languages> listToTranlate;
+    private final ArrayList<Traduisible> listToTranlate;
 
     public ResourceManager()
     {
@@ -52,19 +52,19 @@ public class ResourceManager
         return this.getString(res.getKey());
     }
 
-    public boolean addObjectToTranslate( Languages l )
+    public boolean addObjectToTranslate( Traduisible l )
     {
         return this.listToTranlate.add(l);
     }
 
-    public boolean removeObjectToTranlate( Languages l )
+    public boolean removeObjectToTranlate( Traduisible l )
     {
         return this.listToTranlate.remove(l);
     }
     
     private void tranlate()
     {
-        for (Languages l : this.listToTranlate)
+        for (Traduisible l : this.listToTranlate)
             l.setNewText();
     }
 }

@@ -479,11 +479,14 @@ public class VideoFile extends BaseFile
                     int tmp = min = i;
 
                     StringBuilder nb = new StringBuilder();
+                    char c = nameToUse.charAt(tmp++);
                     do
                     {
-                        nb.append(nameToUse.charAt(tmp++));
+                        nb.append(c);
+
+                        c = nameToUse.charAt(tmp == nameToUse.length() ? tmp++-1 : tmp++);
                     }
-                    while (Character.isDigit(nameToUse.charAt(tmp)) || nameToUse.charAt(tmp) == '.' || nameToUse.charAt(tmp) == ',' );
+                    while ((tmp <= nameToUse.length()) && Character.isDigit(c) || c== '.' || c == ',' );
 
                     this.setNumeroEpisode(Double.parseDouble(nb.toString()));
 

@@ -48,12 +48,16 @@ public class BaseFileListe implements ListeInterface
                 continue;
             }
 
+            if( dialog != null ) dialog.setFichierCourant(baseFile.getFile().getName());
+
             if( baseFile.getFile().renameTo(new File(baseFile.getFile().getParent() + "/" + baseFile.toString())) )
                 sRet.append("file: ").append(baseFile.getFullname()).append(baseFile.getExtension()).append(
                         " -> <font color=\"rgb(0, 255, 255)\">").append(baseFile.toString()).append("</font>\n");
             else
                 sRet.append("<font color=\"red\">file: ").append(baseFile.getFullname()).append(
                         " not renamed</font>\n");
+
+            if( dialog != null ) dialog.avancerUneFois();
         }
 
         return sRet.toString();
