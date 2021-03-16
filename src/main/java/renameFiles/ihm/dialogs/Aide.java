@@ -162,6 +162,6 @@ public class Aide extends JDialog implements Traduisible
     @Override
     public void setNewText()
     {
-
+        this.setHTMLText();
     }
 }

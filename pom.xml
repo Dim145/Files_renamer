@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.dim145.renamefiles</groupId>
-    <artifactId>Files_renamer</artifactId>
+    <artifactId>files_renamer</artifactId>
     <version>4.2</version>
 
     <properties>
@@ -14,6 +14,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Dim145 Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/Dim145/Files_renamer</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <plugins>
