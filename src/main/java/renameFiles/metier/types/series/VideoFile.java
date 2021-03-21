@@ -32,6 +32,7 @@ public class VideoFile extends BaseFile
 
     private boolean isEpisodeSpecial;
     private boolean isOAV;
+    private boolean isNC;
 
     private String language;
 
@@ -232,13 +233,18 @@ public class VideoFile extends BaseFile
 
         fileName = fileName.replaceAll("]\\[", "] [");
 
-        for (String s : Languages.getAllValues())
+        for (String lang : Languages.getAllValues())
         {
-            Matcher match = Pattern.compile("[|, \\[(]"+s.toLowerCase()+"[, \\])]").matcher(tmpFileName);
+            Matcher match = Pattern.compile("[|, \\[(]"+lang.toLowerCase()+"[, \\])]").matcher(tmpFileName);
 
             if( match.find() )
-                video.addLanguages(s);
+                video.addLanguages(lang);
         }
+
+        Matcher match = Pattern.compile("[|, \\[(]nc[, \\])]").matcher(tmpFileName);
+
+        if( match.find() )
+            video.setNC(true);
 
         for (int cpt = 0; cpt < fileName.length(); cpt++)
         {
@@ -354,6 +360,7 @@ public class VideoFile extends BaseFile
             if( this.numeroEpisode > -1 ) name += (this.isEpisodeSpecial ? "Sp" : this.isOAV ? "OAV" : "Ep") + (this.numeroEpisode % 1 == 0 ? String.format("%0"+nbRoundEpisode+"d", (int)this.numeroEpisode) : String.format(
                     "%0"+nbRoundEpisode+".2f", this.numeroEpisode)) + " ";
             if( !this.language.isEmpty()) name += this.language + " ";
+            if( this.isNC               ) name += "NC ";
             if( this.qualiter      > -1 ) name += this.qualiter + "p ";
             if( this.compression   > -1 ) name += "x"  + this.compression   + " ";
 
@@ -572,5 +579,15 @@ public class VideoFile extends BaseFile
 
         if( this.isEpisodeSpecial() && OAV )
             this.setEpisodeSpecial(false);
+    }
+
+    public boolean isNC()
+    {
+        return isNC;
+    }
+
+    public void setNC(boolean NC)
+    {
+        isNC = NC;
     }
 }
