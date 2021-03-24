@@ -16,9 +16,10 @@ import renameFiles.metier.types.series.VideoFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * The type Metier.
@@ -89,7 +90,7 @@ public class Metier
 
                 for (Method method : c.getMethods())
                 {
-                    if( method.getName().contains("parse") )
+                    if( method.getName().contains("parse") && method.getParameterCount() == 1 )
                     {
                         parse = method;
                         break;
@@ -102,7 +103,7 @@ public class Metier
                 {
                     m.invoke(this.ctrl, parse.invoke(c, value));
                 }
-                catch (IllegalAccessException | InvocationTargetException ignored)
+                catch (Exception ignored)
                 {
                     value = null;
                 }

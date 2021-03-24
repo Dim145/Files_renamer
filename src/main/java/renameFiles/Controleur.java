@@ -176,6 +176,8 @@ public class Controleur
      */
     public static void main(String[] args)
     {
+        System.setProperty("file.encoding", "UTF-8");
+
         if ( !UIManager.getSystemLookAndFeelClassName().equals( "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" ) )
             try   { UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() ); }
             catch ( Exception ignored) {} // Theme de l'app, ici, celle du system sur lequel est lancer l'app

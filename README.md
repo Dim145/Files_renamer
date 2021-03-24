@@ -47,7 +47,7 @@ et les trois options permettent à celle-ci d'être pré sélectionné.
 
 ## Versions
 Liste des versions :
-* **Dernière version :** 4.2
+* **Dernière version :** 4.3
 * **Liste des versions :** [Cliquer pour afficher](https://github.com/Dim145/Files_renamer/tags)
 
 ## Auteurs
