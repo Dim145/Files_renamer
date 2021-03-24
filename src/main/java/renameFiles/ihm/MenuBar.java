@@ -3,13 +3,12 @@ package renameFiles.ihm;
 import renameFiles.ihm.dialogs.APropos;
 import renameFiles.ihm.dialogs.Aide;
 import renameFiles.metier.Metier;
-import renameFiles.metier.resources.Traduisible;
 import renameFiles.metier.resources.ResourceManager;
 import renameFiles.metier.resources.Resources;
+import renameFiles.metier.resources.Traduisible;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -131,14 +130,14 @@ public class MenuBar extends JMenuBar implements Traduisible
         if( bDarkTheme != this.darkTheme.isSelected() )
             this.darkTheme.setSelected(bDarkTheme);
 
-        this.reWritePrefParam();
+        this.ihm.savePreferences(Metier.tabPreferences[1], String.valueOf(this.darkTheme.isSelected()));
     }
 
     private void setLanguage( Locale locale )
     {
         ResourceManager.getInstance().setLocale(locale);
 
-        this.reWritePrefParam();
+        this.ihm.savePreferences(Metier.tabPreferences[3], locale.getLanguage());
     }
 
     private void setRecursiveColor( Color color, Component component)
@@ -174,20 +173,7 @@ public class MenuBar extends JMenuBar implements Traduisible
         if( this.itemBlockIfNotMatchNumber.isSelected() != blockIfNotMatch )
             this.itemBlockIfNotMatchNumber.setSelected(blockIfNotMatch);
 
-        this.reWritePrefParam();
-    }
-
-    /**
-     * Re write pref param.
-     */
-    public void reWritePrefParam()
-    {
-        HashMap<String, Object> prefs = new HashMap<>();
-
-        prefs.put(Metier.tabPreferences[0], this.itemBlockIfNotMatchNumber.isSelected());
-        prefs.put(Metier.tabPreferences[1], this.darkTheme.isSelected());
-
-        this.ihm.savePreferences(prefs, true);
+        this.ihm.savePreferences(Metier.tabPreferences[0], String.valueOf(this.itemBlockIfNotMatchNumber.isSelected()));
     }
 
     @Override

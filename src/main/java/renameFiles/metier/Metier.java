@@ -3,19 +3,20 @@ package renameFiles.metier;
 import renameFiles.Controleur;
 import renameFiles.ihm.dialogs.DialogAvancement;
 import renameFiles.metier.enums.FileType;
+import renameFiles.metier.properties.PropertiesManager;
 import renameFiles.metier.resources.ResourceManager;
 import renameFiles.metier.resources.Resources;
-import renameFiles.metier.types.ListeInterface;
 import renameFiles.metier.types.BaseFile;
 import renameFiles.metier.types.BaseFileListe;
+import renameFiles.metier.types.ListeInterface;
 import renameFiles.metier.types.aleatoires.AleaNameFile;
 import renameFiles.metier.types.aleatoires.ListeFichierAlea;
 import renameFiles.metier.types.series.Serie;
 import renameFiles.metier.types.series.VideoFile;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -24,22 +25,16 @@ import java.util.*;
  */
 public class Metier
 {
-    /**
-     * The constant tabPreferences.
-     */
     public static final String[] tabPreferences = {"BlockIfNotMathPatern", "DarkMode", "SDL", "Language" };
 
     private final ArrayList<File> files;
     private final Controleur      ctrl;
     private final List<String> acceptedExtension;
 
-    private boolean blockIfNotMathPatern;
     private boolean saveNbIfExistInAlea;
 
     private FileType typeCourant;
     private int      maxLevel;
-
-    private File preferencesFile;
 
     /**
      * Instantiates a new Metier.
@@ -53,17 +48,7 @@ public class Metier
         this.ctrl              = ctrl;
 
         this.typeCourant          = FileType.AUTRES;
-        this.blockIfNotMathPatern = true;
         this.maxLevel             = 1;
-        this.preferencesFile      = null;
-
-        File appDirectorie = new File(System.getProperty("user.home") + "/.FileRenamer");
-
-        if( !appDirectorie.exists() )
-            if( appDirectorie.mkdir() ) System.out.println("File \".FileRenamer\" created.");
-            else                        System.err.println("Error, cannot create the app file in user directory");
-
-        this.preferencesFile = new File(appDirectorie.getAbsolutePath() + "/.preferences.conf");
     }
 
     /**
@@ -71,71 +56,14 @@ public class Metier
      */
     public void setupPreferenceFile()
     {
-        if( this.preferencesFile.exists() )
-            this.readPreferenceFile();
-        else
-            this.createPrefFile();
-    }
-
-    private void createPrefFile()
-    {
         try
         {
-            if( this.preferencesFile.createNewFile() )
-            {
-                this.ctrl.printConsole("File preferences created");
-            }
-            else
-            {
-                this.ctrl.printConsole("<font color=\"red\">Error, cannot create the preferences file</font>");
-            }
-
-            if( this.preferencesFile.exists() )
-            {
-                HashMap<String, Object> prefs = new HashMap<>();
-
-                for (int i = 0; i < Metier.tabPreferences.length-1; i++)
-                    prefs.put(Metier.tabPreferences[i], false);
-
-                prefs.put(Metier.tabPreferences[2], 2);
-
-                this.savePreferences(prefs, true);
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    //todo améliorer, pb pour la langue
-    private void readPreferenceFile()
-    {
-        try(Scanner scanner = new Scanner(this.preferencesFile))
-        {
-            HashMap<String, String> prefs = new HashMap<>();
-
-            while( scanner.hasNext() )
-            {
-                String line = scanner.nextLine();
-                String[] tab = line.split("=");
-
-                if( tab.length < 2 ) continue;
-
-                prefs.put(tab[0], tab[1]);
-            }
-
-            List<String> listPref = Arrays.asList(Metier.tabPreferences);
+            PropertiesManager manager = PropertiesManager.getInstance();
 
             Class<Controleur> controleurClass = Controleur.class;
 
-            for (String key : prefs.keySet())
+            for (String key : tabPreferences)
             {
-                if( !listPref.contains(key) ) continue;
-
-                if( key.equals(Metier.tabPreferences[3]) )
-                    continue;
-
                 Method    m;
                 Class<?>  c;
 
@@ -168,89 +96,52 @@ public class Metier
                     }
                 }
 
-                if( parse != null )
-                    m.invoke(this.ctrl, parse.invoke(c, prefs.get(key)));
+                String value = manager.getPropertie(key);
+
+                if( value != null && parse != null ) try
+                {
+                    m.invoke(this.ctrl, parse.invoke(c, value));
+                }
+                catch (IllegalAccessException | InvocationTargetException ignored)
+                {
+                    value = null;
+                }
+
+                if( value == null )
+                    manager.setPropertie(key, c == Boolean.class ? "false" : "1");
             }
         }
-        catch (Exception e)
+        catch (IOException e)
         {
-            e.printStackTrace();
+            this.ctrl.printConsole("<font color=\"red\">Error, cannot create the preferences file</font>");
         }
     }
 
     public void setLanguesByPrefFile()
     {
         String locale = null;
-
-        try(Scanner scanner = new Scanner(this.preferencesFile))
+        try
         {
-            HashMap<String, String> prefs = new HashMap<>();
-
-            while( scanner.hasNext() )
-            {
-                String line = scanner.nextLine();
-                String[] tab = line.split("=");
-
-                if( tab.length < 2 ) continue;
-
-                prefs.put(tab[0], tab[1]);
-            }
-
-            locale = prefs.get(Metier.tabPreferences[3]);
+            locale = PropertiesManager.getInstance().getPropertie("Language");
         }
-        catch (Exception e)
+        catch (IOException ignored)
         {
-            //e.printStackTrace();
+
         }
 
         ResourceManager.getInstance().setLocale(locale != null ? new Locale(locale) : Locale.getDefault());
     }
 
-    /**
-     * Save preferences.
-     *
-     * @param hashMap   the hash map
-     * @param clearFile the clear file
-     */
-    public void savePreferences(HashMap<String, Object> hashMap, boolean clearFile )
+    public void savePreferences(String key, String value)
     {
-        String fileValue = "";
-        if( !clearFile ) fileValue = this.readAllInPrefFile();
-
-        if ( !hashMap.containsKey( Metier.tabPreferences[2]) )
-            hashMap.put(Metier.tabPreferences[2], this.maxLevel);
-
-        if( !hashMap.containsKey(Metier.tabPreferences[3]) )
-            hashMap.put(Metier.tabPreferences[3], ResourceManager.getInstance().getLocale().getLanguage());
-
-        try(FileWriter writer = new FileWriter(this.preferencesFile))
+        try
         {
-            writer.append(fileValue);
-
-            for (String key : hashMap.keySet())
-                writer.append(key).append("=").append(String.valueOf(hashMap.get(key))).append("\n");
+            PropertiesManager.getInstance().setPropertie(key, value);
         }
-        catch (Exception e)
+        catch (IOException ignored)
         {
-            this.ctrl.printConsole("<font color=\"red\">Error in file writting");
-            e.printStackTrace();
+
         }
-    }
-
-    private String readAllInPrefFile()
-    {
-        StringBuilder res = new StringBuilder();
-
-        try(Scanner scanner = new Scanner(this.preferencesFile))
-        {
-            scanner.reset();
-
-            while( scanner.hasNext() )
-                res.append(scanner.nextLine()).append("\n");
-        }
-        catch (Exception e) { e.printStackTrace(); }
-
-        return res.toString();
     }
 
     /**
@@ -430,7 +321,6 @@ public class Metier
      */
     public void setBlockIfNotMathPatern(boolean b)
     {
-        this.blockIfNotMathPatern = b;
     }
 
     /**
@@ -463,6 +353,8 @@ public class Metier
         if( niveauDeRecherche < 0 ) return;
 
         this.maxLevel = niveauDeRecherche;
+
+        this.savePreferences(Metier.tabPreferences[2], String.valueOf(this.maxLevel));
     }
 
     /**

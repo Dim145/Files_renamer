@@ -7,17 +7,20 @@ import renameFiles.ihm.composants.JIntergerTextField;
 import renameFiles.ihm.composants.JTextFieldHideText;
 import renameFiles.ihm.dialogs.APropos;
 import renameFiles.metier.enums.FileType;
-import renameFiles.metier.resources.Traduisible;
+import renameFiles.metier.properties.PropertiesManager;
 import renameFiles.metier.resources.ResourceManager;
 import renameFiles.metier.resources.Resources;
+import renameFiles.metier.resources.Traduisible;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * The type Ihmgui.
@@ -242,6 +245,23 @@ public class IHMGUI extends JFrame implements Traduisible
         this.replacePbyS.setVisible(false);
 
         ResourceManager.getInstance().addObjectToTranslate(this);
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                try
+                {
+                    PropertiesManager.getInstance().savePropertiesToXML();
+                }
+                catch (IOException ioException)
+                {
+                    ioException.printStackTrace();
+                }
+
+                super.windowClosing(e);
+            }
+        });
     }
 
     /**
@@ -262,8 +282,6 @@ public class IHMGUI extends JFrame implements Traduisible
             return;
 
         this.ctrl.setSDL(Integer.parseInt(this.levelRecherche.getText())-1);
-
-        this.bar.reWritePrefParam();
     }
 
     private static void majAllFonts(Container comp, Font font)
@@ -406,15 +424,9 @@ public class IHMGUI extends JFrame implements Traduisible
         this.bar.changeBlockParam(blockIfNotMatch);
     }
 
-    /**
-     * Save preferences.
-     *
-     * @param prefs     the prefs
-     * @param clearFile the clear file
-     */
-    public void savePreferences(HashMap<String, Object> prefs, boolean clearFile )
+    public void savePreferences(String key, String value)
     {
-        this.ctrl.savePreferences(prefs, clearFile);
+        this.ctrl.savePreferences(key, value);
     }
 
     /**

@@ -1,12 +1,11 @@
 package renameFiles;
 
 import renameFiles.ihm.IHMGUI;
-import renameFiles.metier.enums.FileType;
 import renameFiles.metier.Metier;
+import renameFiles.metier.enums.FileType;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.HashMap;
 
 /**
  * The type Controleur.
@@ -41,15 +40,9 @@ public class Controleur
             this.ihm.setTypeCourant(type);
     }
 
-    /**
-     * Save preferences.
-     *
-     * @param prefs     the prefs
-     * @param clearFile the clear file
-     */
-    public void savePreferences(HashMap<String, Object> prefs, boolean clearFile )
+    public void savePreferences(String key, String value)
     {
-        this.metier.savePreferences(prefs, clearFile);
+        this.metier.savePreferences(key, value);
     }
 
     /**
