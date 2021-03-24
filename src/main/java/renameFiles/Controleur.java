@@ -185,7 +185,7 @@ public class Controleur
         FileType t = null;
         if ( args != null && args.length > 1 )
             for (FileType type : FileType.values())
-                if( type.name().toLowerCase().equals(args[1]))
+                if( type.name().equalsIgnoreCase(args[1]))
                     t = type;
 
         Controleur ctrl = new Controleur(t);
