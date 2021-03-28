@@ -9,6 +9,9 @@ import renameFiles.metier.resources.Traduisible;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.Locale;
 
 /**
@@ -51,15 +54,15 @@ public class MenuBar extends JMenuBar implements Traduisible
         this.aideMenu     = new JMenu(MANAGER.getString(Resources.HELP));
         this.languageMenu = new JMenu(MANAGER.getString(Resources.LANGUAGES));
 
-        this.itemBlockIfNotMatchNumber = new JCheckBoxMenuItem(MANAGER.getString(Resources.BLOCK_NOT_MATCH));
-        this.darkTheme                 = new JCheckBoxMenuItem(MANAGER.getString(Resources.DARK_THEME));
+        this.itemBlockIfNotMatchNumber = new JCheckBoxMenuItem(new ActionBlock());
+        this.darkTheme                 = new JCheckBoxMenuItem(new ActionDarkTheme());
         
         this.french                    = new JCheckBoxMenuItem(MANAGER.getString(Resources.FRENCH));
         this.english                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.ENGLISH));
         this.japanese                  = new JCheckBoxMenuItem(MANAGER.getString(Resources.JAPANESE));
         this.spanish                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.SPANISH));
 
-        this.aide    = new JMenuItem(MANAGER.getString(Resources.HELP));
+        this.aide    = new JMenuItem(new ActionAide());
         this.aPropos = new JMenuItem(MANAGER.getString(Resources.ABOUT));
 
         optionMenu.add(itemBlockIfNotMatchNumber);
@@ -79,11 +82,7 @@ public class MenuBar extends JMenuBar implements Traduisible
         group.add(this.japanese);
         group.add(this.spanish);
 
-        this.itemBlockIfNotMatchNumber.addActionListener(e -> changeBlockParam(this.itemBlockIfNotMatchNumber.isSelected()));
-
         aPropos  .addActionListener(e -> new APropos(this.currentColor));
-        darkTheme.addActionListener(e -> this.changeTheme(darkTheme.isSelected()));
-        this.aide.addActionListener(e -> new Aide(this.currentColor, this.getFont()));
 
         this.french  .addActionListener(e -> this.setLanguage(Locale.FRENCH));
         this.english .addActionListener(e -> this.setLanguage(Locale.ENGLISH));
@@ -202,5 +201,56 @@ public class MenuBar extends JMenuBar implements Traduisible
 
         this.aide   .setText(MANAGER.getString(Resources.HELP));
         this.aPropos.setText(MANAGER.getString(Resources.ABOUT));
+    }
+
+    private class ActionDarkTheme extends AbstractAction
+    {
+        public ActionDarkTheme()
+        {
+            super(MANAGER.getString(Resources.DARK_THEME));
+
+            this.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK));
+            this.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_D);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            MenuBar.this.changeTheme(MenuBar.this.darkTheme.isSelected());
+        }
+    }
+
+    private class ActionBlock extends AbstractAction
+    {
+        public ActionBlock()
+        {
+            super(MANAGER.getString(Resources.BLOCK_NOT_MATCH));
+
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK));
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_B);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            MenuBar.this.changeBlockParam(MenuBar.this.itemBlockIfNotMatchNumber.isSelected());
+        }
+    }
+
+    private class ActionAide extends AbstractAction
+    {
+        public ActionAide()
+        {
+            super(MANAGER.getString(Resources.HELP));
+
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_H);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            new Aide(MenuBar.this.currentColor, MenuBar.this.getFont());
+        }
     }
 }
