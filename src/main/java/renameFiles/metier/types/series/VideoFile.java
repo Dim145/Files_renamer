@@ -241,10 +241,14 @@ public class VideoFile extends BaseFile
                 video.addLanguages(lang);
         }
 
+        //Todo prendre en compte que nc peut se trouver a la toute fin
         Matcher match = Pattern.compile("[|, \\[(]nc[, \\])]").matcher(tmpFileName);
 
         if( match.find() )
             video.setNC(true);
+
+        if( tmpFileName.contains("hevc") )
+            video.setCompression(265);
 
         for (int cpt = 0; cpt < fileName.length(); cpt++)
         {
@@ -273,7 +277,8 @@ public class VideoFile extends BaseFile
                 {
                     video.addNombre(Double.parseDouble(tmp.toString().replaceAll(",", ".")));
 
-                    if( cpt < fileName.length() && fileName.toLowerCase().charAt(cpt) == 'p' || cpt+1 < fileName.length() && fileName.toLowerCase().charAt(cpt+1) == 'p' )
+                    if( cpt   < fileName.length() && fileName.toLowerCase().charAt(cpt) == 'p' ||
+                        cpt+1 < fileName.length() && fileName.charAt(cpt) == ' ' && fileName.toLowerCase().charAt(cpt+1) == 'p' )
                     {
                         video.setQualiter((int) video.getNombre(video.getNbNombres()-1));
                         continue;
@@ -303,10 +308,12 @@ public class VideoFile extends BaseFile
                     while( (Character.isDigit(lettre) || oneWhiteSpace) && cpt2 > -1);
 
                     String texteAvNb = tmp.reverse().toString().trim().toLowerCase();
-
+                        
                     if( texteAvNb.startsWith("[") ) texteAvNb = texteAvNb.substring(1);
 
-                    if( texteAvNb.equals("e") || texteAvNb.equals("ep") || texteAvNb.equals("episode") || texteAvNb.equals("épisode") )
+                    // se || sep = s1e2
+                    if( texteAvNb.equals("e")       || texteAvNb.equals("ep") || texteAvNb.equals("episode") ||
+                        texteAvNb.equals("épisode") || texteAvNb.equals("se") || texteAvNb.equals("sep")       )
                         video.setNumeroEpisode(video.getNombre(video.getNbNombres()-1));
 
                     if( texteAvNb.equals("sp") || texteAvNb.equals("spécial") || texteAvNb.equals("special") )
@@ -329,7 +336,7 @@ public class VideoFile extends BaseFile
                         if ( video.getNumeroSaison() != -1 ) video.setNumeroEpisode((int) video.getNombre(video.getNbNombres()-1));
                         else                                 video.setNumeroSaison ((int) video.getNombre(video.getNbNombres()-1));
 
-                    if( texteAvNb.equals("x") || texteAvNb.equals("hevc") || texteAvNb.equals("hevc-") )
+                    if( texteAvNb.equals("x") )
                         if(video.getCompression() == -1 )
                             video.setCompression((int) video.getNombre(video.getNbNombres()-1));
                 }
