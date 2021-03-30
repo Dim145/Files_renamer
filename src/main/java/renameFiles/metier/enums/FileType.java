@@ -1,6 +1,6 @@
 package renameFiles.metier.enums;
 
-import renameFiles.metier.types.series.VideoFile;
+import renameFiles.metier.types.series.Episode;
 
 /**
  * The enum File type.
@@ -18,7 +18,7 @@ public enum FileType
     /**
      * Series file type.
      */
-    SERIES(VideoFile.extensions);
+    SERIES(Episode.extensions);
 
     private final String[] extensions;
 

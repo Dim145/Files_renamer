@@ -31,7 +31,7 @@ public class Serie implements ListeInterface
     @Override
     public boolean add( Object s )
     {
-        if( !(s instanceof Saison) && !( s instanceof VideoFile) ) return false;
+        if( !(s instanceof Saison) && !( s instanceof Episode) ) return false;
 
         if( s instanceof Saison )
         {
@@ -41,7 +41,7 @@ public class Serie implements ListeInterface
             return false;
         }
 
-        VideoFile video = (VideoFile) s;
+        Episode video = (Episode) s;
 
         if( !video.getName().equals(this.serieName) ) return false;
 
@@ -97,7 +97,7 @@ public class Serie implements ListeInterface
         {
             s.setRoundEpisodeAllEpisode();
 
-            for (VideoFile video : s.getAllEpisodes())
+            for (Episode video : s.getAllEpisodes())
             {
                 File file = video.getFile();
                 if(dialog != null) dialog.setFichierCourant(file.getName());

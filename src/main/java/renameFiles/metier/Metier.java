@@ -12,7 +12,7 @@ import renameFiles.metier.types.ListeInterface;
 import renameFiles.metier.types.aleatoires.AleaNameFile;
 import renameFiles.metier.types.aleatoires.ListeFichierAlea;
 import renameFiles.metier.types.series.Serie;
-import renameFiles.metier.types.series.VideoFile;
+import renameFiles.metier.types.series.VideoHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -227,7 +227,7 @@ public class Metier
                 switch (this.typeCourant)
                 {
                     case ALEANAME: baseFile = new AleaNameFile(fileName, extension, file, this.saveNbIfExistInAlea);break;
-                    case SERIES  : baseFile = VideoFile.getVideoFileFromFile(file, replaceAllPointInName);break;
+                    case SERIES  : baseFile = VideoHelper.getEpisodeFromFile(file, replaceAllPointInName);break;
                     case AUTRES  : baseFile = new BaseFile(fileName, extension, file);break;
                     default      : baseFile = null;
                 }

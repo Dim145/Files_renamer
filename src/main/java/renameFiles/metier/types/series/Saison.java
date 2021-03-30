@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class Saison
 {
-    private final ArrayList<VideoFile> listeEpisode;
+    private final ArrayList<Episode> listeEpisode;
     private final String               nomSerie;
 
     private int numeroSaison;
@@ -88,7 +88,7 @@ public class Saison
      * @param video the video
      * @return the boolean
      */
-    public boolean ajouterEpisode(@NotNull VideoFile video)
+    public boolean ajouterEpisode(@NotNull Episode video)
     {
         if (video.getName() == null) video.setName(false);
 
@@ -118,9 +118,9 @@ public class Saison
      * @param collections the collections
      * @return the boolean
      */
-    public boolean ajouterEpisodes(@NotNull Collection<VideoFile> collections)
+    public boolean ajouterEpisodes(@NotNull Collection<Episode> collections)
     {
-        for (VideoFile video : collections)
+        for (Episode video : collections)
             if (!this.ajouterEpisode(video)) return false;
 
         return true;
@@ -131,9 +131,9 @@ public class Saison
      *
      * @return the video file [ ]
      */
-    public VideoFile[] getAllEpisodes()
+    public Episode[] getAllEpisodes()
     {
-        return this.listeEpisode.toArray(new VideoFile[0]);
+        return this.listeEpisode.toArray(new Episode[0]);
     }
 
     /**
@@ -142,14 +142,14 @@ public class Saison
     public void setRoundEpisodeAllEpisode()
     {
         if( this.nbEpisodes > 0 )
-            for (VideoFile video : this.listeEpisode)
+            for (Episode video : this.listeEpisode)
                 video.setNbMaxEpisode(this.nbEpisodes);
     }
 
     public void setRoundSaisonAllEpisode( int nbMaxSaison )
     {
         if( nbMaxSaison > 0 )
-            for (VideoFile video : this.listeEpisode)
+            for (Episode video : this.listeEpisode)
                 video.setNbMaxSaison(nbMaxSaison);
     }
 
