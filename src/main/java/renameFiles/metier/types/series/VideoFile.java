@@ -235,14 +235,14 @@ public class VideoFile extends BaseFile
 
         for (String lang : Languages.getAllValues())
         {
-            Matcher match = Pattern.compile("[|, \\[(]"+lang.toLowerCase()+"[, \\])]").matcher(tmpFileName);
+            Matcher match = Pattern.compile("[|, \\[(\\W]"+lang.toLowerCase()+"[, \\])\\W]|" + lang.toLowerCase() + "$").matcher(tmpFileName);
 
             if( match.find() )
                 video.addLanguages(lang);
         }
 
         //Todo prendre en compte que nc peut se trouver a la toute fin
-        Matcher match = Pattern.compile("[|, \\[(]nc[, \\])]").matcher(tmpFileName);
+        Matcher match = Pattern.compile("^nc|[|, \\[(]nc[, \\])]|nc$").matcher(tmpFileName);
 
         if( match.find() )
             video.setNC(true);
