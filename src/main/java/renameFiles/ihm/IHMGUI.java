@@ -135,8 +135,8 @@ public class IHMGUI extends JFrame implements Traduisible
 
             IHMGUI.this.ctrl.setTypeCourant(current);
 
-            this.replacePbyS  .setVisible ( current == FileType.ALEANAME  );
-            this.saveNbIfExist.setVisible ( current == FileType.SERIES);
+            this.replacePbyS  .setVisible ( current == FileType.SERIES  );
+            this.saveNbIfExist.setVisible ( current == FileType.ALEANAME);
             this.extensions   .setEditable( current != FileType.SERIES  );
             this.paternField  .setEditable( current != FileType.ALEANAME);
 
