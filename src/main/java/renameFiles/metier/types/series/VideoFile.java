@@ -241,7 +241,6 @@ public class VideoFile extends BaseFile
                 video.addLanguages(lang);
         }
 
-        //Todo prendre en compte que nc peut se trouver a la toute fin
         Matcher match = Pattern.compile("^nc|[|, \\[(]nc[, \\])]|nc$").matcher(tmpFileName);
 
         if( match.find() )
