@@ -4,8 +4,8 @@ public enum Resources
 {
     TITLE("title"),
     APP_NAME("app_name"),
-    CB_REPLACEPBYS("cb_saveNbIfExist"),
-    CB_SAVENBIFEXIST("cb_replacePbyS"),
+    CB_REPLACEPBYS("cb_replacePbyS"),
+    CB_SAVENBIFEXIST("cb_saveNbIfExist"),
     BTN_LAUNCH("btn_launch"),
     PATH("path"),
     TYPE_APP("type_ap"),
