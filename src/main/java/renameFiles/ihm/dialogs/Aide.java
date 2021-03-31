@@ -146,12 +146,18 @@ public class Aide extends JDialog implements Traduisible
                             "<li>" + MANAGER.getHelpString(24) + "</li>" +
                             "<li>" + MANAGER.getHelpString(25) + "</li>" +
                             "<li>" + MANAGER.getHelpString(26) + "</li>" +
+                            "<li>" + MANAGER.getHelpString(32) +
+                                "<ul>" +
+                                    "<li>" + MANAGER.getHelpString(33) + "</li>" +
+                                    "<li>" + MANAGER.getHelpString(34) + "</li>" +
+                            "</li>" +
                             "<li>" + MANAGER.getHelpString(27) + " " +
                                 "<ul>" +
                                     "<li>" + MANAGER.getHelpString(28) + "</li>" +
                                     "<li>" + MANAGER.getHelpString(29) + "</li>" +
                                     "<li>" + MANAGER.getHelpString(30) + "</li>" +
                                     "<li>" + MANAGER.getHelpString(31) + "</li>" +
+                            "</li>" +
                         "</ul>" +
                     "</body>" +
                 "</html>";
