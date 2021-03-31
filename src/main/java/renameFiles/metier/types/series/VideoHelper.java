@@ -38,7 +38,9 @@ public class VideoHelper
         //*************************** Récupération des valeurs non suivie d'un nombre ********************************
         for (Definitions def : Definitions.values()) // HD - FHD ...
         {
-            if( fileName.contains(" " + def.name()) || fileName.contains(def.name() + " ") )
+            Matcher match = Pattern.compile("^" + def.name() + "|[|, \\[(]" + def.name() + "[, \\])]|" + def.name() + "$").matcher(fileName);
+
+            if(match.find() )
             {
                 video.setQualiter(def.getQualiter());
                 break;
