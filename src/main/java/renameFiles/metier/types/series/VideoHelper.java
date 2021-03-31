@@ -35,10 +35,10 @@ public class VideoHelper
 
         Episode video = new Episode(fileName, extension, file);
 
-        //*************************** Récupération des valeurs non suivie d'un nombre ********************************
+        //************************ Récupération des valeurs qui ne sont pas des nombres ********************************
         for (Definitions def : Definitions.values()) // HD - FHD ...
         {
-            Matcher match = Pattern.compile("^" + def.name() + "|[|, \\[(]" + def.name() + "[, \\])]|" + def.name() + "$").matcher(fileName);
+            Matcher match = Pattern.compile("^" + def + "|[|, \\[(]" + def + "[, \\])]|" + def + "$").matcher(fileName);
 
             if(match.find() )
             {

@@ -1,5 +1,6 @@
 package renameFiles.metier.types.series;
 
+import renameFiles.metier.enums.Definitions;
 import renameFiles.metier.enums.Languages;
 import renameFiles.metier.types.BaseFile;
 
@@ -32,6 +33,8 @@ public class Episode extends BaseFile
     private boolean isEpisodeSpecial;
     private boolean isOAV;
     private boolean isNC;
+
+    private boolean prefDefLetter;
 
     private String language;
 
@@ -208,28 +211,28 @@ public class Episode extends BaseFile
         {
             String name = this.name + " ";
 
-            if( this.anneeSortie > -1 )
-                name += "(" + anneeSortie + ") ";
+            if( this.getAnneeSortie() > -1 )
+                name += "(" + this.getAnneeSortie() + ") ";
 
-            if( this.language.contains(" ") ) // "vostfr vf" -> "[vostfr,vf]"
+            if( !this.language.startsWith("[") || !this.language.endsWith("]") ) // "vostfr vf" -> "[vostfr,vf]"
                 this.language = "[" + this.language.replaceAll(" ", "," ) + "]";
 
-            int nbRoundEpisode = Math.max(String.valueOf(this.nbMaxEpisode).length(), 2);
-            int nbRoundSaison  = Math.max(String.valueOf( this.nbMaxSaison).length(), 1);
+            int nbRoundEpisode = Math.max(String.valueOf( this.getNbMaxEpisode()).length(), 2);
+            int nbRoundSaison  = Math.max(String.valueOf( this.nbMaxSaison      ).length(), 1);
 
-            if( this.numeroSaison  > -1 ) name += "S"  + String.format("%0" + nbRoundSaison + "d", this.numeroSaison)  + " ";
-            if( this.numeroEpisode > -1 ) name += (this.isEpisodeSpecial ? "Sp" : this.isOAV ? "OAV" : "Ep") + (this.numeroEpisode % 1 == 0 ? String.format("%0"+nbRoundEpisode+"d", (int)this.numeroEpisode) : String.format(
-                    "%0"+nbRoundEpisode+".2f", this.numeroEpisode)) + " ";
-            if( !this.language.isEmpty()) name += this.language + " ";
-            if( this.isNC               ) name += "NC ";
-            if( this.qualiter      > -1 ) name += this.qualiter + "p ";
-            if( this.nbBits        > -1 ) name += this.nbBits + "bits ";
-            if( this.compression   > -1 ) name += "x"  + this.compression   + " ";
+            if( this.numeroSaison  > -1 ) name += "S"  + String.format("%0" + nbRoundSaison + "d", this.getNumeroSaison())  + " ";
+            if( this.numeroEpisode > -1 ) name += (this.isEpisodeSpecial() ? "Sp" : this.isOAV() ? "OAV" : "Ep") + (this.getNumeroEpisode() % 1 == 0 ? String.format("%0"+nbRoundEpisode+"d", (int)this.getNumeroEpisode()) : String.format(
+                    "%0"+nbRoundEpisode+".2f", this.getNumeroEpisode())) + " ";
+            if( !this.language.isEmpty()) name += this.getLanguage() + " ";
+            if( this.isNC()             ) name += "NC ";
+            if( this.qualiter      > -1 ) name += (this.isPrefDefLetter() ? Definitions.getByPixels(this.getQualiter()) : this.getQualiter() + "p") + " ";
+            if( this.nbBits        > -1 ) name += this.getNbBits() + "bits ";
+            if( this.compression   > -1 ) name += "x"  + this.getCompression()   + " ";
 
-            return name.trim() + this.extension;
+            return name.trim() + this.getExtension();
         }
 
-        return this.fullname + this.extension;
+        return this.getFullname() + this.getExtension();
     }
 
     /**
@@ -242,12 +245,12 @@ public class Episode extends BaseFile
     {
         String nameToUse = this.fullname;
 
-        if( this.fullFormatedName != null && !this.fullFormatedName.isEmpty() )
+        if( this.getFullFormatedName() != null && !this.getFullFormatedName().isEmpty() )
         {
             this.remplirListeNombre();
             this.replaceFullFormatedName(false);
 
-            nameToUse = this.fullFormatedName;
+            nameToUse = this.getFullFormatedName();
         }
 
         if(nameToUse.chars().noneMatch(Character::isDigit))
@@ -452,5 +455,15 @@ public class Episode extends BaseFile
     public void setNbBits(int nbBits)
     {
         this.nbBits = nbBits;
+    }
+
+    public boolean isPrefDefLetter()
+    {
+        return prefDefLetter;
+    }
+
+    public void setPrefDefLetter(boolean prefDefLetter)
+    {
+        this.prefDefLetter = prefDefLetter;
     }
 }

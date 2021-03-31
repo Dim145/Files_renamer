@@ -36,6 +36,7 @@ public class Metier
 
     private FileType typeCourant;
     private int      maxLevel;
+    private boolean blockIfNotMatchPatern;
 
     /**
      * Instantiates a new Metier.
@@ -213,7 +214,7 @@ public class Metier
             ArrayList<ListeInterface> lists = new ArrayList<>();
 
             lists.add(new ListeFichierAlea(this.saveNbIfExistInAlea));
-            lists.add(new BaseFileListe(replaceAllPointInName));
+            lists.add(new BaseFileListe(this.blockIfNotMatchPatern));
 
             dialog.setVisible(true);
 
@@ -235,7 +236,7 @@ public class Metier
                 if( baseFile == null )
                 {
                     this.ctrl.printConsole("<font color=\"red\">file: " + fileName + " n'est pas du bon type</font>");
-                    return;
+                    continue;
                 }
 
                 baseFile.setFullFormatedName(patern);
@@ -243,12 +244,10 @@ public class Metier
 
                 boolean isAjouter = false;
                 for (ListeInterface liste : lists)
-                {
                     if (liste.add(baseFile))
                         isAjouter = true;
-                }
 
-                if( !isAjouter ) // l'ajout ne peut echouer que dans le cas d'une serie
+                if( !isAjouter ) // l'ajout ne peut echouer que dans le cas d'une nouvelle serie
                 {
                     lists.add(new Serie(baseFile.getName()));
                     lists.get(lists.size()-1).add(baseFile);
@@ -322,6 +321,7 @@ public class Metier
      */
     public void setBlockIfNotMathPatern(boolean b)
     {
+        this.blockIfNotMatchPatern = b;
     }
 
     /**
