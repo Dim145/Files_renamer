@@ -52,9 +52,9 @@ public class Controleur
      * @param patern                the patern
      * @param replaceAllPointInName the replace all point in name
      */
-    public void renameFile( String path, String patern, boolean replaceAllPointInName )
+    public void renameFile( String path, String patern, boolean replaceAllPointInName, boolean qualiterTextuel )
     {
-        this.metier.renameWithPaterneInPath(path, patern, replaceAllPointInName);
+        this.metier.renameWithPaterneInPath(path, patern, replaceAllPointInName, qualiterTextuel);
     }
 
     /**
@@ -162,6 +162,11 @@ public class Controleur
     public void setDarkMode(boolean aBoolean)
     {
         this.ihm.changeTheme(aBoolean);
+    }
+
+    public void setQualiterTextuel( boolean b)
+    {
+        this.ihm.setQualiterTextuel(b);
     }
 
     public void addTextToTampon(String text, boolean pushToConsole)

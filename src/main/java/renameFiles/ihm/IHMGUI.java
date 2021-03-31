@@ -103,7 +103,8 @@ public class IHMGUI extends JFrame implements Traduisible
 
                 this.ctrl.setExtensions(this.extensions.getText());
 
-                this.ctrl.renameFile(this.pathField.getText(), this.paternField.getForeground().equals(Color.GRAY) ? "" : this.paternField.getText(), this.replacePbyS.isSelected());
+                this.ctrl.renameFile(this.pathField.getText(), this.paternField.getForeground().equals(Color.GRAY) ? "" : this.paternField.getText(),
+                        this.replacePbyS.isSelected(), this.bar.isQualiterTextuel());
             }
             else
             {
@@ -457,5 +458,10 @@ public class IHMGUI extends JFrame implements Traduisible
         this.labelType.setText(MANAGER.getString(Resources.TYPE_APP));
         this.labelNBSD.setText(MANAGER.getString(Resources.NB_SD));
         this.labelNBSD.setToolTipText(MANAGER.getString(Resources.TOOLTIP_NB_SD));
+    }
+
+    public void setQualiterTextuel(boolean b)
+    {
+        this.bar.setQualiterTextuel(b);
     }
 }

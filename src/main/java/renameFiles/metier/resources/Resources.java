@@ -32,8 +32,8 @@ public enum Resources
     SPANISH("spanish"),
     RENAME_FILES("renaming_files"),
     SERIES("SERIES"),
-    ALEANAME("ALEANAME");
-
+    ALEANAME("ALEANAME"),
+    QUALITERTEXTUEL("qualiter_textuel");
 
     private final String resourceKey;
 

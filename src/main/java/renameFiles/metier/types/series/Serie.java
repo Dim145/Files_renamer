@@ -14,6 +14,8 @@ public class Serie implements ListeInterface
 
     private final String serieName;
 
+    private boolean qualiterTextuel;
+
     public Serie(String serieName)
     {
         this.serieName = serieName;
@@ -26,6 +28,13 @@ public class Serie implements ListeInterface
         this(serieName);
 
         this.addSaisons(saisons);
+    }
+
+    public Serie(String name, boolean qualiterTextuel)
+    {
+        this(name);
+
+        this.qualiterTextuel = qualiterTextuel;
     }
 
     @Override
@@ -99,6 +108,8 @@ public class Serie implements ListeInterface
 
             for (Episode video : s.getAllEpisodes())
             {
+                video.setPrefDefLetter(this.qualiterTextuel);
+
                 File file = video.getFile();
                 if(dialog != null) dialog.setFichierCourant(file.getName());
 

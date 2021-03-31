@@ -209,12 +209,14 @@ public class Episode extends BaseFile
 
         if( this.name != null && !this.name.isEmpty())
         {
+            Definitions def = Definitions.getByPixels(this.getQualiter());
+
             String name = this.name + " ";
 
             if( this.getAnneeSortie() > -1 )
                 name += "(" + this.getAnneeSortie() + ") ";
 
-            if( !this.language.startsWith("[") || !this.language.endsWith("]") ) // "vostfr vf" -> "[vostfr,vf]"
+            if( this.language.contains(" ") ) // "vostfr vf" -> "[vostfr,vf]"
                 this.language = "[" + this.language.replaceAll(" ", "," ) + "]";
 
             int nbRoundEpisode = Math.max(String.valueOf( this.getNbMaxEpisode()).length(), 2);
@@ -225,7 +227,7 @@ public class Episode extends BaseFile
                     "%0"+nbRoundEpisode+".2f", this.getNumeroEpisode())) + " ";
             if( !this.language.isEmpty()) name += this.getLanguage() + " ";
             if( this.isNC()             ) name += "NC ";
-            if( this.qualiter      > -1 ) name += (this.isPrefDefLetter() ? Definitions.getByPixels(this.getQualiter()) : this.getQualiter() + "p") + " ";
+            if( this.qualiter      > -1 ) name += ( def == null ? this.getQualiter() + "p" : (this.isPrefDefLetter() ? def : def.getQualiter() + "p") ) + " "; // def = null si pas dans les normes
             if( this.nbBits        > -1 ) name += this.getNbBits() + "bits ";
             if( this.compression   > -1 ) name += "x"  + this.getCompression()   + " ";
 

@@ -26,7 +26,7 @@ import java.util.Locale;
  */
 public class Metier
 {
-    public static final String[] tabPreferences = {"BlockIfNotMathPatern", "DarkMode", "SDL", "Language" };
+    public static final String[] tabPreferences = {"BlockIfNotMathPatern", "DarkMode", "SDL", "Language", "QualiterTextuel" };
 
     private final ArrayList<File> files;
     private final Controleur      ctrl;
@@ -188,7 +188,7 @@ public class Metier
      * @param replaceAllPointInName the replace all point in name
      */
     // Todo optimisé l'algorithme en utilisant vraiment les objets (et la reflexivité ?)
-    public void renameWithPaterneInPath( String path, String patern, boolean replaceAllPointInName )
+    public void renameWithPaterneInPath( String path, String patern, boolean replaceAllPointInName, boolean qualiterTextuel )
     {
         if( this.typeCourant == FileType.AUTRES && (patern == null || patern.length() < 1 || !patern.contains("%%")) )
         {
@@ -249,7 +249,7 @@ public class Metier
 
                 if( !isAjouter ) // l'ajout ne peut echouer que dans le cas d'une nouvelle serie
                 {
-                    lists.add(new Serie(baseFile.getName()));
+                    lists.add(new Serie(baseFile.getName(), qualiterTextuel));
                     lists.get(lists.size()-1).add(baseFile);
                 }
 

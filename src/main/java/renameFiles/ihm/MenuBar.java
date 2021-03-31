@@ -29,6 +29,7 @@ public class MenuBar extends JMenuBar implements Traduisible
 
     private final JCheckBoxMenuItem itemBlockIfNotMatchNumber;
     private final JCheckBoxMenuItem darkTheme;
+    private final JCheckBoxMenuItem qualiterTextuelle;
 
     private final JCheckBoxMenuItem french;
     private final JCheckBoxMenuItem english;
@@ -56,6 +57,7 @@ public class MenuBar extends JMenuBar implements Traduisible
 
         this.itemBlockIfNotMatchNumber = new JCheckBoxMenuItem(new ActionBlock());
         this.darkTheme                 = new JCheckBoxMenuItem(new ActionDarkTheme());
+        this.qualiterTextuelle         = new JCheckBoxMenuItem(new ActionQualiter());
         
         this.french                    = new JCheckBoxMenuItem(MANAGER.getString(Resources.FRENCH));
         this.english                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.ENGLISH));
@@ -67,6 +69,7 @@ public class MenuBar extends JMenuBar implements Traduisible
 
         optionMenu.add(itemBlockIfNotMatchNumber);
         optionMenu.add(darkTheme);
+        optionMenu.add(qualiterTextuelle);
 
         aideMenu.add(aide);
         aideMenu.add(aPropos);
@@ -193,6 +196,7 @@ public class MenuBar extends JMenuBar implements Traduisible
 
         this.itemBlockIfNotMatchNumber.setText(MANAGER.getString(Resources.BLOCK_NOT_MATCH));
         this.darkTheme.setText(MANAGER.getString(Resources.DARK_THEME));
+        this.qualiterTextuelle.setText(MANAGER.getString(Resources.QUALITERTEXTUEL));
 
         this.french   .setText(MANAGER.getString(Resources.FRENCH));
         this.english  .setText(MANAGER.getString(Resources.ENGLISH));
@@ -201,6 +205,18 @@ public class MenuBar extends JMenuBar implements Traduisible
 
         this.aide   .setText(MANAGER.getString(Resources.HELP));
         this.aPropos.setText(MANAGER.getString(Resources.ABOUT));
+    }
+
+    public void setQualiterTextuel(boolean b)
+    {
+        this.qualiterTextuelle.setSelected(b);
+
+        this.ihm.savePreferences(Metier.tabPreferences[4], String.valueOf(this.qualiterTextuelle.isSelected()));
+    }
+
+    public boolean isQualiterTextuel()
+    {
+        return this.qualiterTextuelle.isSelected();
     }
 
     private class ActionDarkTheme extends AbstractAction
@@ -251,6 +267,23 @@ public class MenuBar extends JMenuBar implements Traduisible
         public void actionPerformed(ActionEvent e)
         {
             new Aide(MenuBar.this.currentColor, MenuBar.this.getFont());
+        }
+    }
+
+    private class ActionQualiter extends AbstractAction
+    {
+        public ActionQualiter()
+        {
+            super(MANAGER.getString(Resources.QUALITERTEXTUEL));
+
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_R);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            setQualiterTextuel(qualiterTextuelle.isSelected());
         }
     }
 }
