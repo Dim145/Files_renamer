@@ -2,6 +2,7 @@ package renameFiles.metier.types.series;
 
 import renameFiles.ihm.dialogs.DialogAvancement;
 import renameFiles.metier.types.ListeInterface;
+import renameFiles.metier.web.WebInfoHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -102,6 +103,9 @@ public class Serie implements ListeInterface
 
         this.setNbMaxSaisonAllSaison();
 
+
+        WebInfoHelper.selectInfosTests(this);
+
         for (Saison s : listSaison)
         {
             s.setRoundEpisodeAllEpisode();
@@ -144,5 +148,10 @@ public class Serie implements ListeInterface
     public int hashCode()
     {
         return Objects.hash(serieName);
+    }
+
+    public String getSerieName()
+    {
+        return serieName;
     }
 }
