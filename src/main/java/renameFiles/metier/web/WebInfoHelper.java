@@ -212,7 +212,7 @@ public class WebInfoHelper
     {
         return new GsonBuilder().registerTypeAdapter(Date.class, new JsonDeserializer<Date>()
         {
-            final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
             @Override
             public Date deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException

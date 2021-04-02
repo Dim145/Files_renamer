@@ -100,6 +100,11 @@ public class Serie
         return this.othersNAmes.get(locale.getLanguage()).toArray(new String[0]);
     }
 
+    public int getNbEpisodes()
+    {
+        return this.listEpisodes.size();
+    }
+
     @Override
     public String toString()
     {

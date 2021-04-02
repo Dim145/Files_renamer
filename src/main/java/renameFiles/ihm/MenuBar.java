@@ -30,6 +30,9 @@ public class MenuBar extends JMenuBar implements Traduisible
     private final JCheckBoxMenuItem itemBlockIfNotMatchNumber;
     private final JCheckBoxMenuItem darkTheme;
     private final JCheckBoxMenuItem qualiterTextuelle;
+    private final JCheckBoxMenuItem activeWeb;
+    private final JCheckBoxMenuItem webTitle;
+    private final JCheckBoxMenuItem webName;
 
     private final JCheckBoxMenuItem french;
     private final JCheckBoxMenuItem english;
@@ -39,6 +42,7 @@ public class MenuBar extends JMenuBar implements Traduisible
     private final JMenu optionMenu;
     private final JMenu aideMenu;
     private final JMenu languageMenu;
+    private final JMenu web;
 
     private Color currentColor;
 
@@ -54,10 +58,14 @@ public class MenuBar extends JMenuBar implements Traduisible
         this.optionMenu   = new JMenu(MANAGER.getString(Resources.MENU_OPTION));
         this.aideMenu     = new JMenu(MANAGER.getString(Resources.HELP));
         this.languageMenu = new JMenu(MANAGER.getString(Resources.LANGUAGES));
+        this.web          = new JMenu(new ActionWEB());
 
         this.itemBlockIfNotMatchNumber = new JCheckBoxMenuItem(new ActionBlock());
         this.darkTheme                 = new JCheckBoxMenuItem(new ActionDarkTheme());
         this.qualiterTextuelle         = new JCheckBoxMenuItem(new ActionQualiter());
+        this.activeWeb                 = new JCheckBoxMenuItem(new ActionActiveWeb());
+        this.webTitle                  = new JCheckBoxMenuItem("web Title");
+        this.webName                   = new JCheckBoxMenuItem("web name");
         
         this.french                    = new JCheckBoxMenuItem(MANAGER.getString(Resources.FRENCH));
         this.english                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.ENGLISH));
@@ -70,6 +78,7 @@ public class MenuBar extends JMenuBar implements Traduisible
         optionMenu.add(itemBlockIfNotMatchNumber);
         optionMenu.add(darkTheme);
         optionMenu.add(qualiterTextuelle);
+        optionMenu.add(web);
 
         aideMenu.add(aide);
         aideMenu.add(aPropos);
@@ -78,6 +87,11 @@ public class MenuBar extends JMenuBar implements Traduisible
         languageMenu.add(this.english);
         languageMenu.add(this.japanese);
         languageMenu.add(this.spanish);
+
+        web.add(activeWeb);
+        web.addSeparator();
+        web.add(webName);
+        web.add(webTitle);
 
         ButtonGroup group = new ButtonGroup();
         group.add(this.french);
@@ -284,6 +298,44 @@ public class MenuBar extends JMenuBar implements Traduisible
         public void actionPerformed(ActionEvent e)
         {
             setQualiterTextuel(qualiterTextuelle.isSelected());
+        }
+    }
+
+    private class ActionActiveWeb extends AbstractAction
+    {
+        public ActionActiveWeb()
+        {
+            super("Activer récupéartion WEB");
+
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
+        }
+
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            webName .setEnabled(activeWeb.isSelected());
+            webTitle.setEnabled(activeWeb.isSelected());
+
+            web.doClick();
+        }
+    }
+
+    private static class ActionWEB extends AbstractAction
+    {
+        public ActionWEB()
+        {
+            super("WEB");
+
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_W);
+        }
+
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+
         }
     }
 }

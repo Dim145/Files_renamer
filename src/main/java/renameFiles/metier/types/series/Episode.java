@@ -226,7 +226,7 @@ public class Episode extends BaseFile
             if( this.numeroSaison  > -1 ) name += "S"  + String.format("%0" + nbRoundSaison + "d", this.getNumeroSaison())  + " ";
             if( this.numeroEpisode > -1 ) name += (this.isEpisodeSpecial() ? "Sp" : this.isOAV() ? "OAV" : "Ep") + (this.getNumeroEpisode() % 1 == 0 ? String.format("%0"+nbRoundEpisode+"d", (int)this.getNumeroEpisode()) : String.format(
                     "%0"+nbRoundEpisode+".2f", this.getNumeroEpisode())) + " ";
-            if( !this.language.isEmpty()) name += this.getLanguage() + " ";
+            if( !this.language.isEmpty()) name += ( name.contains(this.getLanguage()) ? "" : this.getLanguage() ) + " ";
             if( this.isNC()             ) name += "NC ";
             if( this.qualiter      > -1 ) name += ( def == null ? this.getQualiter() + "p" : (this.isPrefDefLetter() ? def : def.getQualiter() + "p") ) + " "; // def = null si pas dans les normes
             if( this.nbBits        > -1 ) name += this.getNbBits() + "bits ";
