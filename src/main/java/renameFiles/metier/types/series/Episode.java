@@ -37,6 +37,7 @@ public class Episode extends BaseFile
     private boolean prefDefLetter;
 
     private String language;
+    private String title;
 
     /**
      * Instantiates a new Video file.
@@ -467,5 +468,15 @@ public class Episode extends BaseFile
     public void setPrefDefLetter(boolean prefDefLetter)
     {
         this.prefDefLetter = prefDefLetter;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
     }
 }

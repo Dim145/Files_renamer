@@ -7,6 +7,7 @@ import renameFiles.metier.web.WebInfoHelper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Objects;
 
 public class Serie implements ListeInterface
@@ -14,28 +15,34 @@ public class Serie implements ListeInterface
     private final ArrayList<Saison> listSaison;
 
     private final String serieName;
+    private final boolean useInternetData;
 
-    private boolean qualiterTextuel;
+    private final boolean qualiterTextuel;
 
     public Serie(String serieName)
     {
-        this.serieName = serieName;
-
-        this.listSaison = new ArrayList<>();
+        this(serieName,false);
     }
 
     public Serie( String serieName, Collection<Saison> saisons)
     {
-        this(serieName);
+        this(serieName, false);
 
         this.addSaisons(saisons);
     }
 
     public Serie(String name, boolean qualiterTextuel)
     {
-        this(name);
+        this(name, qualiterTextuel, false);
+    }
+
+    public Serie(String name, boolean qualiterTextuel, boolean useInternetData )
+    {
+        this.serieName  = name;
+        this.listSaison = new ArrayList<>();
 
         this.qualiterTextuel = qualiterTextuel;
+        this.useInternetData = useInternetData;
     }
 
     @Override
@@ -103,8 +110,14 @@ public class Serie implements ListeInterface
 
         this.setNbMaxSaisonAllSaison();
 
+        renameFiles.metier.web.Serie serie = null;
 
-        WebInfoHelper.selectInfosTests(this);
+        if( useInternetData )
+        {
+            if( dialog != null ) dialog.setFichierCourant("demande serie " + this.getSerieName() + " depuis Internet...");
+
+            serie = WebInfoHelper.getWebSerie(this);
+        }
 
         for (Saison s : listSaison)
         {
@@ -113,6 +126,21 @@ public class Serie implements ListeInterface
             for (Episode video : s.getAllEpisodes())
             {
                 video.setPrefDefLetter(this.qualiterTextuel);
+
+                if( useInternetData )
+                {
+                    if ( serie != null )
+                    {
+                        renameFiles.metier.web.Episode ep = serie.getEpisode(s.getNumeroSaison(),
+                                (int) video.getNumeroEpisode());//Todo prendre en compte episode internediaire = 12.5
+
+                        video.setFullFormatedName(serie.getName(Locale.getDefault()));
+                        video.setName(false); // ne declenche pas le long script puisque setFullFormatedName est appeler
+
+                        if( ep != null )
+                            video.setTitle(ep.getName());
+                    }
+                }
 
                 File file = video.getFile();
                 if(dialog != null) dialog.setFichierCourant(file.getName());
