@@ -144,29 +144,22 @@ public class Controleur
         return this.metier.getLevelMax();
     }
 
-    /**
-     * Sets block if not math patern.
-     *
-     * @param b the b
-     */
-    public void setBlockIfNotMathPatern(boolean b)
+    public void setIHMValueFirstTime(String name, String valueToParse)
     {
-        this.ihm.changeBlockParam(b);
-    }
+        if( this.ihm.isVisible() ) return;
 
-    /**
-     * Sets dark mode.
-     *
-     * @param aBoolean the a boolean
-     */
-    public void setDarkMode(boolean aBoolean)
-    {
-        this.ihm.changeTheme(aBoolean);
-    }
-
-    public void setQualiterTextuel( boolean b)
-    {
-        this.ihm.setQualiterTextuel(b);
+        try
+        {
+            if( Metier.tabPreferences[2].equals(name) )
+            {
+                this.setSDL(Integer.parseInt(valueToParse));
+            }
+            else
+            {
+                this.ihm.setIHMValueFirstTime(name, Boolean.parseBoolean(valueToParse));
+            }
+        }
+        catch (Exception ignored){ignored.printStackTrace();}
     }
 
     public void addTextToTampon(String text, boolean pushToConsole)

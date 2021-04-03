@@ -405,26 +405,6 @@ public class IHMGUI extends JFrame implements Traduisible
             return new Color(baseColor.getRed() + ECART_COLOR, baseColor.getGreen() + ECART_COLOR, baseColor.getBlue() + ECART_COLOR);
     }
 
-    /**
-     * Change theme.
-     *
-     * @param darkTheme the dark theme
-     */
-    public void changeTheme( boolean darkTheme)
-    {
-        this.bar.changeTheme(darkTheme);
-    }
-
-    /**
-     * Change block param.
-     *
-     * @param blockIfNotMatch the block if not match
-     */
-    public void changeBlockParam( boolean blockIfNotMatch)
-    {
-        this.bar.changeBlockParam(blockIfNotMatch);
-    }
-
     public void savePreferences(String key, String value)
     {
         this.ctrl.savePreferences(key, value);
@@ -460,8 +440,8 @@ public class IHMGUI extends JFrame implements Traduisible
         this.labelNBSD.setToolTipText(MANAGER.getString(Resources.TOOLTIP_NB_SD));
     }
 
-    public void setQualiterTextuel(boolean b)
+    public void setIHMValueFirstTime(String name, boolean parseBoolean)
     {
-        this.bar.setQualiterTextuel(b);
+        this.bar.setIHMValueFirstTime(name, parseBoolean);
     }
 }

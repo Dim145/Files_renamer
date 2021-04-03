@@ -33,7 +33,10 @@ public enum Resources
     RENAME_FILES("renaming_files"),
     SERIES("SERIES"),
     ALEANAME("ALEANAME"),
-    QUALITERTEXTUEL("qualiter_textuel");
+    QUALITERTEXTUEL("qualiter_textuel"),
+    ACTIVE_WEB("active_web"),
+    STANDARD_TITLE("web_title"),
+    STANDARD_NAME("web_name");
 
     private final String resourceKey;
 

@@ -16,7 +16,6 @@ import renameFiles.metier.types.series.VideoHelper;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -26,7 +25,8 @@ import java.util.Locale;
  */
 public class Metier
 {
-    public static final String[] tabPreferences = {"BlockIfNotMathPatern", "DarkMode", "SDL", "Language", "QualiterTextuel" };
+    public static final String[] tabPreferences = {"BlockIfNotMathPatern", "DarkMode", "SDL", "Language", "QualiterTextuel",
+                                                   "ActiveWeb"};
 
     private final ArrayList<File> files;
     private final Controleur      ctrl;
@@ -66,51 +66,15 @@ public class Metier
 
             for (String key : tabPreferences)
             {
-                Method    m;
-                Class<?>  c;
-
-                try
-                {
-                    c = Boolean.class;
-                    m = controleurClass.getMethod("set" + key, boolean.class);
-                }
-                catch (NoSuchMethodException e)
-                {
-                    try
-                    {
-                        c = Integer.class;
-                        m = controleurClass.getMethod("set" + key, int.class);
-                    }
-                    catch (NoSuchMethodException exception)
-                    {
-                        continue;
-                    }
-                }
-
-                Method parse = null;
-
-                for (Method method : c.getMethods())
-                {
-                    if( method.getName().contains("parse") && method.getParameterCount() == 1 )
-                    {
-                        parse = method;
-                        break;
-                    }
-                }
+                if( key.equals(tabPreferences[3]) ) continue;
 
                 String value = manager.getPropertie(key);
 
-                if( value != null && parse != null ) try
-                {
-                    m.invoke(this.ctrl, parse.invoke(c, value));
-                }
-                catch (Exception ignored)
-                {
-                    value = null;
-                }
+                if( value != null )
+                    this.ctrl.setIHMValueFirstTime(key, value);
 
                 if( value == null )
-                    manager.setPropertie(key, c == Boolean.class ? "false" : "1");
+                    manager.setPropertie(key, !key.equals(tabPreferences[2]) ? "false" : "1");
             }
         }
         catch (IOException e)

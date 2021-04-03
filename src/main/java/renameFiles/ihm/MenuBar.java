@@ -12,6 +12,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Locale;
 
 /**
@@ -27,9 +29,9 @@ public class MenuBar extends JMenuBar implements Traduisible
     private final JMenuItem aide;
     private final JMenuItem aPropos;
 
-    private final JCheckBoxMenuItem itemBlockIfNotMatchNumber;
-    private final JCheckBoxMenuItem darkTheme;
-    private final JCheckBoxMenuItem qualiterTextuelle;
+    private final JCheckBoxMenuItem blockIfNotMathPatern;
+    private final JCheckBoxMenuItem darkMode;
+    private final JCheckBoxMenuItem qualiterTextuel;
     private final JCheckBoxMenuItem activeWeb;
     private final JCheckBoxMenuItem webTitle;
     private final JCheckBoxMenuItem webName;
@@ -60,12 +62,12 @@ public class MenuBar extends JMenuBar implements Traduisible
         this.languageMenu = new JMenu(MANAGER.getString(Resources.LANGUAGES));
         this.web          = new JMenu(new ActionWEB());
 
-        this.itemBlockIfNotMatchNumber = new JCheckBoxMenuItem(new ActionBlock());
-        this.darkTheme                 = new JCheckBoxMenuItem(new ActionDarkTheme());
-        this.qualiterTextuelle         = new JCheckBoxMenuItem(new ActionQualiter());
+        this.blockIfNotMathPatern = new JCheckBoxMenuItem(new ActionBlock());
+        this.darkMode = new JCheckBoxMenuItem(new ActionDarkTheme());
+        this.qualiterTextuel = new JCheckBoxMenuItem(new ActionQualiter());
         this.activeWeb                 = new JCheckBoxMenuItem(new ActionActiveWeb());
-        this.webTitle                  = new JCheckBoxMenuItem("web Title");
-        this.webName                   = new JCheckBoxMenuItem("web name");
+        this.webTitle                  = new JCheckBoxMenuItem(MANAGER.getString(Resources.STANDARD_TITLE));
+        this.webName                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.STANDARD_NAME));
         
         this.french                    = new JCheckBoxMenuItem(MANAGER.getString(Resources.FRENCH));
         this.english                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.ENGLISH));
@@ -75,9 +77,9 @@ public class MenuBar extends JMenuBar implements Traduisible
         this.aide    = new JMenuItem(new ActionAide());
         this.aPropos = new JMenuItem(MANAGER.getString(Resources.ABOUT));
 
-        optionMenu.add(itemBlockIfNotMatchNumber);
-        optionMenu.add(darkTheme);
-        optionMenu.add(qualiterTextuelle);
+        optionMenu.add(blockIfNotMathPatern);
+        optionMenu.add(darkMode);
+        optionMenu.add(qualiterTextuel);
         optionMenu.add(web);
 
         aideMenu.add(aide);
@@ -131,7 +133,7 @@ public class MenuBar extends JMenuBar implements Traduisible
      *
      * @param bDarkTheme the b dark theme
      */
-    public void changeTheme( boolean bDarkTheme )
+    public void setDarkMode(boolean bDarkTheme )
     {
         Color baseColor = bDarkTheme ? new Color(50, 50, 50) : Color.WHITE;
 
@@ -143,10 +145,10 @@ public class MenuBar extends JMenuBar implements Traduisible
         for (int i = 0; i < this.getComponentCount(); i++)
             this.setRecursiveColor(baseColor, this.getComponent(i));
 
-        if( bDarkTheme != this.darkTheme.isSelected() )
-            this.darkTheme.setSelected(bDarkTheme);
+        if( bDarkTheme != this.darkMode.isSelected() )
+            this.darkMode.setSelected(bDarkTheme);
 
-        this.ihm.savePreferences(Metier.tabPreferences[1], String.valueOf(this.darkTheme.isSelected()));
+        this.ihm.savePreferences(Metier.tabPreferences[1], String.valueOf(this.darkMode.isSelected()));
     }
 
     private void setLanguage( Locale locale )
@@ -173,23 +175,23 @@ public class MenuBar extends JMenuBar implements Traduisible
      *
      * @param blockIfNotMatch the block if not match
      */
-    public void changeBlockParam( boolean blockIfNotMatch )
+    public void setBlockIfNotMathPatern(boolean blockIfNotMatch )
     {
-        if( this.itemBlockIfNotMatchNumber.isSelected() )
+        if( this.blockIfNotMathPatern.isSelected() )
         {
-            this.itemBlockIfNotMatchNumber.setBackground(Color.RED);
+            this.blockIfNotMathPatern.setBackground(Color.RED);
             this.ihm.setBlockIfNotMathPatern(false);
         }
         else
         {
-            this.itemBlockIfNotMatchNumber.setBackground(Color.GREEN);
+            this.blockIfNotMathPatern.setBackground(Color.GREEN);
             this.ihm.setBlockIfNotMathPatern(true);
         }
 
-        if( this.itemBlockIfNotMatchNumber.isSelected() != blockIfNotMatch )
-            this.itemBlockIfNotMatchNumber.setSelected(blockIfNotMatch);
+        if( this.blockIfNotMathPatern.isSelected() != blockIfNotMatch )
+            this.blockIfNotMathPatern.setSelected(blockIfNotMatch);
 
-        this.ihm.savePreferences(Metier.tabPreferences[0], String.valueOf(this.itemBlockIfNotMatchNumber.isSelected()));
+        this.ihm.savePreferences(Metier.tabPreferences[0], String.valueOf(this.blockIfNotMathPatern.isSelected()));
     }
 
     @Override
@@ -208,9 +210,13 @@ public class MenuBar extends JMenuBar implements Traduisible
         this.aideMenu    .setText(MANAGER.getString(Resources.HELP));
         this.languageMenu.setText(MANAGER.getString(Resources.LANGUAGES));
 
-        this.itemBlockIfNotMatchNumber.setText(MANAGER.getString(Resources.BLOCK_NOT_MATCH));
-        this.darkTheme.setText(MANAGER.getString(Resources.DARK_THEME));
-        this.qualiterTextuelle.setText(MANAGER.getString(Resources.QUALITERTEXTUEL));
+        this.blockIfNotMathPatern.setText(MANAGER.getString(Resources.BLOCK_NOT_MATCH));
+        this.qualiterTextuel.setText(MANAGER.getString(Resources.QUALITERTEXTUEL));
+
+        this.darkMode.setText(MANAGER.getString(Resources.DARK_THEME));
+        this.webName  .setText(MANAGER.getString(Resources.STANDARD_NAME));
+        this.webTitle .setText(MANAGER.getString(Resources.STANDARD_TITLE));
+        this.activeWeb.setText(MANAGER.getString(Resources.ACTIVE_WEB));
 
         this.french   .setText(MANAGER.getString(Resources.FRENCH));
         this.english  .setText(MANAGER.getString(Resources.ENGLISH));
@@ -223,14 +229,38 @@ public class MenuBar extends JMenuBar implements Traduisible
 
     public void setQualiterTextuel(boolean b)
     {
-        this.qualiterTextuelle.setSelected(b);
+        this.qualiterTextuel.setSelected(b);
 
-        this.ihm.savePreferences(Metier.tabPreferences[4], String.valueOf(this.qualiterTextuelle.isSelected()));
+        this.ihm.savePreferences(Metier.tabPreferences[4], String.valueOf(this.qualiterTextuel.isSelected()));
     }
 
     public boolean isQualiterTextuel()
     {
-        return this.qualiterTextuelle.isSelected();
+        return this.qualiterTextuel.isSelected();
+    }
+
+    public void setActiveWeb(boolean b)
+    {
+        if( this.activeWeb.isSelected() != b )
+            this.activeWeb.setSelected(b);
+
+        this.ihm.savePreferences(Metier.tabPreferences[5], String.valueOf(b));
+    }
+
+    public void setIHMValueFirstTime(String name, boolean parseBoolean)
+    {
+        Class<MenuBar> thisClass = MenuBar.class;
+
+        try
+        {
+            Method m = thisClass.getMethod("set" + name, boolean.class);
+
+            m.invoke(this, parseBoolean);
+        }
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored)
+        {
+
+        }
     }
 
     private class ActionDarkTheme extends AbstractAction
@@ -246,7 +276,7 @@ public class MenuBar extends JMenuBar implements Traduisible
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            MenuBar.this.changeTheme(MenuBar.this.darkTheme.isSelected());
+            MenuBar.this.setDarkMode(MenuBar.this.darkMode.isSelected());
         }
     }
 
@@ -263,7 +293,7 @@ public class MenuBar extends JMenuBar implements Traduisible
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            MenuBar.this.changeBlockParam(MenuBar.this.itemBlockIfNotMatchNumber.isSelected());
+            MenuBar.this.setBlockIfNotMathPatern(MenuBar.this.blockIfNotMathPatern.isSelected());
         }
     }
 
@@ -297,7 +327,7 @@ public class MenuBar extends JMenuBar implements Traduisible
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            setQualiterTextuel(qualiterTextuelle.isSelected());
+            setQualiterTextuel(qualiterTextuel.isSelected());
         }
     }
 
@@ -305,7 +335,7 @@ public class MenuBar extends JMenuBar implements Traduisible
     {
         public ActionActiveWeb()
         {
-            super("Activer récupéartion WEB");
+            super(MANAGER.getString(Resources.ACTIVE_WEB));
 
             putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
             putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
@@ -317,6 +347,8 @@ public class MenuBar extends JMenuBar implements Traduisible
         {
             webName .setEnabled(activeWeb.isSelected());
             webTitle.setEnabled(activeWeb.isSelected());
+
+            setActiveWeb(activeWeb.isSelected());
 
             web.doClick();
         }
