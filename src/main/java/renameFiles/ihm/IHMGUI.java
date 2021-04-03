@@ -342,6 +342,11 @@ public class IHMGUI extends JFrame implements Traduisible
         this.ctrl.changeBlockParam(b);
     }
 
+    public void setActiveWeb( boolean b )
+    {
+        this.ctrl.setActiveWeb(b);
+    }
+
     /**
      * Sets color for ihm and children.
      *

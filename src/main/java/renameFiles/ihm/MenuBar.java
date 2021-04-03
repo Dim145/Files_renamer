@@ -244,6 +244,7 @@ public class MenuBar extends JMenuBar implements Traduisible
         if( this.activeWeb.isSelected() != b )
             this.activeWeb.setSelected(b);
 
+        this.ihm.setActiveWeb(b);
         this.ihm.savePreferences(Metier.tabPreferences[5], String.valueOf(b));
     }
 

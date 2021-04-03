@@ -256,6 +256,8 @@ public class Episode extends BaseFile
             nameToUse = this.getFullFormatedName();
         }
 
+        nameToUse = nameToUse.replaceAll("[/\"|:<>?*\\\\]", "");
+
         if(nameToUse.chars().noneMatch(Character::isDigit))
         {
             this.name = nameToUse.trim();

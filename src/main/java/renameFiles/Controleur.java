@@ -104,6 +104,11 @@ public class Controleur
         this.metier.setBlockIfNotMathPatern(b);
     }
 
+    public void setActiveWeb( boolean b )
+    {
+        this.metier.setActiveWeb(b);
+    }
+
     /**
      * Sets type courant.
      *
@@ -159,7 +164,7 @@ public class Controleur
                 this.ihm.setIHMValueFirstTime(name, Boolean.parseBoolean(valueToParse));
             }
         }
-        catch (Exception ignored){ignored.printStackTrace();}
+        catch (Exception ignored){}
     }
 
     public void addTextToTampon(String text, boolean pushToConsole)

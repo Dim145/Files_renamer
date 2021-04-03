@@ -38,6 +38,8 @@ public class Metier
     private int      maxLevel;
     private boolean blockIfNotMatchPatern;
 
+    private boolean activeWeb;
+
     /**
      * Instantiates a new Metier.
      *
@@ -62,11 +64,9 @@ public class Metier
         {
             PropertiesManager manager = PropertiesManager.getInstance();
 
-            Class<Controleur> controleurClass = Controleur.class;
-
             for (String key : tabPreferences)
             {
-                if( key.equals(tabPreferences[3]) ) continue;
+                if( key.equals(tabPreferences[3]) ) continue; // language deja pris en compte
 
                 String value = manager.getPropertie(key);
 
@@ -213,7 +213,7 @@ public class Metier
 
                 if( !isAjouter ) // l'ajout ne peut echouer que dans le cas d'une nouvelle serie
                 {
-                    lists.add(new Serie(baseFile.getName(), qualiterTextuel));
+                    lists.add(new Serie(baseFile.getName(), qualiterTextuel, activeWeb));
                     lists.get(lists.size()-1).add(baseFile);
                 }
 
@@ -330,5 +330,10 @@ public class Metier
     public int getLevelMax()
     {
         return this.maxLevel;
+    }
+
+    public void setActiveWeb( boolean b )
+    {
+        this.activeWeb = b;
     }
 }

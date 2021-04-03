@@ -129,7 +129,9 @@ public class Serie
     // Todo améliorer recupération du titre selon la langue
     public String getName(Locale aDefault)
     {
-        String name = this.othersNAmes.get(aDefault.getLanguage()).get(0);
+        ArrayList<String> names = this.othersNAmes.get(aDefault.getLanguage());
+
+        String name = names == null ? null : names.get(0);
 
         if( name == null || name.isEmpty() ) return this.getName();
 
