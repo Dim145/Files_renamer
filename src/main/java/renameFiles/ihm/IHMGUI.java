@@ -342,9 +342,9 @@ public class IHMGUI extends JFrame implements Traduisible
         this.ctrl.changeBlockParam(b);
     }
 
-    public void setActiveWeb( boolean b )
+    public void setWebValues(int index, boolean b )
     {
-        this.ctrl.setActiveWeb(b);
+        this.ctrl.setWebValues(index, b);
     }
 
     /**

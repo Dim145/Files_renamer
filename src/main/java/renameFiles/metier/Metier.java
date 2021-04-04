@@ -26,7 +26,7 @@ import java.util.Locale;
 public class Metier
 {
     public static final String[] tabPreferences = {"BlockIfNotMathPatern", "DarkMode", "SDL", "Language", "QualiterTextuel",
-                                                   "ActiveWeb"};
+                                                   "ActiveWeb", "WebTitle", "WebName"};
 
     private final ArrayList<File> files;
     private final Controleur      ctrl;
@@ -38,7 +38,7 @@ public class Metier
     private int      maxLevel;
     private boolean blockIfNotMatchPatern;
 
-    private boolean activeWeb;
+    private boolean[] webValues;
 
     /**
      * Instantiates a new Metier.
@@ -49,6 +49,7 @@ public class Metier
     {
         this.files             = new ArrayList<>();
         this.acceptedExtension = new ArrayList<>();
+        this.webValues         = new boolean[3];
         this.ctrl              = ctrl;
 
         this.typeCourant          = FileType.AUTRES;
@@ -213,7 +214,7 @@ public class Metier
 
                 if( !isAjouter ) // l'ajout ne peut echouer que dans le cas d'une nouvelle serie
                 {
-                    lists.add(new Serie(baseFile.getName(), qualiterTextuel, activeWeb));
+                    lists.add(new Serie(baseFile.getName(), qualiterTextuel, webValues));
                     lists.get(lists.size()-1).add(baseFile);
                 }
 
@@ -332,8 +333,11 @@ public class Metier
         return this.maxLevel;
     }
 
-    public void setActiveWeb( boolean b )
+    public void setWebValues(int index, boolean b )
     {
-        this.activeWeb = b;
+        if( index < 0 || index >= webValues.length )
+            return;
+
+        this.webValues[index] = b;
     }
 }

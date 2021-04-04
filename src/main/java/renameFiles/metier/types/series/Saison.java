@@ -38,7 +38,7 @@ public class Saison
         this.listeEpisode = new ArrayList<>();
         this.nbEpisodes   = 0;
 
-        this.numeroSaison = numeroSaison;
+        this.numeroSaison = Math.abs(numeroSaison);
         this.nomSerie     = nomSerie;
     }
 
@@ -151,6 +151,14 @@ public class Saison
         if( nbMaxSaison > 0 )
             for (Episode video : this.listeEpisode)
                 video.setNbMaxSaison(nbMaxSaison);
+    }
+
+    public Episode getEpisode( int numeroEp )
+    {
+        if( numeroEp > this.listeEpisode.size() )
+            return null;
+
+        return this.listeEpisode.get(numeroEp-1);
     }
 
     @Override

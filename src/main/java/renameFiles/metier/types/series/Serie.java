@@ -1,21 +1,22 @@
 package renameFiles.metier.types.series;
 
 import renameFiles.ihm.dialogs.DialogAvancement;
+import renameFiles.metier.resources.ResourceManager;
 import renameFiles.metier.types.ListeInterface;
+import renameFiles.metier.web.WebElement;
 import renameFiles.metier.web.WebInfoHelper;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Objects;
 
 public class Serie implements ListeInterface
 {
     private final ArrayList<Saison> listSaison;
 
-    private final String serieName;
-    private final boolean useInternetData;
+    private final String    serieName;
+    private final boolean[] webValues;
 
     private final boolean qualiterTextuel;
 
@@ -33,16 +34,16 @@ public class Serie implements ListeInterface
 
     public Serie(String name, boolean qualiterTextuel)
     {
-        this(name, qualiterTextuel, false);
+        this(name, qualiterTextuel, new boolean[3]);
     }
 
-    public Serie(String name, boolean qualiterTextuel, boolean useInternetData )
+    public Serie(String name, boolean qualiterTextuel, boolean[] useInternetData )
     {
         this.serieName  = name;
         this.listSaison = new ArrayList<>();
 
         this.qualiterTextuel = qualiterTextuel;
-        this.useInternetData = useInternetData;
+        this.webValues = useInternetData;
     }
 
     @Override
@@ -77,6 +78,9 @@ public class Serie implements ListeInterface
 
     public Saison getSaison( int numeroSaison )
     {
+        if( numeroSaison > this.listSaison.size() )
+            return null;
+
         return this.listSaison.get(numeroSaison-1);
     }
 
@@ -110,13 +114,31 @@ public class Serie implements ListeInterface
 
         this.setNbMaxSaisonAllSaison();
 
-        renameFiles.metier.web.Serie serie = null;
+        WebElement webElement = null;
 
-        if( useInternetData )
+        if(webValues[0])
         {
-            if( dialog != null ) dialog.setFichierCourant("demande serie " + this.getSerieName() + " depuis Internet...");
+            if( dialog != null ) dialog.setFichierCourant("recherche " + this.getSerieName() + " depuis Internet...");
 
-            serie = WebInfoHelper.getWebSerie(this);
+            if(VideoHelper.isFilm(this))
+            {
+                webElement = WebInfoHelper.getWebFilm(this);
+            }
+            else
+            {
+                webElement = WebInfoHelper.getWebSerie(this);
+
+                if( webValues[1] && webElement != null )
+                {
+                    if( dialog != null )
+                        dialog.setFichierCourant("demande des episodes...");
+
+                    boolean success = WebInfoHelper.setEpisodesList((renameFiles.metier.web.series.Serie) webElement);
+
+                    if( dialog != null )
+                        dialog.setFichierCourant( success ? "réussite" : "échec" );
+                }
+            }
         }
 
         for (Saison s : listSaison)
@@ -127,18 +149,23 @@ public class Serie implements ListeInterface
             {
                 video.setPrefDefLetter(this.qualiterTextuel);
 
-                if( useInternetData )
+                if(webValues[0])
                 {
-                    if ( serie != null )
+                    if ( webElement != null )
                     {
-                        renameFiles.metier.web.Episode ep = serie.getEpisode(s.getNumeroSaison(),
-                                (int) video.getNumeroEpisode());//Todo prendre en compte episode internediaire = 12.5
+                        if (webValues[2])
+                        {
+                            video.setFullFormatedName(webElement.getName(ResourceManager.getInstance().getLocale()));
+                            video.setName(false); // ne declenche pas le long script puisque setFullFormatedName est appeler
+                        }
 
-                        video.setFullFormatedName(serie.getName(Locale.getDefault()));
-                        video.setName(false); // ne declenche pas le long script puisque setFullFormatedName est appeler
+                        if( webValues[1] && webElement instanceof renameFiles.metier.web.series.Serie)
+                        {
+                            renameFiles.metier.web.series.Episode ep = ((renameFiles.metier.web.series.Serie) webElement)
+                                    .getEpisode(s.getNumeroSaison(), (int) video.getNumeroEpisode());//Todo prendre en compte episode internediaire = 12.5
 
-                        if( ep != null )
-                            video.setTitle(ep.getName());
+                            if (ep != null) video.setTitle(ep.getName());
+                        }
                     }
                 }
 

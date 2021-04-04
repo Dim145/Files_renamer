@@ -1,6 +1,9 @@
 package renameFiles.metier.web;
 
 import com.google.gson.*;
+import renameFiles.metier.web.films.Film;
+import renameFiles.metier.web.series.Episode;
+import renameFiles.metier.web.series.Serie;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,17 +18,22 @@ import java.util.*;
 
 public class WebInfoHelper
 {
+    //todo API saisie par l'utilisateur
+    private static final String FILM_API = "118d40394571ac6c8474eb5dd4ac10f0";
+
     /*
         %% = series ID
         %s = season number
         %e = episode number
      */
-    private static final String BASE_INFO_URL = "http://api.tvmaze.com/shows/%%";
+    private static final String BASE_INFO_SERIE_URL = "http://api.tvmaze.com/shows/%%";
 
-    private static final String BASE_SEARCH_URL = "http://api.tvmaze.com/singlesearch/shows?q=";
-    private static final String EPISODE_URL    = BASE_INFO_URL + "/episodes";
-    private static final String EPISODE_SEARCH = BASE_INFO_URL + "/episodebynumber?season=%s&number=%e";
-    private static final String OTHER_NAME_URL = BASE_INFO_URL + "/akas";
+    private static final String BASE_SEARCH_SERIE_URL = "http://api.tvmaze.com/singlesearch/shows?q=";
+    private static final String EPISODE_URL    = BASE_INFO_SERIE_URL + "/episodes";
+    private static final String EPISODE_SEARCH = BASE_INFO_SERIE_URL + "/episodebynumber?season=%s&number=%e";
+    private static final String OTHER_NAME_SERIE_URL = BASE_INFO_SERIE_URL + "/akas";
+
+    private static  final String BASE_SEARCH_FILM_URL = "https://api.themoviedb.org/3/search/movie?api_key=" + FILM_API + "&query=";
 
     private static final Gson GSON = getGsonDateSafe();
 
@@ -33,25 +41,16 @@ public class WebInfoHelper
 
     public static Serie getWebSerie(renameFiles.metier.types.series.Serie serie)
     {
-        String urlComplet    = BASE_SEARCH_URL + serie.getSerieName().replaceAll(" ", "%20");
+        String urlComplet    = BASE_SEARCH_SERIE_URL + serie.getSerieName().replaceAll(" ", "%20");
         String donnees       = getJsonResponseFromURL(urlComplet);
         JsonElement webSerie = JsonParser.parseString(donnees);
 
         Serie result = GSON.fromJson(webSerie, Serie.class);
 
-        if( result != null )
-        {
-            System.out.println(result.getName() + ": " + result.getId());
+        if( result != null && !setOtherLanguages(result) )
+            System.out.println("Languages non ajouter");
 
-            if( !setEpisodesList  (result) ) System.out.println("List d'episode non ajouter");
-            if( !setOtherLanguages(result) ) System.out.println("Languages non ajouter");
-
-            return result;
-        }
-        else
-            System.out.println(urlComplet + " => serie inconnue\n" + donnees);
-
-        return null;
+        return result;
     }
 
     public static boolean setEpisodesList( Serie series )
@@ -88,7 +87,7 @@ public class WebInfoHelper
     {
         if( serie == null ) return false;
 
-        String url = OTHER_NAME_URL.replaceAll("%%", String.valueOf(serie.getId()));
+        String url = OTHER_NAME_SERIE_URL.replaceAll("%%", String.valueOf(serie.getId()));
 
         JsonElement element = JsonParser.parseString(getJsonResponseFromURL(url));
 
@@ -117,6 +116,22 @@ public class WebInfoHelper
             e.printStackTrace();
             return false;
         }
+    }
+
+    public static Film getWebFilm(renameFiles.metier.types.series.Serie film)
+    {
+        String urlComplet    = BASE_SEARCH_FILM_URL + film.getSerieName().replaceAll(" ", "%20");
+        String donnees       = getJsonResponseFromURL(urlComplet);
+        JsonObject webSerie  = JsonParser.parseString(donnees).getAsJsonObject();
+
+        Film result = null;
+
+        if( webSerie.get("total_results").getAsInt() > 0 )
+        {
+            result = GSON.fromJson(webSerie.get("results").getAsJsonArray().get(0), Film.class); // 1 resultat = plus pertinent
+        }
+
+        return result;
     }
 
     public static String getJsonResponseFromURL(String urlString)
@@ -212,14 +227,14 @@ public class WebInfoHelper
     {
         return new GsonBuilder().registerTypeAdapter(Date.class, new JsonDeserializer<Date>()
         {
-            final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            final DateFormat serieDF = new SimpleDateFormat("yyyy-MM-dd");
 
             @Override
             public Date deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
             {
                 try
                 {
-                    return df.parse(json.getAsString());
+                    return serieDF.parse(json.getAsString());
                 }
                 catch (ParseException e)
                 {

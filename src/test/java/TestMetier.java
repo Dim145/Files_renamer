@@ -46,7 +46,7 @@ public class TestMetier
     {
         Serie s = new Serie("Dr. Stone");
 
-        renameFiles.metier.web.Serie serie = WebInfoHelper.getWebSerie(s);
+        renameFiles.metier.web.series.Serie serie = WebInfoHelper.getWebSerie(s);
 
         Assert.assertNotNull(serie);
         Assert.assertEquals("Dr. Stone", serie.getName());

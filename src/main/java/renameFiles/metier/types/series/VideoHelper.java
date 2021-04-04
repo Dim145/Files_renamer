@@ -144,6 +144,9 @@ public class VideoHelper
             }
         }
 
+        if( video.getNumeroEpisode() == video.getAnneeSortie() )
+            video.setNumeroEpisode(-1);
+
         return video;
     }
 
@@ -242,7 +245,19 @@ public class VideoHelper
 
         double d = VideoHelper.getNextNumber(new int[]{indexBeginNumber}, str);
 
-        int length = String.valueOf(d % 1 == 0 ? (int) d : d).length();// (2017) l
+        boolean rounded = d % 1 == 0;
+        int length;
+
+        if( rounded )
+        {
+            int in = (int) Math.round(d);
+
+            length = String.valueOf(in).length();
+        }
+        else
+        {
+            length = String.valueOf(d).length();
+        }
 
         return str.charAt(indexBeginNumber + length) == ')';
     }
@@ -250,5 +265,19 @@ public class VideoHelper
     public static String reverse(String str)
     {
         return new StringBuilder(str).reverse().toString();
+    }
+
+    public static boolean isFilm( Serie serie )
+    {
+        if (serie.getSaison(2) != null ) return false;
+
+        Saison s = serie.getSaison(1);
+
+        if( s.getNbEpisodes() > 1 ) // 1 minimum sinon element n'existe pas, > 1 = saison donc serie
+            return false;
+
+        Episode ep = s.getEpisode(1);
+
+        return ep.getNumeroSaison() == -1 && ep.getNumeroEpisode() == -1;
     }
 }

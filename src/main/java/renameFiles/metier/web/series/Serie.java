@@ -1,9 +1,11 @@
-package renameFiles.metier.web;
+package renameFiles.metier.web.series;
+
+import renameFiles.metier.web.WebElement;
 
 import java.net.URI;
 import java.util.*;
 
-public class Serie
+public class Serie implements WebElement
 {
     private int id;
     private URI url;
@@ -40,7 +42,7 @@ public class Serie
         return type;
     }
 
-    public Date getPremiered()
+    public Date getReleaseDate()
     {
         return premiered;
     }
@@ -129,11 +131,16 @@ public class Serie
     // Todo améliorer recupération du titre selon la langue
     public String getName(Locale aDefault)
     {
-        ArrayList<String> names = this.othersNAmes.get(aDefault.getLanguage());
+        String language = aDefault.getLanguage();
+
+        if( language.equals("ja") )
+            language = "jp";
+
+        ArrayList<String> names = this.othersNAmes.get(language);
 
         String name = names == null ? null : names.get(0);
 
-        if( name == null || name.isEmpty() ) return this.getName();
+        if( name == null || name.isEmpty() ) return this.getName(); // nom par default => anglais
 
         return name;
     }

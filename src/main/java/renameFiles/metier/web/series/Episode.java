@@ -1,4 +1,4 @@
-package renameFiles.metier.web;
+package renameFiles.metier.web.series;
 
 import java.net.URI;
 import java.util.Date;

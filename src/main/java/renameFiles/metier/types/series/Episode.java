@@ -111,6 +111,7 @@ public class Episode extends BaseFile
         this.anneeSortie   = -1;
 
         this.language = "";
+        this.title    = "";
     }
 
     public String getLanguage()
@@ -226,13 +227,14 @@ public class Episode extends BaseFile
             if( this.numeroSaison  > -1 ) name += "S"  + String.format("%0" + nbRoundSaison + "d", this.getNumeroSaison())  + " ";
             if( this.numeroEpisode > -1 ) name += (this.isEpisodeSpecial() ? "Sp" : this.isOAV() ? "OAV" : "Ep") + (this.getNumeroEpisode() % 1 == 0 ? String.format("%0"+nbRoundEpisode+"d", (int)this.getNumeroEpisode()) : String.format(
                     "%0"+nbRoundEpisode+".2f", this.getNumeroEpisode())) + " ";
+            if( !this.title.isEmpty()   ) name += this.title.trim() + " ";
             if( !this.language.isEmpty()) name += ( name.contains(this.getLanguage()) ? "" : this.getLanguage() ) + " ";
             if( this.isNC()             ) name += "NC ";
             if( this.qualiter      > -1 ) name += ( def == null ? this.getQualiter() + "p" : (this.isPrefDefLetter() ? def : def.getQualiter() + "p") ) + " "; // def = null si pas dans les normes
             if( this.nbBits        > -1 ) name += this.getNbBits() + "bits ";
             if( this.compression   > -1 ) name += "x"  + this.getCompression()   + " ";
 
-            return name.trim() + this.getExtension();
+            return (name.trim() + this.getExtension()).replaceAll("[/\"|:<>?*\\\\]", "");
         }
 
         return this.getFullname() + this.getExtension();
@@ -256,7 +258,13 @@ public class Episode extends BaseFile
             nameToUse = this.getFullFormatedName();
         }
 
-        nameToUse = nameToUse.replaceAll("[/\"|:<>?*\\\\]", "");
+        for (String lang : Languages.getAllValues())
+        {
+            Matcher match = Pattern.compile("[|, \\[(]"+lang.toLowerCase()+"[, \\])]|" + lang.toLowerCase() + "$").matcher(nameToUse.toLowerCase());
+
+            if( match.find() )
+                nameToUse = nameToUse.substring(0, match.start());
+        }
 
         if(nameToUse.chars().noneMatch(Character::isDigit))
         {
@@ -312,6 +320,9 @@ public class Episode extends BaseFile
                     if( VideoHelper.isEpisodeString(texteAvNb) || VideoHelper.isSaisonString(texteAvNb) ||
                             VideoHelper.isSpecialEpString(texteAvNb) || VideoHelper.isOAVString(texteAvNb) )
                         listAllIndex.add(cpt2);
+
+                    if( VideoHelper.isAnnee(cpt, nameToUse))
+                        listAllIndex.add(cpt-2);
                 }
                 catch (Exception ignored)
                 { }
@@ -323,34 +334,6 @@ public class Episode extends BaseFile
 
         if( indexSeparateurMoins > 0 && indexSeparateurMoins < min )
             min = indexSeparateurMoins;
-
-        for (String lang : Languages.getAllValues())
-        {
-            Matcher match = Pattern.compile("[|, \\[(]"+lang.toLowerCase()+"[, \\])]|" + lang.toLowerCase() + "$").matcher(nameToUse.toLowerCase());
-
-            if( match.find() )
-            {
-                int index = match.start();
-
-                if( index < min ) min = index;
-            }
-        }
-
-        if( min == nameToUse.length() ) // dans le cas ou ni saison ni rien d'autre n'est données
-        {
-            for (int i = 0; i < nameToUse.length(); i++)
-            {
-                if( Character.isDigit(nameToUse.charAt(i)) )
-                {
-                    this.setNumeroEpisode(VideoHelper.getNextNumber(new int[]{i}, nameToUse));
-
-                    min = i;
-                    break;
-                }
-            }
-
-            min = min != nameToUse.length() ? min - 1 : min;
-        }
 
         this.name = nameToUse.substring(0, min).trim();
 

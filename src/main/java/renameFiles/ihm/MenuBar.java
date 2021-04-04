@@ -63,11 +63,11 @@ public class MenuBar extends JMenuBar implements Traduisible
         this.web          = new JMenu(new ActionWEB());
 
         this.blockIfNotMathPatern = new JCheckBoxMenuItem(new ActionBlock());
-        this.darkMode = new JCheckBoxMenuItem(new ActionDarkTheme());
-        this.qualiterTextuel = new JCheckBoxMenuItem(new ActionQualiter());
-        this.activeWeb                 = new JCheckBoxMenuItem(new ActionActiveWeb());
-        this.webTitle                  = new JCheckBoxMenuItem(MANAGER.getString(Resources.STANDARD_TITLE));
-        this.webName                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.STANDARD_NAME));
+        this.darkMode             = new JCheckBoxMenuItem(new ActionDarkTheme());
+        this.qualiterTextuel      = new JCheckBoxMenuItem(new ActionQualiter());
+        this.activeWeb            = new JCheckBoxMenuItem(new ActionActiveWeb());
+        this.webTitle             = new JCheckBoxMenuItem(new ActionWebTitle());
+        this.webName              = new JCheckBoxMenuItem(new ActionWebName());
         
         this.french                    = new JCheckBoxMenuItem(MANAGER.getString(Resources.FRENCH));
         this.english                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.ENGLISH));
@@ -244,8 +244,31 @@ public class MenuBar extends JMenuBar implements Traduisible
         if( this.activeWeb.isSelected() != b )
             this.activeWeb.setSelected(b);
 
-        this.ihm.setActiveWeb(b);
+        webName .setEnabled(b);
+        webTitle.setEnabled(b);
+
+        this.ihm.setWebValues(0, b);
         this.ihm.savePreferences(Metier.tabPreferences[5], String.valueOf(b));
+    }
+
+    public void setWebTitle( boolean b )
+    {
+        if( this.webTitle.isSelected() != b )
+            this.webTitle.setSelected(b);
+
+        this.ihm.setWebValues(1, b);
+
+        this.ihm.savePreferences(Metier.tabPreferences[6], String.valueOf(b));
+    }
+
+    public void setWebName( boolean b )
+    {
+        if( this.webName.isSelected() != b )
+            this.webName.setSelected(b);
+
+        this.ihm.setWebValues(2, b);
+
+        this.ihm.savePreferences(Metier.tabPreferences[7], String.valueOf(b));
     }
 
     public void setIHMValueFirstTime(String name, boolean parseBoolean)
@@ -346,12 +369,43 @@ public class MenuBar extends JMenuBar implements Traduisible
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            webName .setEnabled(activeWeb.isSelected());
-            webTitle.setEnabled(activeWeb.isSelected());
-
             setActiveWeb(activeWeb.isSelected());
 
             web.doClick();
+        }
+    }
+
+    private class ActionWebTitle extends AbstractAction
+    {
+        public ActionWebTitle()
+        {
+            super(MANAGER.getString(Resources.STANDARD_TITLE));
+
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK));
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_T);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            setWebTitle(webTitle.isSelected());
+        }
+    }
+
+    private class ActionWebName extends AbstractAction
+    {
+        public ActionWebName()
+        {
+            super(MANAGER.getString(Resources.STANDARD_NAME));
+
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_N);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            setWebName(webName.isSelected());
         }
     }
 

@@ -30,6 +30,10 @@ public class Controleur
         this.ihm.setNbSDL(this.metier.getLevelMax()+1);
 
         this.ihm.setVisible(true);
+
+        //for debug
+        this.ihm.setTypeCourant(FileType.SERIES);
+        this.ihm.setCurrentPath("C:\\Users\\Administrateur\\Documents\\TestFileRename");
     }
 
     public Controleur( FileType type )
@@ -104,9 +108,9 @@ public class Controleur
         this.metier.setBlockIfNotMathPatern(b);
     }
 
-    public void setActiveWeb( boolean b )
+    public void setWebValues(int index, boolean b )
     {
-        this.metier.setActiveWeb(b);
+        this.metier.setWebValues(index, b);
     }
 
     /**
