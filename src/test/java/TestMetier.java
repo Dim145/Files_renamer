@@ -51,6 +51,6 @@ public class TestMetier
         Assert.assertNotNull(serie);
         Assert.assertEquals("Dr. Stone", serie.getName());
         Assert.assertEquals("Animation", serie.getType());
-        Assert.assertEquals(new Date(1562277600000L), serie.getPremiered()); // 2019-07-05
+        Assert.assertEquals(new Date(1562277600000L), serie.getReleaseDate()); // 2019-07-05
     }
 }

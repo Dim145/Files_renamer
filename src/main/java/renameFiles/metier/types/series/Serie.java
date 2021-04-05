@@ -162,7 +162,7 @@ public class Serie implements ListeInterface
                         if( webValues[1] && webElement instanceof renameFiles.metier.web.series.Serie)
                         {
                             renameFiles.metier.web.series.Episode ep = ((renameFiles.metier.web.series.Serie) webElement)
-                                    .getEpisode(s.getNumeroSaison(), (float) video.getNumeroEpisode());//Todo prendre en compte episode internediaire = 12.5
+                                    .getEpisode(s.getNumeroSaison(), (float) video.getNumeroEpisode());
 
                             if (ep != null) video.setTitle(ep.getName());
                         }

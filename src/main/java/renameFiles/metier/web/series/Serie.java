@@ -133,7 +133,6 @@ public class Serie implements WebElement
         this.listEpisodes.clear();
     }
 
-    // Todo améliorer recupération du titre selon la langue
     public String getName(Locale aDefault)
     {
         ArrayList<String> listDefault = this.othersNAmes.get(""); // certaine serie ont une valeur lang a vide
