@@ -1,8 +1,11 @@
 # Files_renamer
 
 File Renamer permet de renommer des fichiers à partir d'un répertoire et ses sous-répertoires.
-Cela peut être particulièrement utile pour une gestion des séries ect... C'est d'ailleurs pour cette
-raison que j'ai eu l'idée de ce projet.
+Cela peut être particulièrement utile pour une gestion des séries ect... <br/>
+C'est d'ailleurs pour cette
+raison que j'ai eu l'idée de ce projet. <br/>
+En plus de ces fonctions automatiques, une recherche est effectuée sur le web pour chercher les séries ou films sur des bases de données en ligne.
+Cela permet de corriger, traduire ou d'ajouter certaines informations telle que le titre de l'épisode.
 
 ## Pour commencer
 
