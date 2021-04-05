@@ -2,6 +2,8 @@ package renameFiles.ihm.dialogs;
 
 import renameFiles.ihm.MenuBar;
 import renameFiles.metier.properties.PropertiesManager;
+import renameFiles.metier.resources.ResourceManager;
+import renameFiles.metier.resources.Resources;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +23,7 @@ public class DialogWebLanguage extends JDialog
 
     public DialogWebLanguage(MenuBar menuBar)
     {
-        this.setTitle("Test");
+        this.setTitle(ResourceManager.getInstance().getString(Resources.WEB_LANGUAGES));
         this.setModal(true);
 
         this.listModel = new DefaultListModel<>();
