@@ -2,6 +2,7 @@ package renameFiles.ihm;
 
 import renameFiles.ihm.dialogs.APropos;
 import renameFiles.ihm.dialogs.Aide;
+import renameFiles.ihm.dialogs.DialogWebLanguage;
 import renameFiles.metier.Metier;
 import renameFiles.metier.resources.ResourceManager;
 import renameFiles.metier.resources.Resources;
@@ -24,6 +25,8 @@ public class MenuBar extends JMenuBar implements Traduisible
     private static final ResourceManager MANAGER = ResourceManager.getInstance();
     private static final Locale          SPANISH = new Locale("spa", "");
 
+    public static final Locale[] availablesLanguages = {Locale.JAPANESE, Locale.FRENCH, Locale.ENGLISH, SPANISH};
+
     private final IHMGUI ihm;
 
     private final JMenuItem aide;
@@ -40,6 +43,7 @@ public class MenuBar extends JMenuBar implements Traduisible
     private final JCheckBoxMenuItem english;
     private final JCheckBoxMenuItem japanese;
     private final JCheckBoxMenuItem spanish;
+    private final JMenuItem         webLanguage;
 
     private final JMenu optionMenu;
     private final JMenu aideMenu;
@@ -69,10 +73,11 @@ public class MenuBar extends JMenuBar implements Traduisible
         this.webTitle             = new JCheckBoxMenuItem(new ActionWebTitle());
         this.webName              = new JCheckBoxMenuItem(new ActionWebName());
         
-        this.french                    = new JCheckBoxMenuItem(MANAGER.getString(Resources.FRENCH));
-        this.english                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.ENGLISH));
-        this.japanese                  = new JCheckBoxMenuItem(MANAGER.getString(Resources.JAPANESE));
-        this.spanish                   = new JCheckBoxMenuItem(MANAGER.getString(Resources.SPANISH));
+        this.french      = new JCheckBoxMenuItem(MANAGER.getString(Resources.FRENCH));
+        this.english     = new JCheckBoxMenuItem(MANAGER.getString(Resources.ENGLISH));
+        this.japanese    = new JCheckBoxMenuItem(MANAGER.getString(Resources.JAPANESE));
+        this.spanish     = new JCheckBoxMenuItem(MANAGER.getString(Resources.SPANISH));
+        this.webLanguage = new JMenuItem(new ActionWebLanguage());
 
         this.aide    = new JMenuItem(new ActionAide());
         this.aPropos = new JMenuItem(MANAGER.getString(Resources.ABOUT));
@@ -89,6 +94,7 @@ public class MenuBar extends JMenuBar implements Traduisible
         languageMenu.add(this.english);
         languageMenu.add(this.japanese);
         languageMenu.add(this.spanish);
+        languageMenu.add(this.webLanguage);
 
         web.add(activeWeb);
         web.addSeparator();
@@ -213,15 +219,16 @@ public class MenuBar extends JMenuBar implements Traduisible
         this.blockIfNotMathPatern.setText(MANAGER.getString(Resources.BLOCK_NOT_MATCH));
         this.qualiterTextuel.setText(MANAGER.getString(Resources.QUALITERTEXTUEL));
 
-        this.darkMode.setText(MANAGER.getString(Resources.DARK_THEME));
+        this.darkMode .setText(MANAGER.getString(Resources.DARK_THEME));
         this.webName  .setText(MANAGER.getString(Resources.STANDARD_NAME));
         this.webTitle .setText(MANAGER.getString(Resources.STANDARD_TITLE));
         this.activeWeb.setText(MANAGER.getString(Resources.ACTIVE_WEB));
 
-        this.french   .setText(MANAGER.getString(Resources.FRENCH));
-        this.english  .setText(MANAGER.getString(Resources.ENGLISH));
-        this.japanese .setText(MANAGER.getString(Resources.JAPANESE));
-        this.spanish  .setText(MANAGER.getString(Resources.SPANISH));
+        this.french     .setText(MANAGER.getString(Resources.FRENCH));
+        this.english    .setText(MANAGER.getString(Resources.ENGLISH));
+        this.japanese   .setText(MANAGER.getString(Resources.JAPANESE));
+        this.spanish    .setText(MANAGER.getString(Resources.SPANISH));
+        this.webLanguage.setText(MANAGER.getString(Resources.WEB_LANGUAGES));
 
         this.aide   .setText(MANAGER.getString(Resources.HELP));
         this.aPropos.setText(MANAGER.getString(Resources.ABOUT));
@@ -423,6 +430,23 @@ public class MenuBar extends JMenuBar implements Traduisible
         public void actionPerformed(ActionEvent e)
         {
 
+        }
+    }
+
+    private class ActionWebLanguage extends AbstractAction
+    {
+        public ActionWebLanguage()
+        {
+            super(MANAGER.getString(Resources.WEB_LANGUAGES));
+
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_W);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            new DialogWebLanguage(MenuBar.this);
         }
     }
 }

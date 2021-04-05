@@ -131,7 +131,7 @@ public class Serie implements ListeInterface
                 if( webValues[1] && webElement != null )
                 {
                     if( dialog != null )
-                        dialog.setFichierCourant("demande des episodes...");
+                        dialog.setFichierCourant("demande des episodes de " + this.getSerieName());
 
                     boolean success = WebInfoHelper.setEpisodesList((renameFiles.metier.web.series.Serie) webElement);
 
@@ -162,7 +162,7 @@ public class Serie implements ListeInterface
                         if( webValues[1] && webElement instanceof renameFiles.metier.web.series.Serie)
                         {
                             renameFiles.metier.web.series.Episode ep = ((renameFiles.metier.web.series.Serie) webElement)
-                                    .getEpisode(s.getNumeroSaison(), (int) video.getNumeroEpisode());//Todo prendre en compte episode internediaire = 12.5
+                                    .getEpisode(s.getNumeroSaison(), (float) video.getNumeroEpisode());//Todo prendre en compte episode internediaire = 12.5
 
                             if (ep != null) video.setTitle(ep.getName());
                         }

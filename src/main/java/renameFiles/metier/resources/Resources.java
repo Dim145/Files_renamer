@@ -36,7 +36,8 @@ public enum Resources
     QUALITERTEXTUEL("qualiter_textuel"),
     ACTIVE_WEB("active_web"),
     STANDARD_TITLE("web_title"),
-    STANDARD_NAME("web_name");
+    STANDARD_NAME("web_name"),
+    WEB_LANGUAGES("web_language");
 
     private final String resourceKey;
 

@@ -9,7 +9,7 @@ public class Episode
     private URI url;
     private String name;
     private int season;
-    private int number;
+    private float number;
     private String type;
     private Date airdate;
 
@@ -34,7 +34,7 @@ public class Episode
         return season;
     }
 
-    public int getNumber()
+    public float getNumber()
     {
         return number;
     }

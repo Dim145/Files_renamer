@@ -1,9 +1,14 @@
 package renameFiles.metier.web.series;
 
+import renameFiles.ihm.MenuBar;
+import renameFiles.metier.properties.PropertiesManager;
 import renameFiles.metier.web.WebElement;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Serie implements WebElement
 {
@@ -64,7 +69,7 @@ public class Serie implements WebElement
         return true;
     }
 
-    public Episode getEpisode( int saison, int episode )
+    public Episode getEpisode( int saison, float episode )
     {
         for (Episode ep : this.listEpisodes)
             if( ep.getSeason() == saison && ep.getNumber() == episode )
@@ -131,17 +136,91 @@ public class Serie implements WebElement
     // Todo améliorer recupération du titre selon la langue
     public String getName(Locale aDefault)
     {
-        String language = aDefault.getLanguage();
+        ArrayList<String> listDefault = this.othersNAmes.get(""); // certaine serie ont une valeur lang a vide
 
-        if( language.equals("ja") )
-            language = "jp";
+        if( listDefault == null )
+            listDefault = new ArrayList<>();
 
-        ArrayList<String> names = this.othersNAmes.get(language);
+        listDefault.add(0, this.getName()); // on recupere celle-ci et ajoute le nom par default en 1
 
-        String name = names == null ? null : names.get(0);
+        ArrayList<String> listEN = this.othersNAmes.get("en"); // on recupere la liste anglaise
 
-        if( name == null || name.isEmpty() ) return this.getName(); // nom par default => anglais
+        if( listEN == null )
+            listEN = this.othersNAmes.get("us"); // americaine si anglaise n'existe pas
 
-        return name;
+        if( listEN != null ) // on ajoute la liste par default. en = langue du site.
+            listEN.addAll(listDefault);
+        else
+            this.othersNAmes.put("en", listDefault);
+
+        try
+        {
+            String   pref = PropertiesManager.getInstance().getPropertie("WebLanguages");
+            Locale[] listLocales;
+
+            if( pref == null )
+            {
+                listLocales = MenuBar.availablesLanguages;
+            }
+            else
+            {
+                String[] listLanguage = pref.split(",");
+                listLocales  = new Locale[listLanguage.length];
+
+                for (int i = 0; i < listLocales.length; i++)
+                    listLocales[i] = Locale.forLanguageTag(listLanguage[i]);
+            }
+
+            for (Locale l : listLocales)
+            {
+                String lang = l.getLanguage();
+
+                if( lang.equalsIgnoreCase("ja") )
+                    lang = "jp";
+
+                ArrayList<String> names = this.othersNAmes.get(lang);
+
+                if( names == null & lang.equals("en") )
+                    names = this.othersNAmes.get("us"); // en == us
+
+                int index = 0;
+
+                /*
+                    Permet de recuperer le nom japonnais ecrit en ecriture occidental
+                    si la langue actuelle n'est pas japonaise
+                 */
+                if( names != null && lang.equals("jp") && !aDefault.getLanguage().equals("ja") )
+                {
+                    boolean findNameINROMANJI = false;
+
+                    for (String s : names)
+                    {
+                        Matcher matc = Pattern.compile("[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+").matcher(s);
+
+                        if( !matc.find() )
+                        {
+                            index = names.indexOf(s);
+                            findNameINROMANJI = true;
+
+                            break;
+                        }
+                    }
+
+                    if( !findNameINROMANJI )
+                        continue;
+                }
+
+                String name = names == null ? null : names.get(index);
+
+                if( name != null )
+                    return name;
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return this.getName(); // nom par default = anglais
     }
 }
