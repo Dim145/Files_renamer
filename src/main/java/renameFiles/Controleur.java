@@ -183,7 +183,7 @@ public class Controleur
      */
     public static void main(String[] args)
     {
-        System.setProperty("file.encoding", "UTF-8");
+        System.setProperty("-Dfile.encoding", "utf8");
 
         if ( !UIManager.getSystemLookAndFeelClassName().equals( "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" ) )
             try   { UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() ); }

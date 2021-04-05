@@ -11,6 +11,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -146,7 +147,7 @@ public class WebInfoHelper
 
             InputStream stream = connect.getInputStream();
 
-            return new String(readAllBytes(stream));
+            return new String(readAllBytes(stream), StandardCharsets.UTF_8);
         }
         catch (IOException e)
         {
