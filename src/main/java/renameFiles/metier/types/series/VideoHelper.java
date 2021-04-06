@@ -41,10 +41,7 @@ public class VideoHelper
             Matcher match = Pattern.compile("^" + def + "|[|, \\[(]" + def + "[, \\])]|" + def + "$").matcher(fileName);
 
             if(match.find() )
-            {
                 video.setQualiter(def.getQualiter());
-                break;
-            }
         }
 
         String tmpFileName = fileName.toLowerCase();
@@ -98,15 +95,21 @@ public class VideoHelper
                         continue;
                     }
 
-                    if( VideoHelper.isBits(cpt, fileName.toLowerCase()) )
+                    //*********************** récupération du texte avant le nombre **********************************
+                    String texteAvNb = VideoHelper.getTextBeforeNumber(index[1], fileName);
+
+                    if( texteAvNb.equals("x") || VideoHelper.isBits(cpt, fileName.toLowerCase()) )
                     {
-                        video.setNbBits((int) video.getNombre(video.getNbNombres()-1));
+                        double tmp = video.getNombre(video.getNbNombres()-1);
+
+                        if(video.getCompression() == -1 && tmp > 200 )
+                            video.setCompression((int) tmp);
+
+                        if( video.getNbBits() == -1 && tmp < 200 )
+                            video.setNbBits((int) tmp);
+
                         continue;
                     }
-
-                    //*********************** récupération du texte avant le nombre **********************************
-
-                    String texteAvNb = VideoHelper.getTextBeforeNumber(index[1], fileName);
 
                     //************************ Texte avant un nombre **************************
 
@@ -135,9 +138,6 @@ public class VideoHelper
                         if ( video.getNumeroSaison() != -1 ) video.setNumeroEpisode((int) video.getNombre(video.getNbNombres()-1));
                         else                                 video.setNumeroSaison ((int) video.getNombre(video.getNbNombres()-1));
 
-                    if( texteAvNb.equals("x") )
-                        if(video.getCompression() == -1 )
-                            video.setCompression((int) video.getNombre(video.getNbNombres()-1));
                 }
                 catch (Exception ignored)
                 { }
