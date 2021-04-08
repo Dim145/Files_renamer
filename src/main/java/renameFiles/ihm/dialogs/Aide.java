@@ -6,8 +6,10 @@ import renameFiles.metier.resources.Traduisible;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * The type Aide.
@@ -47,7 +49,6 @@ public class Aide extends JDialog implements Traduisible
         this.setRecursiveColor(theme, this);
 
         this.pack();
-        this.setSize(this.getWidth(), 750);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 
@@ -76,6 +77,7 @@ public class Aide extends JDialog implements Traduisible
         categorieModel.addElement(MANAGER.getString(Resources.SERIES)); // categorie 3
         categorieModel.addElement(MANAGER.getString(Resources.ALEANAME)); // categorie 4
         categorieModel.addElement(MANAGER.getString(Resources.MENU_OPTION)); // categorie 5
+        categorieModel.addElement("web");
 
         for (int i = 0; i < categorieModel.getSize(); i++)
             content.add(getJLabelForCardNumber(i), categorieModel.get(i));
@@ -105,7 +107,7 @@ public class Aide extends JDialog implements Traduisible
         }
     }
 
-    private JLabel getJLabelForCardNumber(int number)
+    private Component getJLabelForCardNumber(int number)
     {
         JLabel label = new JLabel();
 
@@ -194,8 +196,88 @@ public class Aide extends JDialog implements Traduisible
 
             case 5:
             {
+                textBuilder.append("<h1>Fonctionnalité WEB</h1>")
+                           .append("<div class=\"marginLeft\">")
+                                .append("<p>L'application peut tenter de se connecter a internet pour chercher les différente vidéos.</p>")
+                           .append("<p>Cela lui permet:</p><ul><li>")
+                            .append("de corrigé le nom de la serie si celui-ci n'est pas trop déformé</li>")
+                           .append("<li>d'ajouter ou de retiré le titre d'un episode selon la checkbox dans web.</li>")
+                           .append("<li>de traduire si cela est possible, les nom de series. si la langue choisie est Japonnais,<br/> cela traduira en caractere japonnnais seulement si la langue actuelle est japonnais.</li>")
+                           .append("</ul>")
+                           .append("<p>les deux sites ou sont récupéré les données sont: </p>");
 
-            }break;
+               JLabel refSerie = new JLabel(transformStringToHTMLString("<a href=\"http://tvmaze.com\">TVMaze</a>"));
+               JLabel refFilms = new JLabel(transformStringToHTMLString("<a href=\"https://themoviedb.org\">TheMovieDB</a>"));
+
+               refSerie.setToolTipText("http://tvmaze.com");
+               refFilms.setToolTipText("https://themoviedb.org");
+
+               refSerie.addMouseListener(new MouseAdapter() {
+                   @Override
+                   public void mouseClicked(MouseEvent e)
+                   {
+                       String text = ((JLabel) e.getSource()).getToolTipText();
+
+                       try
+                       {
+                           Desktop.getDesktop().browse(new URI(text));
+                       }
+                       catch (IOException | URISyntaxException ioException)
+                       {
+                           ioException.printStackTrace();
+                       }
+                   }
+
+                   @Override
+                   public void mouseEntered(MouseEvent e)
+                   {
+                       ((JLabel) e.getSource()).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                   }
+
+                   @Override
+                   public void mouseExited(MouseEvent e)
+                   {
+                       ((JLabel) e.getSource()).setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                   }
+               });
+
+                for (MouseListener m : refSerie.getMouseListeners())
+                    refFilms.addMouseListener(m);
+
+               JLabel endSerie = new JLabel(transformStringToHTMLString("pour les séries"));
+               JLabel endFilms = new JLabel(transformStringToHTMLString("pour les films"));
+
+               GridBagLayout layout = new GridBagLayout();
+               JPanel pnl = new JPanel(new BorderLayout());
+               JPanel grid = new JPanel(layout);
+               JPanel box  = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+               label.setText(transformStringToHTMLString(textBuilder.toString()));
+
+                GridBagConstraints c = new GridBagConstraints();
+                c.gridy = 1;
+                layout.setConstraints(box, c);
+
+               grid.add(label);
+               box.add(refSerie);
+               box.add(endSerie);
+
+               grid.add(box);
+
+               box = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+               box.add(refFilms);
+               box.add(endFilms);
+
+                c = new GridBagConstraints();
+                c.gridy = 2;
+                layout.setConstraints(box, c);
+
+               grid.add(box);
+               pnl.add(grid, BorderLayout.NORTH);
+
+               return pnl;
+            }
         }
 
         label.setText(transformStringToHTMLString(textBuilder.toString()));
