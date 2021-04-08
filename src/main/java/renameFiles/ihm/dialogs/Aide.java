@@ -16,11 +16,9 @@ public class Aide extends JDialog implements Traduisible
 {
     private final static ResourceManager MANAGER = ResourceManager.getInstance();
 
-    private final JLabel label;
     private final Color currentColor;
 
-    private int depart;
-
+    private Font font;
     /**
      * Instantiates a new Aide.
      *
@@ -29,11 +27,9 @@ public class Aide extends JDialog implements Traduisible
      */
     public Aide( Color theme, Font font )
     {
-        this.depart = 1;
-
         this.setTitle("Aide");
 
-        this.label = new JLabel();
+        this.font = font;
 
         JPanel panel = new JPanel(new CardLayout());
 
@@ -49,8 +45,6 @@ public class Aide extends JDialog implements Traduisible
         this.setTree(splitPane, panel);
 
         this.setRecursiveColor(theme, this);
-
-        if( font != null ) this.label.setFont(font);
 
         this.pack();
         this.setSize(this.getWidth(), 750);
@@ -115,6 +109,9 @@ public class Aide extends JDialog implements Traduisible
     {
         JLabel label = new JLabel();
 
+        if (this.font != null)
+            label.setFont(font);
+
         StringBuilder textBuilder = new StringBuilder();
 
         switch (number)
@@ -124,6 +121,8 @@ public class Aide extends JDialog implements Traduisible
                 textBuilder.append("<h1>").append(MANAGER.getString(Resources.APP_NAME)).append("</h1>")
                            .append("<p>").append(MANAGER.getHelpString(1)).append("</p>")
                            .append("<p>").append(MANAGER.getHelpString(2)).append("</p>");
+
+                label.setHorizontalAlignment(JLabel.CENTER);
             }break;
 
             case 1:
