@@ -19,6 +19,8 @@ public class Aide extends JDialog implements Traduisible
     private final JLabel label;
     private final Color currentColor;
 
+    private int depart;
+
     /**
      * Instantiates a new Aide.
      *
@@ -27,16 +29,24 @@ public class Aide extends JDialog implements Traduisible
      */
     public Aide( Color theme, Font font )
     {
+        this.depart = 1;
+
         this.setTitle("Aide");
 
         this.label = new JLabel();
 
-        JScrollPane pane = new JScrollPane(this.label);
+        JPanel panel = new JPanel(new CardLayout());
 
-        this.add(pane);
+        JScrollPane pane      = new JScrollPane(panel);
+        JSplitPane  splitPane = new JSplitPane();
+
+        this.add(splitPane);
+
+        splitPane.add(pane, JSplitPane.RIGHT);
 
         this.currentColor = theme ;
-        this.setHTMLText();
+
+        this.setTree(splitPane, panel);
 
         this.setRecursiveColor(theme, this);
 
@@ -61,6 +71,34 @@ public class Aide extends JDialog implements Traduisible
         });
     }
 
+    private void setTree(JSplitPane splitPane, JPanel content)
+    {
+        CardLayout c = (CardLayout) content.getLayout();
+
+        DefaultListModel<String> categorieModel = new DefaultListModel<>();
+
+        categorieModel.addElement(MANAGER.getString(Resources.APP_NAME)); // categorie 1
+        categorieModel.addElement(MANAGER.getHelpString(3)); // categorie 2
+        categorieModel.addElement(MANAGER.getString(Resources.SERIES)); // categorie 3
+        categorieModel.addElement(MANAGER.getString(Resources.ALEANAME)); // categorie 4
+        categorieModel.addElement(MANAGER.getString(Resources.MENU_OPTION)); // categorie 5
+
+        for (int i = 0; i < categorieModel.getSize(); i++)
+            content.add(getJLabelForCardNumber(i), categorieModel.get(i));
+
+        JList<String> listCategorie = new JList<>(categorieModel);
+
+        listCategorie.addListSelectionListener(e ->
+        {
+            int index = listCategorie.getSelectedIndex();
+            System.out.println(index);
+
+            c.show(content, categorieModel.get(index));
+        });
+
+        splitPane.add(listCategorie, JSplitPane.LEFT);
+    }
+
     private void setRecursiveColor( Color color, Component component)
     {
         component.setBackground(color);
@@ -73,10 +111,102 @@ public class Aide extends JDialog implements Traduisible
         }
     }
 
-    //Todo utiliser les fichiers de ressources
-    private void setHTMLText()
+    private JLabel getJLabelForCardNumber(int number)
     {
-        String html =
+        JLabel label = new JLabel();
+
+        StringBuilder textBuilder = new StringBuilder();
+
+        switch (number)
+        {
+            case 0:
+            {
+                textBuilder.append("<h1>").append(MANAGER.getString(Resources.APP_NAME)).append("</h1>")
+                           .append("<p>").append(MANAGER.getHelpString(1)).append("</p>")
+                           .append("<p>").append(MANAGER.getHelpString(2)).append("</p>");
+            }break;
+
+            case 1:
+            {
+                textBuilder.append("<h2>").append(MANAGER.getHelpString(3)).append("</h2>")
+                           .append("<div class=\"marginLeft\">")
+                               .append("<h3 id=\"autre-extensions\">").append(MANAGER.getString(Resources.EXTENSIONS)).append("</h3>")
+                               .append("<p>").append(MANAGER.getHelpString(4)).append("</p>")
+                               .append("<h3>").append(MANAGER.getString(Resources.NAME_PATERN)).append("</h3>")
+                               .append("<p>").append(MANAGER.getHelpString(5)).append("</p>")
+                               .append("<p>").append(MANAGER.getHelpString(6)).append("</p>")
+                               .append("<p>").append(MANAGER.getHelpString(7)).append("</p>")
+                               .append("<ul>")
+                                   .append("<li>").append(MANAGER.getHelpString(8)).append("</li>")
+                                   .append("<li>").append(MANAGER.getHelpString(9)).append("</li>")
+                                   .append("<li>").append(MANAGER.getHelpString(10)).append("</li>")
+                               .append("</ul>")
+                               .append("<p>").append(MANAGER.getHelpString(11)).append("</p>")
+                           .append("</div>");
+            }break;
+
+            case 2:
+            {
+                textBuilder.append("<h2>").append(MANAGER.getString(Resources.SERIES)).append("</h2>")
+                           .append("<div class=\"marginLeft\">")
+                               .append("<p>").append(MANAGER.getHelpString(12)).append("</p>")
+                               .append("<p>").append(MANAGER.getHelpString(13)).append("</p>")
+                               .append("<p>").append(MANAGER.getHelpString(14)).append("</p>")
+                               .append("<h3>").append(MANAGER.getString(Resources.NAME_PATERN)).append("</h3>")
+                               .append("<p>").append(MANAGER.getHelpString(15)).append("</p>")
+                               .append("<p>").append(MANAGER.getHelpString(16)).append("</p>")
+                               .append("<p>").append(MANAGER.getHelpString(17)).append("</p>")
+                           .append("</div>");
+            }break;
+
+            case 3:
+            {
+                textBuilder.append("<h2>").append(MANAGER.getString(Resources.ALEANAME)).append("</h2>")
+                           .append("<div class=\"marginLeft\">")
+                               .append("<p>").append(MANAGER.getHelpString(18)).append("</p>")
+                               .append("<p>").append(MANAGER.getHelpString(19)).append("</p>")
+                               .append("<p>").append(MANAGER.getHelpString(20)).append("</p>")
+                               .append("<p>").append(MANAGER.getHelpString(21)).append("</p>")
+                           .append("</div>");
+            }break;
+
+            case 4:
+            {
+                textBuilder.append("<h2>").append(MANAGER.getString(Resources.MENU_OPTION)).append("</h2>")
+                           .append("<p>").append(MANAGER.getHelpString(22)).append("</p>")
+                           .append("<ul>")
+                               .append("<li>").append(MANAGER.getHelpString(23)).append("</li>")
+                               .append("<li>").append(MANAGER.getHelpString(24)).append("</li>")
+                               .append("<li>").append(MANAGER.getHelpString(25)).append("</li>")
+                               .append("<li>").append(MANAGER.getHelpString(26)).append("</li>")
+                               .append("<li>").append(MANAGER.getHelpString(32))
+                               .append("<ul>")
+                                   .append("<li>").append(MANAGER.getHelpString(33)).append("</li>")
+                                   .append("<li>").append(MANAGER.getHelpString(34)).append("</li>").append("</li>")
+                                   .append("<li>").append(MANAGER.getHelpString(27)).append(" ")
+                               .append("<ul>")
+                                   .append("<li>").append(MANAGER.getHelpString(28)).append("</li>")
+                                   .append("<li>").append(MANAGER.getHelpString(29)).append("</li>")
+                                   .append("<li>").append(MANAGER.getHelpString(30)).append("</li>")
+                                   .append("<li>").append(MANAGER.getHelpString(31)).append("</li>")
+                               .append("</ul>")
+                           .append("</ul>");
+            }break;
+
+            case 5:
+            {
+
+            }break;
+        }
+
+        label.setText(transformStringToHTMLString(textBuilder.toString()));
+
+        return label;
+    }
+
+    private String transformStringToHTMLString(String body)
+    {
+        body =
                 "<html>" +
                     "<head>" +
                         "<style>" +
@@ -104,70 +234,16 @@ public class Aide extends JDialog implements Traduisible
                         "</style>" +
                     "</head>" +
                     "<body>" +
-                        "<h1>" + MANAGER.getString(Resources.APP_NAME) + "</h1>" +
-                        "<p>"  + MANAGER.getHelpString(1) + "</p>" +
-                        "<p>"  + MANAGER.getHelpString(2) + "</p>" +
-                        "<h2>" + MANAGER.getHelpString(3) + "</h2>" +
-                        "<div class=\"marginLeft\">" +
-                        "<h3 id=\"autre-extensions\">" + MANAGER.getString(Resources.EXTENSIONS) + "</h3>" +
-                        "<p>"  + MANAGER.getHelpString(4) + "</p>" +
-                        "<h3>" + MANAGER.getString(Resources.NAME_PATERN) + "</h3>" +
-                        "<p>"  + MANAGER.getHelpString(5) + "</p>" +
-                        "<p>"  + MANAGER.getHelpString(6) + "</p>" +
-                        "<p>"  + MANAGER.getHelpString(7) + "</p>" +
-                        "<ul>" +
-                            "<li>"+ MANAGER.getHelpString(8)  +"</li>" +
-                            "<li>"+ MANAGER.getHelpString(9)  +"</li>" +
-                            "<li>"+ MANAGER.getHelpString(10) +"</li>" +
-                        "</ul>" +
-                        "<p>"+ MANAGER.getHelpString(11) +"</p>" +
-                        "</div>" +
-                        "<h2>" + MANAGER.getString(Resources.SERIES) + "</h2>" +
-                        "<div class=\"marginLeft\">" +
-                        "<p>"+ MANAGER.getHelpString(12) +"</p>" +
-                        "<p>"+ MANAGER.getHelpString(13) +"</p>" +
-                        "<p>"+ MANAGER.getHelpString(14) +"</p>" +
-                        "<h3>" + MANAGER.getString(Resources.NAME_PATERN) + "</h3>" +
-                        "<p>"+ MANAGER.getHelpString(15) +"</p>" +
-                        "<p>"+ MANAGER.getHelpString(16) +"</p>" +
-                        "<p>"+ MANAGER.getHelpString(17) +"</p>" +
-                        "</div>" +
-                        "<h2>" + MANAGER.getString(Resources.ALEANAME) + "</h2>" +
-                        "<div class=\"marginLeft\">" +
-                        "<p>"+ MANAGER.getHelpString(18) +"</p>" +
-                        "<p>"+ MANAGER.getHelpString(19) +"</p>" +
-                        "<p>"+ MANAGER.getHelpString(20) +"</p>" +
-                        "<p>"+ MANAGER.getHelpString(21) +"</p>" +
-                        "</div>" +
-                        "<h2>" + MANAGER.getString(Resources.MENU_OPTION) + "</h2>" +
-                        "<p>"+ MANAGER.getHelpString(22) +"</p>" +
-                        "<ul>" +
-                            "<li>" + MANAGER.getHelpString(23) + "</li>" +
-                            "<li>" + MANAGER.getHelpString(24) + "</li>" +
-                            "<li>" + MANAGER.getHelpString(25) + "</li>" +
-                            "<li>" + MANAGER.getHelpString(26) + "</li>" +
-                            "<li>" + MANAGER.getHelpString(32) +
-                                "<ul>" +
-                                    "<li>" + MANAGER.getHelpString(33) + "</li>" +
-                                    "<li>" + MANAGER.getHelpString(34) + "</li>" +
-                            "</li>" +
-                            "<li>" + MANAGER.getHelpString(27) + " " +
-                                "<ul>" +
-                                    "<li>" + MANAGER.getHelpString(28) + "</li>" +
-                                    "<li>" + MANAGER.getHelpString(29) + "</li>" +
-                                    "<li>" + MANAGER.getHelpString(30) + "</li>" +
-                                    "<li>" + MANAGER.getHelpString(31) + "</li>" +
-                            "</li>" +
-                        "</ul>" +
+                        body +
                     "</body>" +
                 "</html>";
 
-        this.label.setText(html);
+        return body;
     }
 
     @Override
     public void setNewText()
     {
-        this.setHTMLText();
+
     }
 }
