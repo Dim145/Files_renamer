@@ -1,7 +1,7 @@
 package renameFiles.ihm;
 
-import renameFiles.metier.resources.Traduisible;
 import renameFiles.metier.resources.ResourceManager;
+import renameFiles.metier.resources.Traduisible;
 
 import javax.swing.*;
 

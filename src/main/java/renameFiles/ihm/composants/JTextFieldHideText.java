@@ -2,9 +2,9 @@ package renameFiles.ihm.composants;
 
 import renameFiles.ihm.IHMGUI;
 import renameFiles.metier.enums.FileType;
-import renameFiles.metier.resources.Traduisible;
 import renameFiles.metier.resources.ResourceManager;
 import renameFiles.metier.resources.Resources;
+import renameFiles.metier.resources.Traduisible;
 
 import javax.swing.*;
 import java.awt.*;
