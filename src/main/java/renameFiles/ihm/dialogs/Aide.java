@@ -18,35 +18,38 @@ public class Aide extends JDialog implements Traduisible
 {
     private final static ResourceManager MANAGER = ResourceManager.getInstance();
 
-    private final Color currentColor;
+    private final Font   font;
+    private final Color  currentColor;
+    private final JPanel contentPane;
+    private final DefaultListModel<String> categorieModel;
 
-    private Font font;
     /**
      * Instantiates a new Aide.
      *
      * @param theme the theme
      * @param font  the font
      */
-    public Aide( Color theme, Font font )
+    public Aide(Color theme, Font font)
     {
         this.setTitle("Aide");
 
         this.font = font;
 
-        JPanel panel = new JPanel(new CardLayout());
+        this.contentPane = new JPanel(new CardLayout());
 
-        JScrollPane pane      = new JScrollPane(panel);
-        JSplitPane  splitPane = new JSplitPane();
+        JScrollPane scrollPane = new JScrollPane(contentPane);
+        JSplitPane splitPane = new JSplitPane();
 
         this.add(splitPane);
 
-        splitPane.add(pane, JSplitPane.RIGHT);
+        splitPane.add(scrollPane, JSplitPane.RIGHT);
 
-        this.currentColor = theme ;
+        this.currentColor = theme;
 
-        this.setTree(splitPane, panel);
+        this.categorieModel = new DefaultListModel<>();
 
-        this.setRecursiveColor(theme, this);
+        this.setTree(splitPane, contentPane);
+        this.setCardAndModelText();
 
         this.pack();
         this.setLocationRelativeTo(null);
@@ -68,9 +71,23 @@ public class Aide extends JDialog implements Traduisible
 
     private void setTree(JSplitPane splitPane, JPanel content)
     {
-        CardLayout c = (CardLayout) content.getLayout();
+        JList<String> listCategorie = new JList<>(categorieModel);
 
-        DefaultListModel<String> categorieModel = new DefaultListModel<>();
+        listCategorie.addListSelectionListener(e ->
+        {
+            int index = listCategorie.getSelectedIndex();
+
+            if( index > -1 )
+                ((CardLayout) contentPane.getLayout()).show(content, categorieModel.get(index));
+        });
+
+        splitPane.add(listCategorie, JSplitPane.LEFT);
+    }
+
+    private void setCardAndModelText()
+    {
+        this.categorieModel.clear();
+        this.contentPane.removeAll();
 
         categorieModel.addElement(MANAGER.getString(Resources.APP_NAME)); // categorie 1
         categorieModel.addElement(MANAGER.getHelpString(3)); // categorie 2
@@ -80,30 +97,20 @@ public class Aide extends JDialog implements Traduisible
         categorieModel.addElement("web");
 
         for (int i = 0; i < categorieModel.getSize(); i++)
-            content.add(getJLabelForCardNumber(i), categorieModel.get(i));
+            this.contentPane.add(getJLabelForCardNumber(i), categorieModel.get(i));
 
-        JList<String> listCategorie = new JList<>(categorieModel);
-
-        listCategorie.addListSelectionListener(e ->
-        {
-            int index = listCategorie.getSelectedIndex();
-            System.out.println(index);
-
-            c.show(content, categorieModel.get(index));
-        });
-
-        splitPane.add(listCategorie, JSplitPane.LEFT);
+        this.setRecursiveColor(this);
     }
 
-    private void setRecursiveColor( Color color, Component component)
+    private void setRecursiveColor(Component component)
     {
-        component.setBackground(color);
-        component.setForeground(Color.WHITE == color ? Color.BLACK : Color.WHITE);
+        component.setBackground(this.currentColor);
+        component.setForeground(Color.WHITE == this.currentColor ? Color.BLACK : Color.WHITE);
 
-        if( component instanceof Container)
+        if (component instanceof Container)
         {
             for (int i = 0; i < ((Container) component).getComponentCount(); i++)
-                setRecursiveColor(color, ((Container) component).getComponent(i));
+                setRecursiveColor(((Container) component).getComponent(i));
         }
     }
 
@@ -111,8 +118,7 @@ public class Aide extends JDialog implements Traduisible
     {
         JLabel label = new JLabel();
 
-        if (this.font != null)
-            label.setFont(font);
+        if (this.font != null) label.setFont(font);
 
         StringBuilder textBuilder = new StringBuilder();
 
@@ -120,163 +126,158 @@ public class Aide extends JDialog implements Traduisible
         {
             case 0:
             {
-                textBuilder.append("<h1>").append(MANAGER.getString(Resources.APP_NAME)).append("</h1>")
-                           .append("<p>").append(MANAGER.getHelpString(1)).append("</p>")
-                           .append("<p>").append(MANAGER.getHelpString(2)).append("</p>");
+                textBuilder.append("<h1>").append(MANAGER.getString(Resources.APP_NAME)).append("</h1>").append(
+                        "<p>").append(MANAGER.getHelpString(1)).append("</p>").append("<p>").append(
+                        MANAGER.getHelpString(2)).append("</p>");
 
                 label.setHorizontalAlignment(JLabel.CENTER);
-            }break;
+            }
+            break;
 
             case 1:
             {
-                textBuilder.append("<h2>").append(MANAGER.getHelpString(3)).append("</h2>")
-                           .append("<div class=\"marginLeft\">")
-                               .append("<h3 id=\"autre-extensions\">").append(MANAGER.getString(Resources.EXTENSIONS)).append("</h3>")
-                               .append("<p>").append(MANAGER.getHelpString(4)).append("</p>")
-                               .append("<h3>").append(MANAGER.getString(Resources.NAME_PATERN)).append("</h3>")
-                               .append("<p>").append(MANAGER.getHelpString(5)).append("</p>")
-                               .append("<p>").append(MANAGER.getHelpString(6)).append("</p>")
-                               .append("<p>").append(MANAGER.getHelpString(7)).append("</p>")
-                               .append("<ul>")
-                                   .append("<li>").append(MANAGER.getHelpString(8)).append("</li>")
-                                   .append("<li>").append(MANAGER.getHelpString(9)).append("</li>")
-                                   .append("<li>").append(MANAGER.getHelpString(10)).append("</li>")
-                               .append("</ul>")
-                               .append("<p>").append(MANAGER.getHelpString(11)).append("</p>")
-                           .append("</div>");
-            }break;
+                textBuilder.append("<h2>").append(MANAGER.getHelpString(3)).append("</h2>").append(
+                        "<div class=\"marginLeft\">").append("<h3 id=\"autre-extensions\">").append(
+                        MANAGER.getString(Resources.EXTENSIONS)).append("</h3>").append("<p>").append(
+                        MANAGER.getHelpString(4)).append("</p>").append("<h3>").append(
+                        MANAGER.getString(Resources.NAME_PATERN)).append("</h3>").append("<p>").append(
+                        MANAGER.getHelpString(5)).append("</p>").append("<p>").append(MANAGER.getHelpString(6)).append(
+                        "</p>").append("<p>").append(MANAGER.getHelpString(7)).append("</p>").append("<ul>").append(
+                        "<li>").append(MANAGER.getHelpString(8)).append("</li>").append("<li>").append(
+                        MANAGER.getHelpString(9)).append("</li>").append("<li>").append(
+                        MANAGER.getHelpString(10)).append("</li>").append("</ul>").append("<p>").append(
+                        MANAGER.getHelpString(11)).append("</p>").append("</div>");
+            }
+            break;
 
             case 2:
             {
-                textBuilder.append("<h2>").append(MANAGER.getString(Resources.SERIES)).append("</h2>")
-                           .append("<div class=\"marginLeft\">")
-                               .append("<p>").append(MANAGER.getHelpString(12)).append("</p>")
-                               .append("<p>").append(MANAGER.getHelpString(13)).append("</p>")
-                               .append("<p>").append(MANAGER.getHelpString(14)).append("</p>")
-                               .append("<h3>").append(MANAGER.getString(Resources.NAME_PATERN)).append("</h3>")
-                               .append("<p>").append(MANAGER.getHelpString(15)).append("</p>")
-                               .append("<p>").append(MANAGER.getHelpString(16)).append("</p>")
-                               .append("<p>").append(MANAGER.getHelpString(17)).append("</p>")
-                           .append("</div>");
-            }break;
+                textBuilder.append("<h2>").append(MANAGER.getString(Resources.SERIES)).append("</h2>").append(
+                        "<div class=\"marginLeft\">").append("<p>").append(MANAGER.getHelpString(12)).append(
+                        "</p>").append("<p>").append(MANAGER.getHelpString(13)).append("</p>").append("<p>").append(
+                        MANAGER.getHelpString(14)).append("</p>").append("<h3>").append(
+                        MANAGER.getString(Resources.NAME_PATERN)).append("</h3>").append("<p>").append(
+                        MANAGER.getHelpString(15)).append("</p>").append("<p>").append(
+                        MANAGER.getHelpString(16)).append("</p>").append("<p>").append(
+                        MANAGER.getHelpString(17)).append("</p>").append("</div>");
+            }
+            break;
 
             case 3:
             {
-                textBuilder.append("<h2>").append(MANAGER.getString(Resources.ALEANAME)).append("</h2>")
-                           .append("<div class=\"marginLeft\">")
-                               .append("<p>").append(MANAGER.getHelpString(18)).append("</p>")
-                               .append("<p>").append(MANAGER.getHelpString(19)).append("</p>")
-                               .append("<p>").append(MANAGER.getHelpString(20)).append("</p>")
-                               .append("<p>").append(MANAGER.getHelpString(21)).append("</p>")
-                           .append("</div>");
-            }break;
+                textBuilder.append("<h2>").append(MANAGER.getString(Resources.ALEANAME)).append("</h2>").append(
+                        "<div class=\"marginLeft\">").append("<p>").append(MANAGER.getHelpString(18)).append(
+                        "</p>").append("<p>").append(MANAGER.getHelpString(19)).append("</p>").append("<p>").append(
+                        MANAGER.getHelpString(20)).append("</p>").append("<p>").append(
+                        MANAGER.getHelpString(21)).append("</p>").append("</div>");
+            }
+            break;
 
             case 4:
             {
-                textBuilder.append("<h2>").append(MANAGER.getString(Resources.MENU_OPTION)).append("</h2>")
-                           .append("<p>").append(MANAGER.getHelpString(22)).append("</p>")
-                           .append("<ul>")
-                               .append("<li>").append(MANAGER.getHelpString(23)).append("</li>")
-                               .append("<li>").append(MANAGER.getHelpString(24)).append("</li>")
-                               .append("<li>").append(MANAGER.getHelpString(25)).append("</li>")
-                               .append("<li>").append(MANAGER.getHelpString(26)).append("</li>")
-                               .append("<li>").append(MANAGER.getHelpString(32))
-                               .append("<ul>")
-                                   .append("<li>").append(MANAGER.getHelpString(33)).append("</li>")
-                                   .append("<li>").append(MANAGER.getHelpString(34)).append("</li>").append("</li>")
-                                   .append("<li>").append(MANAGER.getHelpString(27)).append(" ")
-                               .append("<ul>")
-                                   .append("<li>").append(MANAGER.getHelpString(28)).append("</li>")
-                                   .append("<li>").append(MANAGER.getHelpString(29)).append("</li>")
-                                   .append("<li>").append(MANAGER.getHelpString(30)).append("</li>")
-                                   .append("<li>").append(MANAGER.getHelpString(31)).append("</li>")
-                               .append("</ul>")
-                           .append("</ul>");
-            }break;
+                textBuilder.append("<h2>").append(MANAGER.getString(Resources.MENU_OPTION)).append("</h2>").append(
+                        "<p>").append(MANAGER.getHelpString(22)).append("</p>").append("<ul>").append("<li>").append(
+                        MANAGER.getHelpString(23)).append("</li>").append("<li>").append(
+                        MANAGER.getHelpString(24)).append("</li>").append("<li>").append(
+                        MANAGER.getHelpString(25)).append("</li>").append("<li>").append(
+                        MANAGER.getHelpString(26)).append("</li>").append("<li>").append(
+                        MANAGER.getHelpString(32)).append("<ul>").append("<li>").append(
+                        MANAGER.getHelpString(33)).append("</li>").append("<li>").append(
+                        MANAGER.getHelpString(34)).append("</li>").append("</li>").append("<li>").append(
+                        MANAGER.getHelpString(27)).append(" ").append("<ul>").append("<li>").append(
+                        MANAGER.getHelpString(28)).append("</li>").append("<li>").append(
+                        MANAGER.getHelpString(29)).append("</li>").append("<li>").append(
+                        MANAGER.getHelpString(30)).append("</li>").append("<li>").append(
+                        MANAGER.getHelpString(31)).append("</li>").append("</ul>").append("</ul>");
+            }
+            break;
 
             case 5:
             {
-                textBuilder.append("<h1>Fonctionnalité WEB</h1>")
+                textBuilder.append("<h1>").append(MANAGER.getHelpString(35)).append("</h1>")
                            .append("<div class=\"marginLeft\">")
-                                .append("<p>L'application peut tenter de se connecter a internet pour chercher les différente vidéos.</p>")
-                           .append("<p>Cela lui permet:</p><ul><li>")
-                            .append("de corrigé le nom de la serie si celui-ci n'est pas trop déformé</li>")
-                           .append("<li>d'ajouter ou de retiré le titre d'un episode selon la checkbox dans web.</li>")
-                           .append("<li>de traduire si cela est possible, les nom de series. si la langue choisie est Japonnais,<br/> cela traduira en caractere japonnnais seulement si la langue actuelle est japonnais.</li>")
+                           .append("<p>").append(MANAGER.getHelpString(36)).append("</p>")
+                           .append("<p>").append(MANAGER.getHelpString(37)).append("</p>")
+                           .append("<ul>")
+                           .append("<li>").append(MANAGER.getHelpString(38)).append("</li>")
+                           .append("<li>").append(MANAGER.getHelpString(39)).append("</li>")
+                           .append("<li>").append(MANAGER.getHelpString(40)).append("</li>")
                            .append("</ul>")
-                           .append("<p>les deux sites ou sont récupéré les données sont: </p>");
+                           .append("<p>").append(MANAGER.getHelpString(41)).append("</p>");
 
-               JLabel refSerie = new JLabel(transformStringToHTMLString("<a href=\"http://tvmaze.com\">TVMaze</a>"));
-               JLabel refFilms = new JLabel(transformStringToHTMLString("<a href=\"https://themoviedb.org\">TheMovieDB</a>"));
+                JLabel refSerie = new JLabel(transformStringToHTMLString("<a href=\"http://tvmaze.com\">TVMaze</a>"));
+                JLabel refFilms = new JLabel(
+                        transformStringToHTMLString("<a href=\"https://themoviedb.org\">TheMovieDB</a>"));
 
-               refSerie.setToolTipText("http://tvmaze.com");
-               refFilms.setToolTipText("https://themoviedb.org");
+                refSerie.setToolTipText("http://tvmaze.com");
+                refFilms.setToolTipText("https://themoviedb.org");
 
-               refSerie.addMouseListener(new MouseAdapter() {
-                   @Override
-                   public void mouseClicked(MouseEvent e)
-                   {
-                       String text = ((JLabel) e.getSource()).getToolTipText();
+                refSerie.addMouseListener(new MouseAdapter()
+                {
+                    @Override
+                    public void mouseClicked(MouseEvent e)
+                    {
+                        String text = ((JLabel) e.getSource()).getToolTipText();
 
-                       try
-                       {
-                           Desktop.getDesktop().browse(new URI(text));
-                       }
-                       catch (IOException | URISyntaxException ioException)
-                       {
-                           ioException.printStackTrace();
-                       }
-                   }
+                        try
+                        {
+                            Desktop.getDesktop().browse(new URI(text));
+                        }
+                        catch (IOException | URISyntaxException ioException)
+                        {
+                            ioException.printStackTrace();
+                        }
+                    }
 
-                   @Override
-                   public void mouseEntered(MouseEvent e)
-                   {
-                       ((JLabel) e.getSource()).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                   }
+                    @Override
+                    public void mouseEntered(MouseEvent e)
+                    {
+                        ((JLabel) e.getSource()).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                    }
 
-                   @Override
-                   public void mouseExited(MouseEvent e)
-                   {
-                       ((JLabel) e.getSource()).setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                   }
-               });
+                    @Override
+                    public void mouseExited(MouseEvent e)
+                    {
+                        ((JLabel) e.getSource()).setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    }
+                });
 
                 for (MouseListener m : refSerie.getMouseListeners())
                     refFilms.addMouseListener(m);
 
-               JLabel endSerie = new JLabel(transformStringToHTMLString("pour les séries"));
-               JLabel endFilms = new JLabel(transformStringToHTMLString("pour les films"));
+                JLabel endSerie = new JLabel(transformStringToHTMLString(MANAGER.getHelpString(42)));
+                JLabel endFilms = new JLabel(transformStringToHTMLString(MANAGER.getHelpString(43)));
 
-               GridBagLayout layout = new GridBagLayout();
-               JPanel pnl = new JPanel(new BorderLayout());
-               JPanel grid = new JPanel(layout);
-               JPanel box  = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                GridBagLayout layout = new GridBagLayout();
+                JPanel pnl = new JPanel(new BorderLayout());
+                JPanel grid = new JPanel(layout);
+                JPanel box = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-               label.setText(transformStringToHTMLString(textBuilder.toString()));
+                label.setText(transformStringToHTMLString(textBuilder.toString()));
 
                 GridBagConstraints c = new GridBagConstraints();
                 c.gridy = 1;
                 layout.setConstraints(box, c);
 
-               grid.add(label);
-               box.add(refSerie);
-               box.add(endSerie);
+                grid.add(label);
+                box.add(refSerie);
+                box.add(endSerie);
 
-               grid.add(box);
+                grid.add(box);
 
-               box = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                box = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-               box.add(refFilms);
-               box.add(endFilms);
+                box.add(refFilms);
+                box.add(endFilms);
 
                 c = new GridBagConstraints();
                 c.gridy = 2;
                 layout.setConstraints(box, c);
 
-               grid.add(box);
-               pnl.add(grid, BorderLayout.NORTH);
+                grid.add(box);
+                pnl.add(grid, BorderLayout.NORTH);
 
-               return pnl;
+                return pnl;
             }
         }
 
@@ -287,37 +288,7 @@ public class Aide extends JDialog implements Traduisible
 
     private String transformStringToHTMLString(String body)
     {
-        body =
-                "<html>" +
-                    "<head>" +
-                        "<style>" +
-                            "body{ " +
-                                "background-color: " + (this.currentColor == Color.WHITE ? "while" : "rgb(" + this.currentColor.getRed() + "," + this.currentColor.getGreen() + "," + this.currentColor.getBlue() + ")") + ";" +
-                            "}" +
-                            "h2{" +
-                                "color:orange;" +
-                            "}" +
-                            "h1{" +
-                                "color:orange; " +
-                                "text-align:center;" +
-                            "}" +
-                            "h3{" +
-                                "color:orange; " +
-                            "}" +
-                            "p{" +
-                                "text-align:justify;" +
-                                "margin-left:10px; " +
-                                "margin-right:10px;" +
-                            "}" +
-                            ".marginLeft{" +
-                                "margin-left: 25px;" +
-                            "}" +
-                        "</style>" +
-                    "</head>" +
-                    "<body>" +
-                        body +
-                    "</body>" +
-                "</html>";
+        body = "<html>" + "<head>" + "<style>" + "body{ " + "background-color: " + (this.currentColor == Color.WHITE ? "while" : "rgb(" + this.currentColor.getRed() + "," + this.currentColor.getGreen() + "," + this.currentColor.getBlue() + ")") + ";" + "}" + "h2{" + "color:orange;" + "}" + "h1{" + "color:orange; " + "text-align:center;" + "}" + "h3{" + "color:orange; " + "}" + "p{" + "text-align:justify;" + "margin-left:10px; " + "margin-right:10px;" + "}" + ".marginLeft{" + "margin-left: 25px;" + "}" + "</style>" + "</head>" + "<body>" + body + "</body>" + "</html>";
 
         return body;
     }
@@ -325,6 +296,6 @@ public class Aide extends JDialog implements Traduisible
     @Override
     public void setNewText()
     {
-
+        this.setCardAndModelText();
     }
 }
