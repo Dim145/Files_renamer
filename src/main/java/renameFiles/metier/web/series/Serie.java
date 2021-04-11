@@ -140,14 +140,15 @@ public class Serie implements WebElement
         if( listDefault == null )
             listDefault = new ArrayList<>();
 
-        listDefault.add(0, this.getName()); // on recupere celle-ci et ajoute le nom par default en 1
+        if( !listDefault.contains(this.getName()))
+            listDefault.add(0, this.getName()); // on recupere celle-ci et ajoute le nom par default en 1
 
         ArrayList<String> listEN = this.othersNAmes.get("en"); // on recupere la liste anglaise
 
         if( listEN == null )
             listEN = this.othersNAmes.get("us"); // americaine si anglaise n'existe pas
 
-        if( listEN != null ) // on ajoute la liste par default. en = langue du site.
+        if( listEN != null && !listEN.containsAll(listDefault) ) // on ajoute la liste par default. en = langue du site.
             listEN.addAll(listDefault);
         else
             this.othersNAmes.put("en", listDefault);
