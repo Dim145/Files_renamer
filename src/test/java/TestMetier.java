@@ -6,8 +6,6 @@ import renameFiles.metier.Metier;
 import renameFiles.metier.types.series.Serie;
 import renameFiles.metier.web.WebInfoHelper;
 
-import java.util.Date;
-
 public class TestMetier
 {
     private Metier     metier;
@@ -51,6 +49,5 @@ public class TestMetier
         Assert.assertNotNull(serie);
         Assert.assertEquals("Dr. Stone", serie.getName());
         Assert.assertEquals("Animation", serie.getType());
-        Assert.assertEquals(new Date(1562277600000L), serie.getReleaseDate()); // 2019-07-05
     }
 }
